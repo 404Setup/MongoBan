@@ -24,7 +24,7 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
 
-    implementation("org.mongodb:mongodb-driver-sync:5.2.0")
+    implementation("org.mongodb:mongodb-driver-sync:5.2.1")
     implementation("com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4")
 }
 
