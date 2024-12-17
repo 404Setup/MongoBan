@@ -1,0 +1,7 @@
+name: MongoBan
+version: '24.12.0'
+main: one.tranic.mongoban.bukkit.MongoBan
+api-version: '1.18'
+load: STARTUP
+authors: [ 404 ]
+website: https://tranic.one
