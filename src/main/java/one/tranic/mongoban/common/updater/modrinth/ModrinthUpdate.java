@@ -2,7 +2,6 @@ package one.tranic.mongoban.common.updater.modrinth;
 
 import com.google.gson.Gson;
 import one.tranic.mongoban.common.updater.UpdateRecord;
-import one.tranic.mongoban.common.updater.Updater;
 import one.tranic.mongoban.common.updater.VersionComparator;
 import one.tranic.mongoban.common.updater.modrinth.source.Loaders;
 import one.tranic.mongoban.common.updater.modrinth.source.ModrinthVersionSource;
@@ -51,7 +50,7 @@ public class ModrinthUpdate {
      * Asynchronously retrieves the latest {@link UpdateRecord} and passes it to the provided {@link Consumer}.
      * <p>
      * This method runs in a separate thread. If an {@link IOException} occurs during the update retrieval,
-     * it is caught and the exception stack trace is printed, and {@code null} may be passed to the consumer
+     * it is caught, and the exception stack trace is printed, and {@code null} may be passed to the consumer
      * in case of failure.
      * </p>
      *
@@ -69,6 +68,18 @@ public class ModrinthUpdate {
         });
     }
 
+    /**
+     * Retrieves the latest update information for a Modrinth project based on the specified parameters.
+     * This method sends an HTTP GET request to the Modrinth API to fetch version data for the project.
+     * It filters the data based on game version, loader type, and version comparison logic.
+     * <p>
+     * If a newer version is found, it constructs and returns an {@link UpdateRecord} containing the update details.
+     * If no update is available or the version data is invalid, an empty update record is returned.
+     *
+     * @return an {@link UpdateRecord} containing update information if an update is available;
+     * an empty update record if no updates are found or the response is invalid.
+     * @throws IOException if an error occurs during the HTTP request or response handling.
+     */
     public UpdateRecord getUpdate() throws IOException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.modrinth.com/v2/project/" + slug + "/version"))
