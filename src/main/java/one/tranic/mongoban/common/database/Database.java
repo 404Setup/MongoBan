@@ -4,10 +4,10 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Data;
 import org.bson.Document;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Database {
@@ -82,7 +82,7 @@ public class Database {
     }
 
     public List<Document> queryMany(String collectionName, Document query) {
-        List<Document> resultList = new ArrayList<>();
+        List<Document> resultList = Collections.newArrayList();
         try {
             com.mongodb.client.MongoDatabase database = getDB();
             MongoCollection<Document> collection = database.getCollection(collectionName);

@@ -92,11 +92,71 @@ public class DatabaseService {
         return CompletableFuture.runAsync(() -> addPlayerBanSync(uuid, operator, duration, ip, reason), executor);
     }
 
-    public void addIPBanSync(String ip, UUID operator, int duration) {
+    /**
+     * Blocks an IP address and bans all players associated with the IP synchronously.
+     *
+     * <p>This method finds all players linked to the provided IP address and bans them individually,
+     * then applies an IP-wide ban, all executed in a blocking manner.</p>
+     *
+     * @param ip       The {@link InetAddress} of the IP to be banned.
+     * @param operator The {@link UUID} of the operator performing the ban.
+     * @param duration The duration (in seconds) for which the ban should last.
+     * @param reason   The reason for the ban, or {@code null} if no specific reason is provided.
+     *
+     * @throws IllegalArgumentException If the provided IP or operator is {@code null}.
+     */
+    public void addIPBanWithAllSync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
+        PlayerInfo[] players = findPlayersByIPSync(ip);
+        for (PlayerInfo player : players) {
+            addPlayerBanSync(player.uuid(), operator, duration, ip, reason);
+        }
+
+        addIPBanSync(ip, operator, duration, reason);
+    }
+
+    /**
+     * Asynchronously blocks an IP address and bans all players associated with the IP.
+     *
+     * <p>This method schedules a task to find all players linked to the provided IP address and bans them individually,
+     * then applies an IP-wide ban. The process runs in a separate thread using the pre-configured executor.</p>
+     *
+     * <p>Because it operates asynchronously, this method returns a {@link CompletableFuture} that can be used to
+     * monitor the completion of the entire operation.</p>
+     *
+     * @param ip       The {@link InetAddress} of the IP to be banned.
+     * @param operator The {@link UUID} of the operator performing the ban.
+     * @param duration The duration (in seconds) for which the ban should last.
+     * @param reason   The reason for the ban, or {@code null} if no specific reason is provided.
+     *
+     * @return A {@link CompletableFuture} that completes when the IP ban and all associated operations are finished.
+     *
+     * @throws IllegalArgumentException If the provided IP or operator is {@code null}.
+     */
+    public CompletableFuture<Void> addIPBanWithAllAsync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
+        return CompletableFuture.runAsync(() -> addIPBanWithAllSync(ip, operator, duration, reason), executor);
+    }
+
+    /**
+     * Synchronously adds an IP ban to the database with a default ban reason.
+     *
+     * @param ip       The IP address to be banned.
+     * @param operator The UUID of the operator performing the ban.
+     * @param duration The duration of the ban in seconds.
+     */
+    public void addIPBanSync(InetAddress ip, UUID operator, int duration) {
         addIPBanSync(ip, operator, duration, "<Banned by the server>");
     }
 
-    public void addIPBanSync(String ip, UUID operator, int duration, @Nullable String reason) {
+    /**
+     * Synchronously adds an IP ban to the database with a specified ban reason.
+     *
+     * @param ip       The IP address to be banned.
+     * @param operator The UUID of the operator performing the ban.
+     * @param duration The duration of the ban in seconds.
+     * @param reason   The reason for the ban. If {@code null}, a default reason
+     *                 ("<Banned by the server>") will be used.
+     */
+    public void addIPBanSync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
         Document query = new Document("ip", ip);
         Document updateDoc = new Document()
                 .append("operator", operator)
@@ -106,11 +166,31 @@ public class DatabaseService {
         database.update(this.collectionBan, query, updateDoc);
     }
 
-    public CompletableFuture<Void> addIPBanAsync(String ip, UUID operator, int duration) {
+    /**
+     * Asynchronously adds an IP ban to the database with a default ban reason.
+     * This operation runs in a separate thread.
+     *
+     * @param ip       The IP address to be banned.
+     * @param operator The UUID of the operator performing the ban.
+     * @param duration The duration of the ban in seconds.
+     * @return A {@link CompletableFuture} that completes when the operation is finished.
+     */
+    public CompletableFuture<Void> addIPBanAsync(InetAddress ip, UUID operator, int duration) {
         return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration), executor);
     }
 
-    public CompletableFuture<Void> addIPBanAsync(String ip, UUID operator, int duration, @Nullable String reason) {
+    /**
+     * Asynchronously adds an IP ban to the database with a specified ban reason.
+     * This operation runs in a separate thread.
+     *
+     * @param ip       The IP address to be banned.
+     * @param operator The UUID of the operator performing the ban.
+     * @param duration The duration of the ban in seconds.
+     * @param reason   The reason for the ban. If {@code null}, a default reason
+     *                 ("<Banned by the server>") will be used.
+     * @return A {@link CompletableFuture} that completes when the operation is finished.
+     */
+    public CompletableFuture<Void> addIPBanAsync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
         return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration, reason), executor);
     }
 
@@ -129,18 +209,18 @@ public class DatabaseService {
         return CompletableFuture.supplyAsync(() -> getPlayerBanSync(uuid), executor);
     }
 
-    public IPBanInfo getIPBanInfoSync(String ip) {
+    public IPBanInfo getIPBanInfoSync(InetAddress ip) {
         Document query = new Document("ip", ip);
         Document banDoc = database.queryOne(this.collectionBan, query);
         return banDoc != null ? new IPBanInfo(
-                ip,
+                ip.getHostAddress(),
                 banDoc.get("operator", UUID.class),
                 banDoc.getInteger("duration"),
                 banDoc.getString("reason")
         ) : null;
     }
 
-    public CompletableFuture<IPBanInfo> getIPBanInfoAsync(String ip) {
+    public CompletableFuture<IPBanInfo> getIPBanInfoAsync(InetAddress ip) {
         return CompletableFuture.supplyAsync(() -> getIPBanInfoSync(ip), executor);
     }
 }

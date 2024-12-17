@@ -1,6 +1,8 @@
 package one.tranic.mongoban.velocity;
 
+import com.google.inject.Inject;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.proxy.ProxyServer;
 
 @Plugin(
         id = "mongoban",
@@ -10,5 +12,14 @@ import com.velocitypowered.api.plugin.Plugin;
         authors = {"404"}
 )
 public class MongoBan {
+    private static ProxyServer proxy;
 
+    @Inject
+    public MongoBan(ProxyServer proxy) {
+        MongoBan.proxy = proxy;
+    }
+
+    public static ProxyServer getProxy() {
+        return proxy;
+    }
 }
