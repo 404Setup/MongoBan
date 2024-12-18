@@ -64,14 +64,14 @@ public class DatabaseBanApplication {
      * If no players are found, an empty array is returned.
      */
     public PlayerInfo[] findPlayerBanSync(InetAddress ip) {
-        Document query = new Document("ip", new Document("$elemMatch", ip));
+        Document query = new Document("ip", new Document("$elemMatch", ip.getHostAddress()));
         List<Document> playerDocs = database.queryMany(this.collection, query);
         List<PlayerInfo> players = Collections.newArrayList();
         for (Document playerDoc : playerDocs) {
             players.add(new PlayerInfo(
                     playerDoc.getString("name"),
                     playerDoc.get("id", UUID.class),
-                    (InetAddress[]) playerDoc.get("ip")
+                    (String[]) playerDoc.get("ip")
             ));
         }
         return players.toArray(new PlayerInfo[0]);
@@ -115,7 +115,7 @@ public class DatabaseBanApplication {
         Document updateDoc = new Document()
                 .append("operator", operator)
                 .append("duration", duration)
-                .append("ip", ip)
+                .append("ip", ip != null ? ip.getHostAddress() : null)
                 .append("reason", reason != null ? reason : "<Banned by the server>");
 
         database.update(this.collection, query, updateDoc);
@@ -219,7 +219,7 @@ public class DatabaseBanApplication {
         PlayerInfo[] players = findPlayerBanSync(ip);
         for (PlayerInfo player : players) removePlayerBanSync(player.uuid());
 
-        Document query = new Document("ip", ip);
+        Document query = new Document("ip", ip.getHostAddress());
         Document result = database.queryOne(this.collection, query);
         if (result != null) database.delete(this.collection, query);
     }
@@ -255,7 +255,7 @@ public class DatabaseBanApplication {
      *                 reason ("<Banned by the server>") will be used.
      */
     public void addIPBanSync(InetAddress ip, Operator operator, int duration, @Nullable String reason) {
-        Document query = new Document("ip", ip);
+        Document query = new Document("ip", ip.getHostAddress());
         Document updateDoc = new Document()
                 .append("operator", operator)
                 .append("duration", duration)
@@ -300,7 +300,7 @@ public class DatabaseBanApplication {
      * if no ban record is found for the given IP address.
      */
     public IPBanInfo getIPBanInfoSync(InetAddress ip) {
-        Document query = new Document("ip", ip);
+        Document query = new Document("ip", ip.getHostAddress());
         Document banDoc = database.queryOne(this.collection, query);
         return banDoc != null ? new IPBanInfo(
                 ip.getHostAddress(),

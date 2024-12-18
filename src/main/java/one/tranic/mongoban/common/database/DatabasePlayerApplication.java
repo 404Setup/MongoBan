@@ -3,7 +3,6 @@ package one.tranic.mongoban.common.database;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import org.bson.Document;
 
-import java.net.InetAddress;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -15,6 +14,10 @@ public class DatabasePlayerApplication {
     public DatabasePlayerApplication(Database database, DatabaseService service) {
         this.database = database;
         this.service = service;
+    }
+
+    public void addPlayerSync(String name, UUID uuid, String ip) {
+
     }
 
     /**
@@ -30,7 +33,7 @@ public class DatabasePlayerApplication {
         return playerDoc != null ? new PlayerInfo(
                 name,
                 playerDoc.get("id", UUID.class),
-                (InetAddress[]) playerDoc.get("ip")
+                (String[]) playerDoc.get("ip")
         ) : null;
     }
 
@@ -60,7 +63,7 @@ public class DatabasePlayerApplication {
         return playerDoc != null ? new PlayerInfo(
                 playerDoc.getString("name"),
                 uuid,
-                (InetAddress[]) playerDoc.get("ip")
+                (String[]) playerDoc.get("ip")
         ) : null;
     }
 
