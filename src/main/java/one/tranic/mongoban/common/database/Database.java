@@ -137,6 +137,40 @@ public class Database {
     }
 
     /**
+     * Deletes a single document in the specified MongoDB collection that matches the query.
+     *
+     * @param collectionName the name of the MongoDB collection
+     * @param query          the query criteria to identify the document to delete
+     */
+    public void delete(String collectionName, Document query) {
+        try {
+            com.mongodb.client.MongoDatabase database = getDB();
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+
+            collection.deleteOne(query);
+        } catch (Exception e) {
+            Data.logger.error(e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes all documents in the specified MongoDB collection that match the query.
+     *
+     * @param collectionName the name of the MongoDB collection
+     * @param query          the query criteria to identify the documents to delete
+     */
+    public void deleteMany(String collectionName, Document query) {
+        try {
+            com.mongodb.client.MongoDatabase database = getDB();
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+
+            collection.deleteMany(query);
+        } catch (Exception e) {
+            Data.logger.error(e.getMessage());
+        }
+    }
+
+    /**
      * Provides access to the DatabaseService instance associated with this Database.
      *
      * @return The DatabaseService instance used for interacting with the database.
