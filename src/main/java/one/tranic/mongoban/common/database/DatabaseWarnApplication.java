@@ -1,5 +1,6 @@
 package one.tranic.mongoban.common.database;
 
+import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerWarnInfo;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Rand;
@@ -20,17 +21,21 @@ public class DatabaseWarnApplication {
     }
 
     /**
-     * Synchronously adds a warning to the database for a player, with a generated warning ID.
+     * Adds a warning to a player synchronously by creating a warning document and saving it to the database.
+     * <p>
+     * The warning is uniquely identified with a generated warning ID.
      *
-     * @param playerId The UUID of the player to be warned.
-     * @param duration The duration of the warning in seconds.
-     * @param reason   The reason for the warning.
+     * @param playerId the unique identifier of the player being warned
+     * @param operator the operator issuing the warning
+     * @param duration the duration of the warning in an appropriate time unit
+     * @param reason   the reason for the warning being issued
      */
-    public void addPlayerWarnSync(UUID playerId, int duration, String reason) {
+    public void addPlayerWarnSync(UUID playerId, Operator operator, int duration, String reason) {
         String warnId = Rand.generateRandomWarnId(21);
         Document query = new Document("id", warnId);
         Document warnDoc = new Document()
                 .append("playerId", playerId)
+                .append("operator", operator)
                 .append("duration", duration)
                 .append("reason", reason);
 
@@ -38,49 +43,64 @@ public class DatabaseWarnApplication {
     }
 
     /**
-     * Asynchronously adds a warning for a player with the specified duration and reason.
+     * Asynchronously adds a warning to a player by delegating the creation of a warning document
+     * and saving it to the database to a separate thread.
+     * <p>
+     * This allows for non-blocking execution on the caller's end.
      *
-     * @param playerId The unique identifier of the player to warn.
-     * @param duration The duration of the warning in minutes.
-     * @param reason   The reason for the warning.
-     * @return A CompletableFuture that completes when the warning has been successfully added.
+     * @param playerId the unique identifier of the player being warned
+     * @param operator the operator issuing the warning
+     * @param duration the duration of the warning in an appropriate time unit
+     * @param reason   the reason for the warning being issued
+     * @return a CompletableFuture that completes when the warning has been successfully created
      */
-    public CompletableFuture<Void> addPlayerWarnAsync(UUID playerId, int duration, String reason) {
-        return CompletableFuture.runAsync(() -> addPlayerWarnSync(playerId, duration, reason), service.executor);
+    public CompletableFuture<Void> addPlayerWarnAsync(UUID playerId, Operator operator, int duration, String reason) {
+        return CompletableFuture.runAsync(() -> addPlayerWarnSync(playerId, operator, duration, reason), service.executor);
     }
 
     /**
-     * Synchronously finds the warning in the database using the provided warnId.
+     * Retrieves a player's warning information synchronously by the warning ID.
+     * <p>
+     * If a warning is found, returns a {@code PlayerWarnInfo} containing details
+     * about the warning such as the player ID, operator, duration, and reason.
+     * <p>
+     * If no matching warning is found, returns {@code null}.
      *
-     * @param warnId The warning ID to search for.
-     * @return The {@code PlayerWarnInfo} record containing the warning details, or {@code null} if none is found.
+     * @param warnId The unique identifier for the warning to retrieve.
+     * @return A {@code PlayerWarnInfo} object containing the details of the warning
+     * if found, or {@code null} if no warning matches the specified ID.
      */
     public PlayerWarnInfo findPlayerWarnSync(String warnId) {
         Document query = new Document("id", warnId);
         Document warnDoc = database.queryOne(this.collection, query);
         return warnDoc != null ? new PlayerWarnInfo(
                 warnDoc.get("playerId", UUID.class),
-                warnDoc.get("operator", UUID.class),
+                warnDoc.get("operator", Operator.class),
                 warnDoc.getInteger("duration"),
                 warnDoc.getString("reason")
         ) : null;
     }
 
     /**
-     * Asynchronously retrieves warning information for a specific player based on the provided warning ID.
+     * Asynchronously retrieves warning information associated with a specified warning ID.
+     * <p>
+     * This method runs the operation in a separate thread using the provided executor service.
      *
-     * @param warnId The unique identifier of the player's warning.
-     * @return A CompletableFuture containing the PlayerWarnInfo associated with the specified warning ID.
+     * @param warnId The unique identifier of the warning to retrieve.
+     * @return A CompletableFuture containing the PlayerWarnInfo associated with the given warning ID,
+     * or null if no matching warning is found.
      */
     public CompletableFuture<PlayerWarnInfo> findPlayerWarnAsync(String warnId) {
         return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(warnId), service.executor);
     }
 
     /**
-     * Synchronously finds all warnings in the database for the specified playerId.
+     * Retrieves all warning information associated with a specific player identified by their UUID
+     * from the database in a synchronous manner.
      *
-     * @param playerId The UUID of the player to search for.
-     * @return An array of {@code PlayerWarnInfo} records containing the player's warning details.
+     * @param playerId The unique identifier (UUID) of the player whose warnings are to be retrieved.
+     * @return An array of {@code PlayerWarnInfo} objects containing details about the warnings
+     * associated with the specified player. If no warnings are found, an empty array is returned.
      */
     public PlayerWarnInfo[] findPlayerWarnSync(UUID playerId) {
         Document query = new Document("playerId", playerId);
@@ -89,7 +109,7 @@ public class DatabaseWarnApplication {
         for (Document warnDoc : warnDocs) {
             warnings.add(new PlayerWarnInfo(
                     playerId,
-                    warnDoc.get("operator", UUID.class),
+                    warnDoc.get("operator", Operator.class),
                     warnDoc.getInteger("duration"),
                     warnDoc.getString("reason")
             ));
@@ -98,19 +118,24 @@ public class DatabaseWarnApplication {
     }
 
     /**
-     * Asynchronously retrieves the warning information for a player based on their unique ID.
+     * Asynchronously fetches all warnings associated with a specific player from the database.
+     * The method performs the operation in a non-blocking manner, leveraging a separate thread
+     * and returning a CompletableFuture encapsulating the result.
      *
-     * @param playerId the unique identifier (UUID) of the player whose warnings are to be retrieved
-     * @return a CompletableFuture that, when completed, will contain an array of PlayerWarnInfo objects representing the player's warning information
+     * @param playerId The unique identifier (UUID) of the player whose warnings are to be retrieved.
+     * @return A CompletableFuture that, when completed, contains an array of PlayerWarnInfo
+     * objects representing the warnings associated with the specified player.
      */
     public CompletableFuture<PlayerWarnInfo[]> findPlayerWarnAsync(UUID playerId) {
         return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(playerId), service.executor);
     }
 
     /**
-     * Synchronously removes a warning from the database using the provided warning ID.
+     * Removes a player warning synchronously based on the provided warning ID.
+     * This method constructs a query using the warning ID and deletes the corresponding document
+     * from the MongoDB collection associated with player warnings.
      *
-     * @param warnId The unique identifier of the warning to be removed.
+     * @param warnId the unique identifier of the player warning to be removed
      */
     public void removePlayerWarnSync(String warnId) {
         Document query = new Document("id", warnId);
@@ -118,19 +143,22 @@ public class DatabaseWarnApplication {
     }
 
     /**
-     * Asynchronously removes a warning assigned to a player.
+     * Asynchronously removes a player warning from the database based on the provided warning ID.
+     * <p>
+     * This method uses a separate thread to execute the removal, ensuring non-blocking behavior
+     * for the caller.
      *
-     * @param warnId The unique identifier of the player's warning to be removed.
-     * @return A CompletableFuture that completes when the warning has been removed.
+     * @param warnId the unique identifier of the warning to be removed from the database
+     * @return a CompletableFuture<Void> that completes once the warning has been removed
      */
     public CompletableFuture<Void> removePlayerWarnAsync(String warnId) {
         return CompletableFuture.runAsync(() -> removePlayerWarnSync(warnId), service.executor);
     }
 
     /**
-     * Synchronously removes all warnings associated with the specified player ID from the database.
+     * Removes all warnings associated with a specific player from the database in a synchronous manner.
      *
-     * @param playerId The UUID of the player whose warnings are to be removed.
+     * @param playerId the unique identifier of the player whose warnings are to be removed
      */
     public void removePlayerWarnSync(UUID playerId) {
         Document query = new Document("playerId", playerId);
@@ -138,10 +166,12 @@ public class DatabaseWarnApplication {
     }
 
     /**
-     * Asynchronously removes a warning for a player identified by their unique ID.
+     * Asynchronously removes all warnings associated with the specified player from the database.
+     * <p>
+     * This method executes the removal operation on a separate thread using the service's executor.
      *
-     * @param playerId the unique identifier of the player whose warning is to be removed
-     * @return a CompletableFuture that completes when the player's warning has been removed
+     * @param playerId the unique identifier of the player whose warnings should be removed
+     * @return a CompletableFuture that completes when the warnings have been successfully removed
      */
     public CompletableFuture<Void> removePlayerWarnAsync(UUID playerId) {
         return CompletableFuture.runAsync(() -> removePlayerWarnSync(playerId), service.executor);

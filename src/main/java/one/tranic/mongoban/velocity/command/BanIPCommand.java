@@ -6,7 +6,10 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import one.tranic.mongoban.api.data.IPBanInfo;
+import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.common.Collections;
+import one.tranic.mongoban.velocity.MongoBan;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -36,14 +39,30 @@ public class BanIPCommand implements SimpleCommand {
         String reason = null;
 
         try {
-            InetAddress.getByName(ip);
+            InetAddress inip = InetAddress.getByName(ip);
+            IPBanInfo result = MongoBan.getDatabase().getBanApplication().getIPBanInfoSync(inip);
+            if (result != null) {
+                if (result.duration() > 0 && System.currentTimeMillis() > result.duration()) {
+                    MongoBan.getDatabase().getBanApplication().removePlayerBanAsync(inip);
+                } else {
+                    source.sendMessage(Component.text("The specified IP address is already banned:", NamedTextColor.YELLOW));
+                    source.sendMessage(Component.text("IP: " + result.ip(), NamedTextColor.GOLD));
+                    source.sendMessage(Component.text("Operator: " + result.operator().name(), NamedTextColor.GREEN));
+                    source.sendMessage(Component.text("Duration: " + (result.duration() > 0 ? result.duration() + " seconds" : "Permanent"), NamedTextColor.BLUE));
+                    source.sendMessage(Component.text("Reason: " + result.reason(), NamedTextColor.RED));
+                    return;
+                }
+            }
         } catch (UnknownHostException e) {
             Player player = proxy.getPlayer(ip).orElse(null);
             if (player != null) ip = player.getRemoteAddress().getAddress().getHostAddress();
             else {
-
-                source.sendMessage(Component.text("Invalid IP address provided!", NamedTextColor.RED));
-                return;
+                PlayerInfo mongoPlayer = MongoBan.getDatabase().getPlayerApplication().getPlayerSync(ip);
+                if (mongoPlayer == null) {
+                    source.sendMessage(Component.text("Invalid IP address provided!", NamedTextColor.RED));
+                    return;
+                }
+                ip = mongoPlayer.ip()[mongoPlayer.ip().length - 1].getHostAddress();
             }
         }
         long parsedTime = 0;

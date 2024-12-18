@@ -6,6 +6,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Data;
+import one.tranic.mongoban.common.cache.Cache;
 import org.bson.Document;
 
 import java.util.List;
@@ -19,12 +20,14 @@ import java.util.List;
 public class Database {
     private final String database;
     private final DatabaseService service;
+    private final Cache cache;
 
     private final String connectionString;
     private MongoClient client;
 
-    public Database(String host, int port, String database, String user, String password) {
+    public Database(String host, int port, String database, String user, String password, Cache cache) {
         this.database = database;
+        this.cache = cache;
 
         StringBuilder connectionString = new StringBuilder().append("mongodb://");
         if (user == null || user.isEmpty()) connectionString.append(host).append(":").append(port);
@@ -177,6 +180,35 @@ public class Database {
      */
     public DatabaseService getService() {
         return service;
+    }
+
+    /**
+     * Provides access to the {@link DatabasePlayerApplication} instance, which is responsible for
+     * handling player-related database operations, such as retrieving player information
+     * and managing player data persistence.
+     *
+     * @return The {@code DatabasePlayerApplication} instance used for player-related database operations.
+     */
+    public DatabasePlayerApplication getPlayerApplication() {
+        return service.getPlayerApplication();
+    }
+
+    /**
+     * Retrieves the instance of DatabaseBanApplication associated with the database.
+     *
+     * @return the DatabaseBanApplication instance used for handling ban-related operations.
+     */
+    public DatabaseBanApplication getBanApplication() {
+        return service.getBanApplication();
+    }
+
+    /**
+     * Retrieves the {@link DatabaseWarnApplication} instance associated with this Database.
+     *
+     * @return The DatabaseWarnApplication instance used for managing player warnings.
+     */
+    public DatabaseWarnApplication getWarnApplication() {
+        return service.getWarnApplication();
     }
 
     /**

@@ -10,11 +10,25 @@ package one.tranic.mongoban.common.cache;
  */
 public interface Cache {
     /**
-     * Retrieves the underlying implementation of the {@link CacheService} interface
-     * associated with this cache.
+     * Retrieves the underlying CacheService instance associated with the current Cache implementation.
+     * This method provides access to the internal caching service used for managing cache operations.
      *
-     * @return the {@link CacheService} instance that this cache utilizes to manage
-     *         its operations and storage mechanisms.
+     * @return the CacheService instance backing the current Cache implementation.
      */
     CacheService getService();
+
+    /**
+     * Closes the cache and releases any resources associated with it.
+     * <p>
+     * Implementations of this method are responsible for safely cleaning up
+     * resources or connections held by the cache.
+     * For example,
+     * <p>
+     * - In-memory cache implementations might clear or invalidate cached entries.
+     * <p>
+     * - Distributed cache implementations might close network connections or pools.
+     * <p>
+     * After calling this method, the cache instance should no longer be used.
+     */
+    void close();
 }

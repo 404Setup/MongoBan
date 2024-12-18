@@ -18,6 +18,36 @@ public class DatabasePlayerApplication {
     }
 
     /**
+     * Synchronously retrieves player information from the database based on the specified name.
+     *
+     * @param name The name of the player whose information is being retrieved.
+     * @return A {@code PlayerInfo} object containing the player's data, including name, UUID, and IP addresses.
+     * Returns {@code null} if no player matches the provided name.
+     */
+    public PlayerInfo getPlayerSync(String name) {
+        Document query = new Document("name", name);
+        Document playerDoc = database.queryOne(this.collection, query);
+        return playerDoc != null ? new PlayerInfo(
+                name,
+                playerDoc.get("id", UUID.class),
+                (InetAddress[]) playerDoc.get("ip")
+        ) : null;
+    }
+
+    /**
+     * Asynchronously retrieves player information associated with the specified name.
+     * <p>
+     * The operation is executed in a separate thread using the configured executor.
+     *
+     * @param name The name of the player whose information is to be retrieved.
+     * @return A {@link CompletableFuture} that completes with the {@link PlayerInfo}
+     * corresponding to the given name, or {@code null} if no player is found.
+     */
+    public CompletableFuture<PlayerInfo> getPlayerAsync(String name) {
+        return CompletableFuture.supplyAsync(() -> getPlayerSync(name), service.executor);
+    }
+
+    /**
      * Synchronously retrieves player information from the database based on the specified UUID.
      *
      * @param uuid The UUID of the player whose information is being retrieved.

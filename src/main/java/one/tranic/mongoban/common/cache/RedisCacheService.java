@@ -1,4 +1,4 @@
 package one.tranic.mongoban.common.cache;
 
-public class RedisCacheService {
+public class RedisCacheService implements CacheService {
 }
