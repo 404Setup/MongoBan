@@ -1,5 +1,6 @@
 package one.tranic.mongoban.common.database;
 
+import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
@@ -53,7 +54,7 @@ public class DatabaseBanApplication {
      * may complete with {@code null}.
      */
     public CompletableFuture<PlayerBanInfo> findPlayerBanAsync(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> findPlayerBanSync(uuid), service.executor);
+        return CompletableFuture.supplyAsync(() -> findPlayerBanSync(uuid), MongoBanAPI.executor);
     }
 
     /**
@@ -86,7 +87,7 @@ public class DatabaseBanApplication {
      * objects corresponding to the players associated with the given IP address.
      */
     public CompletableFuture<PlayerInfo[]> findPlayerBanAsync(InetAddress ip) {
-        return CompletableFuture.supplyAsync(() -> findPlayerBanSync(ip), service.executor);
+        return CompletableFuture.supplyAsync(() -> findPlayerBanSync(ip), MongoBanAPI.executor);
     }
 
     /**
@@ -134,7 +135,7 @@ public class DatabaseBanApplication {
      * @return A {@link CompletableFuture} that completes when the ban is successfully added.
      */
     public CompletableFuture<Void> addPlayerBanAsync(UUID uuid, Operator operator, int duration) {
-        return CompletableFuture.runAsync(() -> addPlayerBanSync(uuid, operator, duration), service.executor);
+        return CompletableFuture.runAsync(() -> addPlayerBanSync(uuid, operator, duration), MongoBanAPI.executor);
     }
 
     /**
@@ -151,7 +152,7 @@ public class DatabaseBanApplication {
      * @return A {@link CompletableFuture} that completes when the operation is successfully finished.
      */
     public CompletableFuture<Void> addPlayerBanAsync(UUID uuid, Operator operator, int duration, @Nullable InetAddress ip, @Nullable String reason) {
-        return CompletableFuture.runAsync(() -> addPlayerBanSync(uuid, operator, duration, ip, reason), service.executor);
+        return CompletableFuture.runAsync(() -> addPlayerBanSync(uuid, operator, duration, ip, reason), MongoBanAPI.executor);
     }
 
     /**
@@ -186,7 +187,7 @@ public class DatabaseBanApplication {
      * @return A {@link CompletableFuture} that completes when the operation is finished.
      */
     public CompletableFuture<Void> addPlayerBanAsync(InetAddress ip, Operator operator, int duration, @Nullable String reason) {
-        return CompletableFuture.runAsync(() -> addPlayerBanSync(ip, operator, duration, reason), service.executor);
+        return CompletableFuture.runAsync(() -> addPlayerBanSync(ip, operator, duration, reason), MongoBanAPI.executor);
     }
 
     /**
@@ -207,7 +208,7 @@ public class DatabaseBanApplication {
      * @return a CompletableFuture representing the asynchronous operation that completes when the ban is removed
      */
     public CompletableFuture<Void> removePlayerBanAsync(@NotNull UUID playerId) {
-        return CompletableFuture.runAsync(() -> removePlayerBanSync(playerId), service.executor);
+        return CompletableFuture.runAsync(() -> removePlayerBanSync(playerId), MongoBanAPI.executor);
     }
 
     /**
@@ -231,7 +232,7 @@ public class DatabaseBanApplication {
      * @return A CompletableFuture that completes when the ban is successfully removed.
      */
     public CompletableFuture<Void> removePlayerBanAsync(@NotNull InetAddress ip) {
-        return CompletableFuture.runAsync(() -> removePlayerBanSync(ip), service.executor);
+        return CompletableFuture.runAsync(() -> removePlayerBanSync(ip), MongoBanAPI.executor);
     }
 
     /**
@@ -274,7 +275,7 @@ public class DatabaseBanApplication {
      * @return A {@link CompletableFuture} that completes when the operation is finished.
      */
     public CompletableFuture<Void> addIPBanAsync(InetAddress ip, Operator operator, int duration) {
-        return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration), service.executor);
+        return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration), MongoBanAPI.executor);
     }
 
     /**
@@ -288,7 +289,7 @@ public class DatabaseBanApplication {
      * @return A {@code CompletableFuture<Void>} that completes when the IP ban is successfully added.
      */
     public CompletableFuture<Void> addIPBanAsync(InetAddress ip, Operator operator, int duration, @Nullable String reason) {
-        return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration, reason), service.executor);
+        return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration, reason), MongoBanAPI.executor);
     }
 
     /**
@@ -319,6 +320,6 @@ public class DatabaseBanApplication {
      * containing the details of the ban, including the IP address, operator, duration, and reason.
      */
     public CompletableFuture<IPBanInfo> getIPBanInfoAsync(InetAddress ip) {
-        return CompletableFuture.supplyAsync(() -> getIPBanInfoSync(ip), service.executor);
+        return CompletableFuture.supplyAsync(() -> getIPBanInfoSync(ip), MongoBanAPI.executor);
     }
 }

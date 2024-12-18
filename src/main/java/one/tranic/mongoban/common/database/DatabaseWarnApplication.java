@@ -1,5 +1,6 @@
 package one.tranic.mongoban.common.database;
 
+import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerWarnInfo;
 import one.tranic.mongoban.common.Collections;
@@ -55,7 +56,7 @@ public class DatabaseWarnApplication {
      * @return a CompletableFuture that completes when the warning has been successfully created
      */
     public CompletableFuture<Void> addPlayerWarnAsync(UUID playerId, Operator operator, int duration, String reason) {
-        return CompletableFuture.runAsync(() -> addPlayerWarnSync(playerId, operator, duration, reason), service.executor);
+        return CompletableFuture.runAsync(() -> addPlayerWarnSync(playerId, operator, duration, reason), MongoBanAPI.executor);
     }
 
     /**
@@ -91,7 +92,7 @@ public class DatabaseWarnApplication {
      * or null if no matching warning is found.
      */
     public CompletableFuture<PlayerWarnInfo> findPlayerWarnAsync(String warnId) {
-        return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(warnId), service.executor);
+        return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(warnId), MongoBanAPI.executor);
     }
 
     /**
@@ -127,7 +128,7 @@ public class DatabaseWarnApplication {
      * objects representing the warnings associated with the specified player.
      */
     public CompletableFuture<PlayerWarnInfo[]> findPlayerWarnAsync(UUID playerId) {
-        return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(playerId), service.executor);
+        return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(playerId), MongoBanAPI.executor);
     }
 
     /**
@@ -152,7 +153,7 @@ public class DatabaseWarnApplication {
      * @return a CompletableFuture<Void> that completes once the warning has been removed
      */
     public CompletableFuture<Void> removePlayerWarnAsync(String warnId) {
-        return CompletableFuture.runAsync(() -> removePlayerWarnSync(warnId), service.executor);
+        return CompletableFuture.runAsync(() -> removePlayerWarnSync(warnId), MongoBanAPI.executor);
     }
 
     /**
@@ -174,6 +175,6 @@ public class DatabaseWarnApplication {
      * @return a CompletableFuture that completes when the warnings have been successfully removed
      */
     public CompletableFuture<Void> removePlayerWarnAsync(UUID playerId) {
-        return CompletableFuture.runAsync(() -> removePlayerWarnSync(playerId), service.executor);
+        return CompletableFuture.runAsync(() -> removePlayerWarnSync(playerId), MongoBanAPI.executor);
     }
 }

@@ -4,8 +4,8 @@ import org.jetbrains.gradle.ext.taskTriggers
 plugins {
     java
     id("eclipse")
-    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.8"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
+    id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.9"
+    id("com.gradleup.shadow") version "8.3.5"
 }
 
 group = "one.tranic"
@@ -16,6 +16,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://jitpack.io")
+    maven("https://repo.opencollab.dev/main/")
 }
 
 dependencies {
@@ -23,6 +24,9 @@ dependencies {
 
     compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+
+    compileOnly("org.geysermc.geyser:api:2.4.2-SNAPSHOT")
+    compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
 
     compileOnly("com.google.guava:guava:33.3.0-jre")
     implementation("org.mongodb:mongodb-driver-sync:5.2.1")
@@ -32,7 +36,22 @@ dependencies {
 }
 
 tasks.shadowJar {
-    relocate("org.simpleyaml", "one.tranic.mongoban.libs.simpleyaml");
+    relocate("com.github.benmanes.caffeine.cache", "one.tranic.mongoban.libs.caffeine")
+    relocate("com.mongodb", "one.tranic.mongoban.libs.mongodb")
+    relocate("redis.clients.jedis", "one.tranic.mongoban.libs.jedis")
+    relocate("org.apache.commons.pool2", "one.tranic.mongoban.libs.pool2")
+    relocate("org.bson", "one.tranic.mongoban.libs.bson")
+    relocate("org.json", "one.tranic.mongoban.libs.json")
+    relocate("org.simpleyaml", "one.tranic.mongoban.libs.simpleyaml")
+
+    minimize {
+        exclude("META-INF/**")
+        exclude("com/google/gson/**")
+        exclude("com/google/errorprone/**")
+        exclude("org/jetbrains/annotations/**")
+        exclude("org/checkerframework/**")
+        exclude("org/slf4j/**")
+    }
 }
 
 val targetJavaVersion = 21

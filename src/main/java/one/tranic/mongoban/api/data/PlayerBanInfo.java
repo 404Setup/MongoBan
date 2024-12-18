@@ -23,7 +23,7 @@ import java.util.UUID;
  * @param uuid     The unique identifier (UUID) of the banned player.
  * @param operator The operator responsible for issuing the ban.
  * @param duration The duration of the ban, in an unspecified unit of time.
- * @param reason   The reason for the ban, or {@code null} if no reason is provided.
+ * @param reason   The reason for the ban.
  */
-public record PlayerBanInfo(UUID uuid, Operator operator, int duration, @Nullable String reason) {
+public record PlayerBanInfo(UUID uuid, Operator operator, int duration, String reason) {
 }

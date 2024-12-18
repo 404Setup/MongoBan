@@ -24,4 +24,7 @@ package one.tranic.mongoban.api.data;
  * @param reason   The reason for the ban, providing context or justification.
  */
 public record IPBanInfo(String ip, Operator operator, int duration, String reason) {
+    public boolean expired() {
+        return duration >= 0 && System.currentTimeMillis() >= duration;
+    }
 }

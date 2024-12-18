@@ -1,8 +1,5 @@
 package one.tranic.mongoban.common.database;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 /**
  * The DatabaseService class is responsible for managing the various database-related operations
  * for applications interacting with player data, bans, and warnings.
@@ -25,7 +22,6 @@ import java.util.concurrent.Executors;
  * performance concerns identified in some deployments.
  */
 public class DatabaseService {
-    public final Executor executor = Executors.newCachedThreadPool(Thread.ofVirtual().factory());
     private final DatabasePlayerApplication playerApplication;
     private final DatabaseBanApplication banApplication;
     private final DatabaseWarnApplication warnApplication;
@@ -34,16 +30,6 @@ public class DatabaseService {
         this.playerApplication = new DatabasePlayerApplication(database, this);
         this.banApplication = new DatabaseBanApplication(database, this);
         this.warnApplication = new DatabaseWarnApplication(database, this);
-
-        // I don't think they are needed...
-        // In one of my forks, I found through the database control panel that the indexes were not used,
-        // so I commented them out for now.
-        /* this.database.getDB().getCollection(this.collectionBan).createIndex(Indexes.ascending("id"),
-        new IndexOptions().unique(true));
-        this.database.getDB().getCollection(this.collectionBan).createIndex(Indexes.ascending("ip"),
-        new IndexOptions().unique(true));
-        this.database.getDB().getCollection(this.collectionWarn).createIndex(Indexes.ascending("id"),
-        new IndexOptions().unique(true));*/
     }
 
     /**
