@@ -1,4 +1,5 @@
 package one.tranic.mongoban.common.cache;
 
-public class CacheService {
+public interface CacheService {
+    void close();
 }

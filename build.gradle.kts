@@ -12,7 +12,7 @@ group = "one.tranic"
 version = "24.12.0"
 
 repositories {
-    mavenCentral()
+    maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://jitpack.io")
@@ -24,8 +24,15 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
 
+    compileOnly("com.google.guava:guava:33.3.0-jre")
     implementation("org.mongodb:mongodb-driver-sync:5.2.1")
+    implementation("redis.clients:jedis:5.2.0")
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4")
+}
+
+tasks.shadowJar {
+    relocate("org.simpleyaml", "one.tranic.mongoban.libs.simpleyaml");
 }
 
 val targetJavaVersion = 21

@@ -14,20 +14,55 @@ The following is a compatible version of the server:
 - Velocity: 3.3.0+
 - BungeeCord: 1.18.2+
 
-## Disclaimer
+## Usage Agreement
 
-MongoBan is a plugin designed to provide advanced banning capabilities for Minecraft server 
-software such as Spigot, BungeeCord, and Velocity. It uses MongoDB solely as a storage database 
-and has no affiliation with MongoDB or MongoDB, Inc. MongoDB® is a registered trademark of MongoDB, Inc.
+MongoBan is a plugin designed to provide advanced banning capabilities for Minecraft server software,
+including Spigot, BungeeCord, and Velocity.
 
-MongoBan is open-source and freely distributed under all circumstances, with no paid support available. 
-If you wish to support us, you can report issues on GitHub Issues, download MongoBan via Modrinth, 
-or subscribe to us on Patreon (this comes with no additional benefits).
+It utilizes MongoDB solely as a storage database and has no affiliation with MongoDB or MongoDB,
+Inc. MongoDB® is a registered trademark of MongoDB, Inc.
 
-The functionality of MongoBan is limited to assisting users in managing database-related content in lawful 
-use cases. Any data operations, management actions, or illegal uses resulting from this software are the 
-sole responsibility of the user. The developers of this software are not liable for any direct or indirect 
-damages caused by the use of MongoBan.
 
-By using this software, you agree to the above terms. If you have any questions about MongoBan or its features, 
-please contact the developers for more information.
+### License and Usage
+
+MongoBan is open-source software distributed under the Apache 2.0 License.
+It is free to use under all circumstances, and no paid support is provided.
+
+By using MongoBan, you agree to comply with the Apache 2.0 License as well as the following additional terms:
+
+**Attribution:** When redistributing MongoBan, you must give appropriate credit to the original creators. Misrepresenting yourself as the original creator is prohibited.
+
+**Monetization:** If you wish to monetize MongoBan, you must:
+
+- Fork the project and create a derivative work with unique features and functionalities.
+
+- Avoid selling unmodified or minimally modified versions of MongoBan.
+
+- Refrain from profiting off server bundles preloaded with MongoBan.
+
+- Comply fully with the Apache 2.0 License in any derivative or commercial use.
+
+### Disclaimer
+
+MongoBan is intended solely for lawful purposes, assisting users in managing database-related content.
+
+The developers are not responsible for any misuse of the software, including but not limited to illegal activities,
+unauthorized data operations, or any consequences arising from such actions.
+
+Users assume full responsibility for any risks or damages incurred through the use of MongoBan.
+
+By downloading, using, or redistributing MongoBan, you acknowledge that you have read, understood,
+and agreed to the terms outlined in this disclaimer.
+
+### Support and Contributions
+
+If you would like to support the MongoBan project, consider the following:
+
+- Reporting issues on our GitHub repository.
+
+- Downloading MongoBan via Modrinth.
+
+- Subscribing to our Patreon (subscriptions provide no additional benefits).
+
+For further questions or clarifications, please contact the developers through the official support channels.
+
