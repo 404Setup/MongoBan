@@ -7,6 +7,7 @@ import one.tranic.mongoban.api.data.PlayerWarnInfo;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Rand;
 import org.bson.Document;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -73,6 +74,35 @@ public class DatabaseService {
         new IndexOptions().unique(true));
         this.database.getDB().getCollection(this.collectionWarn).createIndex(Indexes.ascending("id"),
         new IndexOptions().unique(true));*/
+    }
+
+    /**
+     * Synchronously retrieves player information from the database based on the specified UUID.
+     *
+     * @param uuid The UUID of the player whose information is being retrieved.
+     * @return A {@code PlayerInfo} object containing the player's data, including name, UUID, and IP addresses.
+     * Returns {@code null} if no player matches the provided UUID.
+     */
+    public PlayerInfo getPlayerSync(UUID uuid) {
+        Document query = new Document("id", uuid);
+        Document playerDoc = database.queryOne(this.collectionPlayer, query);
+        return playerDoc != null ? new PlayerInfo(
+                playerDoc.getString("name"),
+                uuid,
+                (InetAddress[]) playerDoc.get("ip")
+        ) : null;
+    }
+
+    /**
+     * Asynchronously retrieves player information associated with the specified UUID.
+     * The operation is executed in a separate thread using the configured executor.
+     *
+     * @param uuid The UUID of the player whose information is to be retrieved.
+     * @return A {@link CompletableFuture} that completes with the {@link PlayerInfo}
+     * corresponding to the given UUID, or {@code null} if no player is found.
+     */
+    public CompletableFuture<PlayerInfo> getPlayerAsync(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> getPlayerSync(uuid), executor);
     }
 
     /**
@@ -204,32 +234,68 @@ public class DatabaseService {
     }
 
     /**
-     * Synchronously retrieves player information from the database based on the specified UUID.
+     * Synchronously retrieves ban information for the specified player UUID from the database.
      *
-     * @param uuid The UUID of the player whose information is being retrieved.
-     * @return A {@code PlayerInfo} object containing the player's data, including name, UUID, and IP addresses.
-     * Returns {@code null} if no player matches the provided UUID.
+     * @param uuid The UUID of the player whose ban information is to be retrieved.
+     * @return A {@code PlayerBanInfo} object containing the player's ban details, including
+     * operator, duration, and reason. Returns {@code null} if no ban information
+     * exists for the given UUID.
      */
-    public PlayerInfo getPlayerSync(UUID uuid) {
+    public PlayerBanInfo findPlayerBanSync(UUID uuid) {
         Document query = new Document("id", uuid);
-        Document playerDoc = database.queryOne(this.collectionPlayer, query);
-        return playerDoc != null ? new PlayerInfo(
-                playerDoc.getString("name"),
+        Document banDoc = database.queryOne(this.collectionBan, query);
+        return banDoc != null ? new PlayerBanInfo(
                 uuid,
-                (InetAddress[]) playerDoc.get("ip")
+                banDoc.get("operator", UUID.class),
+                banDoc.getInteger("duration"),
+                banDoc.getString("reason")
         ) : null;
     }
 
     /**
-     * Asynchronously retrieves player information associated with the specified UUID.
+     * Asynchronously retrieves ban information associated with the specified player UUID.
      * The operation is executed in a separate thread using the configured executor.
      *
-     * @param uuid The UUID of the player whose information is to be retrieved.
-     * @return A {@link CompletableFuture} that completes with the {@link PlayerInfo}
-     * corresponding to the given UUID, or {@code null} if no player is found.
+     * @param uuid The UUID of the player whose ban information is being retrieved.
+     * @return A {@link CompletableFuture} that completes with a {@link PlayerBanInfo}
+     * object containing the player's ban details. If no ban is found, the future
+     * may complete with {@code null}.
      */
-    public CompletableFuture<PlayerInfo> getPlayerAsync(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> getPlayerSync(uuid), executor);
+    public CompletableFuture<PlayerBanInfo> findPlayerBanAsync(UUID uuid) {
+        return CompletableFuture.supplyAsync(() -> findPlayerBanSync(uuid), executor);
+    }
+
+    /**
+     * Synchronously retrieves all players matching the specified IP address from the database.
+     *
+     * @param ip The IP address to search for within the player's record.
+     * @return An array of {@code PlayerInfo} objects representing the players associated with the given IP address.
+     * If no players are found, an empty array is returned.
+     */
+    public PlayerInfo[] findPlayerBanSync(InetAddress ip) {
+        Document query = new Document("ip", new Document("$elemMatch", ip));
+        List<Document> playerDocs = database.queryMany(this.collectionPlayer, query);
+        List<PlayerInfo> players = Collections.newArrayList();
+        for (Document playerDoc : playerDocs) {
+            players.add(new PlayerInfo(
+                    playerDoc.getString("name"),
+                    playerDoc.get("id", UUID.class),
+                    (InetAddress[]) playerDoc.get("ip")
+            ));
+        }
+        return players.toArray(new PlayerInfo[0]);
+    }
+
+    /**
+     * Asynchronously retrieves an array of {@link PlayerInfo} objects representing players
+     * associated with the specified IP address.
+     *
+     * @param ip The {@link InetAddress} used to look up players.
+     * @return A {@link CompletableFuture} that completes with an array of {@link PlayerInfo}
+     * objects corresponding to the players associated with the given IP address.
+     */
+    public CompletableFuture<PlayerInfo[]> findPlayerBanAsync(InetAddress ip) {
+        return CompletableFuture.supplyAsync(() -> findPlayerBanSync(ip), executor);
     }
 
     /**
@@ -293,39 +359,6 @@ public class DatabaseService {
     }
 
     /**
-     * Synchronously retrieves all players matching the specified IP address from the database.
-     *
-     * @param ip The IP address to search for within the player's record.
-     * @return An array of {@code PlayerInfo} objects representing the players associated with the given IP address.
-     * If no players are found, an empty array is returned.
-     */
-    public PlayerInfo[] findPlayersByIPSync(InetAddress ip) {
-        Document query = new Document("ip", new Document("$elemMatch", ip));
-        List<Document> playerDocs = database.queryMany(this.collectionPlayer, query);
-        List<PlayerInfo> players = Collections.newArrayList();
-        for (Document playerDoc : playerDocs) {
-            players.add(new PlayerInfo(
-                    playerDoc.getString("name"),
-                    playerDoc.get("id", UUID.class),
-                    (InetAddress[]) playerDoc.get("ip")
-            ));
-        }
-        return players.toArray(new PlayerInfo[0]);
-    }
-
-    /**
-     * Asynchronously retrieves an array of {@link PlayerInfo} objects representing players
-     * associated with the specified IP address.
-     *
-     * @param ip The {@link InetAddress} used to look up players.
-     * @return A {@link CompletableFuture} that completes with an array of {@link PlayerInfo}
-     * objects corresponding to the players associated with the given IP address.
-     */
-    public CompletableFuture<PlayerInfo[]> findPlayersByIPAsync(InetAddress ip) {
-        return CompletableFuture.supplyAsync(() -> findPlayersByIPSync(ip), executor);
-    }
-
-    /**
      * Blocks an IP address and bans all players associated with the IP synchronously.
      *
      * <p>This method finds all players linked to the provided IP address and bans them individually,
@@ -335,10 +368,9 @@ public class DatabaseService {
      * @param operator The {@link UUID} of the operator performing the ban.
      * @param duration The duration (in seconds) for which the ban should last.
      * @param reason   The reason for the ban, or {@code null} if no specific reason is provided.
-     * @throws IllegalArgumentException If the provided IP or operator is {@code null}.
      */
-    public void addIPBanWithAllSync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
-        PlayerInfo[] players = findPlayersByIPSync(ip);
+    public void addPlayerBanSync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
+        PlayerInfo[] players = findPlayerBanSync(ip);
         for (PlayerInfo player : players) {
             addPlayerBanSync(player.uuid(), operator, duration, ip, reason);
         }
@@ -362,8 +394,53 @@ public class DatabaseService {
      * @return A {@link CompletableFuture} that completes when the IP ban and all associated operations are finished.
      * @throws IllegalArgumentException If the provided IP or operator is {@code null}.
      */
-    public CompletableFuture<Void> addIPBanWithAllAsync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
-        return CompletableFuture.runAsync(() -> addIPBanWithAllSync(ip, operator, duration, reason), executor);
+    public CompletableFuture<Void> addPlayerBanAsync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
+        return CompletableFuture.runAsync(() -> addPlayerBanSync(ip, operator, duration, reason), executor);
+    }
+
+    /**
+     * Synchronously removes a player ban for the specified player UUID.
+     *
+     * @param playerId The {@link UUID} of the player to be unbanned.
+     */
+    public void removePlayerBanSync(@NotNull UUID playerId) {
+        Document query = new Document("id", playerId);
+        Document result = database.queryOne(this.collectionBan, query);
+        if (result != null) database.delete(this.collectionBan, query);
+    }
+
+    /**
+     * Asynchronously removes a ban for the specified player.
+     *
+     * @param playerId the unique identifier of the player whose ban is to be removed; must not be null
+     * @return a CompletableFuture representing the asynchronous operation that completes when the ban is removed
+     */
+    public CompletableFuture<Void> removePlayerBanAsync(@NotNull UUID playerId) {
+        return CompletableFuture.runAsync(() -> removePlayerBanSync(playerId), executor);
+    }
+
+    /**
+     * Synchronously removes the ban for the specified IP address and all players associated with it.
+     *
+     * @param ip The {@link InetAddress} to remove the ban for.
+     */
+    public void removePlayerBanSync(@NotNull InetAddress ip) {
+        PlayerInfo[] players = findPlayerBanSync(ip);
+        for (PlayerInfo player : players) removePlayerBanSync(player.uuid());
+
+        Document query = new Document("ip", ip);
+        Document result = database.queryOne(this.collectionBan, query);
+        if (result != null) database.delete(this.collectionBan, query);
+    }
+
+    /**
+     * Asynchronously removes a player's ban identified by their IP address.
+     *
+     * @param ip The IP address of the player whose ban is to be removed. Must not be null.
+     * @return A CompletableFuture that completes when the ban is successfully removed.
+     */
+    public CompletableFuture<Void> removePlayerBanAsync(@NotNull InetAddress ip) {
+        return CompletableFuture.runAsync(() -> removePlayerBanSync(ip), executor);
     }
 
     /**
@@ -422,38 +499,6 @@ public class DatabaseService {
      */
     public CompletableFuture<Void> addIPBanAsync(InetAddress ip, UUID operator, int duration, @Nullable String reason) {
         return CompletableFuture.runAsync(() -> addIPBanSync(ip, operator, duration, reason), executor);
-    }
-
-    /**
-     * Synchronously retrieves ban information for the specified player UUID from the database.
-     *
-     * @param uuid The UUID of the player whose ban information is to be retrieved.
-     * @return A {@code PlayerBanInfo} object containing the player's ban details, including
-     * operator, duration, and reason. Returns {@code null} if no ban information
-     * exists for the given UUID.
-     */
-    public PlayerBanInfo getPlayerBanSync(UUID uuid) {
-        Document query = new Document("id", uuid);
-        Document banDoc = database.queryOne(this.collectionBan, query);
-        return banDoc != null ? new PlayerBanInfo(
-                uuid,
-                banDoc.get("operator", UUID.class),
-                banDoc.getInteger("duration"),
-                banDoc.getString("reason")
-        ) : null;
-    }
-
-    /**
-     * Asynchronously retrieves ban information associated with the specified player UUID.
-     * The operation is executed in a separate thread using the configured executor.
-     *
-     * @param uuid The UUID of the player whose ban information is being retrieved.
-     * @return A {@link CompletableFuture} that completes with a {@link PlayerBanInfo}
-     * object containing the player's ban details. If no ban is found, the future
-     * may complete with {@code null}.
-     */
-    public CompletableFuture<PlayerBanInfo> getPlayerBanAsync(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> getPlayerBanSync(uuid), executor);
     }
 
     /**
