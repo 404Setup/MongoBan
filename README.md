@@ -14,6 +14,14 @@ The following is a compatible version of the server:
 - Velocity: 3.3.0+
 - BungeeCord: 1.18.2+
 
+## Development Plan
+The development plan is carried out in sequence, and the core logic is still not completed yet.
+
+1. Velocity
+2. Spigot/Paper/Folia
+3. BungeeCord
+4. Mod (Possible launch)
+
 ## Usage Agreement
 
 MongoBan is a plugin designed to provide advanced banning capabilities for Minecraft server software,

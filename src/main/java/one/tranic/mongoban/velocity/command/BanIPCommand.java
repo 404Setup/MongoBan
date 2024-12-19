@@ -58,11 +58,11 @@ public class BanIPCommand implements SimpleCommand {
             if (player != null) ip = player.getRemoteAddress().getAddress().getHostAddress();
             else {
                 PlayerInfo mongoPlayer = MongoBan.getDatabase().getPlayerApplication().getPlayerSync(ip);
-                if (mongoPlayer == null || mongoPlayer.ip().length == 0) {
+                if (mongoPlayer == null || mongoPlayer.ip().isEmpty()) {
                     source.sendMessage(Component.text("Invalid IP address provided!", NamedTextColor.RED));
                     return;
                 }
-                ip = mongoPlayer.ip()[mongoPlayer.ip().length - 1];
+                ip = mongoPlayer.ip().getLast();
             }
         }
         long parsedTime = 0;

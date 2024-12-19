@@ -72,7 +72,7 @@ public class DatabaseBanApplication {
             players.add(new PlayerInfo(
                     playerDoc.getString("name"),
                     playerDoc.get("id", UUID.class),
-                    (String[]) playerDoc.get("ip")
+                    playerDoc.getList("ip", String.class)
             ));
         }
         return players.toArray(new PlayerInfo[0]);

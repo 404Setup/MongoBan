@@ -5,7 +5,9 @@ import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.common.Collections;
 import org.bson.Document;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,14 +48,15 @@ public class DatabasePlayerApplication {
         if (playerDoc == null) {
             updateDoc = new Document()
                     .append("name", name)
-                    .append("ip", new String[]{ip});
+                    .append("ip", Collections.newArrayList(ip));
         } else {
-            List<String> ips = Collections.newArrayList((String[]) playerDoc.get("ip"));
+            List<String> ips = playerDoc.getList("ip", String.class);
             if (ips.size() >= 6) ips.removeFirst();
+            if (!ips.isEmpty() && !Objects.equals(ips.getLast(), ip)) ips.remove(ip);
             ips.add(ip);
             updateDoc = new Document()
                     .append("name", name)
-                    .append("ip", ips.toArray(new String[0]));
+                    .append("ip", ips);
         }
         database.update(this.collection, query, updateDoc);
     }
@@ -85,7 +88,7 @@ public class DatabasePlayerApplication {
         return playerDoc != null ? new PlayerInfo(
                 name,
                 playerDoc.get("id", UUID.class),
-                (String[]) playerDoc.get("ip")
+                playerDoc.getList("ip", String.class)
         ) : null;
     }
 
@@ -115,7 +118,7 @@ public class DatabasePlayerApplication {
         return playerDoc != null ? new PlayerInfo(
                 playerDoc.getString("name"),
                 uuid,
-                (String[]) playerDoc.get("ip")
+                playerDoc.getList("ip", String.class)
         ) : null;
     }
 
