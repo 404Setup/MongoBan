@@ -8,7 +8,6 @@ import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
-import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.velocity.MongoBan;
 
 import java.net.InetAddress;
@@ -25,11 +24,8 @@ public class PlayerListener {
             if (result.expired()) {
                 MongoBan.getDatabase().getBanApplication().removePlayerBanAsync(ip);
             } else {
-                MongoBan.getDatabase().getBanApplication().findPlayerBanAsync(player.getUniqueId())
-                        .thenAcceptAsync(playerBanInfo -> {
-                            if (playerBanInfo == null)
-                                MongoBan.getDatabase().getBanApplication().addPlayerBanAsync(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip, result.reason());
-                        }, MongoBanAPI.executor);
+                // A "permissive mode" option is needed
+                MongoBan.getDatabase().getBanApplication().addPlayerBanAsync(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip, result.reason());
                 event.setResult(ResultedEvent.ComponentResult.denied(Component.text(result.reason())));
                 return;
             }
@@ -45,12 +41,6 @@ public class PlayerListener {
     }
 
     private void updatePlayerInfoAsync(Player player, InetAddress ip) {
-        MongoBan.getDatabase().getPlayerApplication().getPlayerAsync(player.getUniqueId()).thenAcceptAsync(playerInfo -> {
-            if (playerInfo != null) {
-                if (!playerInfo.ip().contains(ip.getHostAddress()))
-                    MongoBan.getDatabase().getPlayerApplication().addPlayerSync(playerInfo.name(), playerInfo.uuid(), ip.getHostAddress());
-            } else
-                MongoBan.getDatabase().getPlayerApplication().addPlayerSync(player.getUsername(), player.getUniqueId(), ip.getHostAddress());
-        }, MongoBanAPI.executor);
+        MongoBan.getDatabase().getPlayerApplication().addPlayerAsync(player.getUsername(), player.getUniqueId(), ip.getHostAddress());
     }
 }

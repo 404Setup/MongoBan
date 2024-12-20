@@ -52,7 +52,7 @@ public class DatabasePlayerApplication {
         } else {
             List<String> ips = playerDoc.getList("ip", String.class);
             if (ips.size() >= 6) ips.removeFirst();
-            if (!ips.isEmpty() && !Objects.equals(ips.getLast(), ip)) ips.remove(ip);
+            if (!ips.isEmpty()) ips.remove(ip);
             ips.add(ip);
             updateDoc = new Document()
                     .append("name", name)
