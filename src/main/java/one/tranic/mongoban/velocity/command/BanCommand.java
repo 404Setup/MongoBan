@@ -36,7 +36,7 @@ public class BanCommand implements SimpleCommand {
             if (MongoBanAPI.isBedrockPlayer(player.getUniqueId())) {
                 @NonNull CustomForm form = CustomForm.builder()
                         .title("MongoBan Console - Ban")
-                        .dropdown("Player", one.tranic.mongoban.velocity.utils.Parse.getPlayers())
+                        .dropdown("Player", Parse.players())
                         .input("Duration")
                         .dropdown("Duration unit", MongoBanAPI.TIME_SUGGEST)
                         .input("Reason")
@@ -90,7 +90,7 @@ public class BanCommand implements SimpleCommand {
     public List<String> suggest(Invocation invocation) {
         String[] args = invocation.arguments();
         if (args.length == 1) {
-            return one.tranic.mongoban.velocity.utils.Parse.getPlayers();
+            return Parse.players();
         } else if (args.length == 2) return MongoBanAPI.TIME_SUGGEST;
         else if (args.length == 3)
             return MongoBanAPI.REASON_SUGGEST;

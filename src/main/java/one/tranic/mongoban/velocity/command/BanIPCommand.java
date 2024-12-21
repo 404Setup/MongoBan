@@ -88,7 +88,7 @@ public class BanIPCommand implements SimpleCommand {
     public List<String> suggest(Invocation invocation) {
         String[] args = invocation.arguments();
         if (args.length == 1) {
-            return one.tranic.mongoban.velocity.utils.Parse.getPlayers();
+            return Parse.players();
         } else if (args.length == 2) return MongoBanAPI.TIME_SUGGEST;
         else if (args.length == 3)
             return MongoBanAPI.REASON_SUGGEST;

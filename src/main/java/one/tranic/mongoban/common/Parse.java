@@ -2,6 +2,8 @@ package one.tranic.mongoban.common;
 
 import one.tranic.mongoban.api.exception.ParseException;
 
+import java.util.List;
+
 public class Parse {
     /**
      * Parses the provided time argument string and calculates a future time in milliseconds
@@ -55,5 +57,27 @@ public class Parse {
             }
         }
         return parsedTime;
+    }
+
+    /**
+     * Retrieves a list of names of players currently online.
+     *
+     * @return a list of player names based on the detected platform.
+     *         For Spigot, Paper, Folia, or ShreddedPaper, the names are retrieved from Bukkit.
+     *         For Velocity, the names are retrieved from the Velocity proxy.
+     */
+    public static List<String> players() {
+        List<String> matchingPlayers = Collections.newArrayList();
+        switch (Platform.get()) {
+            case Spigot, Paper, Folia, ShreddedPaper -> {
+                for (org.bukkit.entity.Player player : org.bukkit.Bukkit.getOnlinePlayers())
+                    matchingPlayers.add(player.getName());
+            }
+            case Velocity -> {
+                for (com.velocitypowered.api.proxy.Player player : one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers())
+                    matchingPlayers.add(player.getUsername());
+            }
+        }
+        return matchingPlayers;
     }
 }

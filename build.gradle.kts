@@ -15,6 +15,7 @@ repositories {
     maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/groups/public/")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://jitpack.io")
     maven("https://repo.opencollab.dev/main/")
 }

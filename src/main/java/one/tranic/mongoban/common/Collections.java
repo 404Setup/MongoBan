@@ -317,6 +317,18 @@ public class Collections {
     }
 
     /**
+     * Creates a new list containing the elements from the specified collection.
+     *
+     * @param elements the collection whose elements are to be placed into the new list, must not be null
+     * @return a new list containing the elements from the specified collection
+     */
+    public static <T> List<T> newArrayList(@NotNull Collection<? extends T> elements) {
+        return fastutil
+                ? new it.unimi.dsi.fastutil.objects.ObjectArrayList<>(elements)
+                : new ArrayList<>(elements);
+    }
+
+    /**
      * Iterates over each entry in the provided map and applies the given consumer action to each entry.
      * If the map is an instance of a fastutil Object2ObjectOpenHashMap, it uses optimized iteration,
      * otherwise defaults to standard map entry iteration.
