@@ -10,7 +10,7 @@ import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.common.Platform;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C> {
+public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl<C> {
     private String name;
     private String description;
     private String usage;

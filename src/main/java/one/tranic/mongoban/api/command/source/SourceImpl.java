@@ -1,19 +1,19 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
+import one.tranic.mongoban.api.command.player.MongoPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.UUID;
 
 /**
- * Represents a generic source implementation that defines common behaviors
- * and attributes for sources such as players or other entities.
+ * Represents a source implementation that abstracts interactions with various platforms.
  *
- * @param <C> the type of the extending source implementation
+ * @param <C> the underlying type representing the source (e.g., CommandSender)
+ * @param <R> the player-specific type related to the platform (e.g., Player)
  */
-public interface SourceImpl<C> {
+public interface SourceImpl<C, R> {
     /**
      * Retrieves the source entity that this implementation represents.
      *
@@ -27,43 +27,6 @@ public interface SourceImpl<C> {
      * @return true if the source is a player, otherwise false
      */
     boolean isPlayer();
-
-    /**
-     * Kicks this source from the system or server without providing a specific reason.
-     * <p>
-     * The behavior and implementation depend on the type of the source (e.g., player or entity).
-     */
-    boolean kick();
-
-    /**
-     * Kicks the source from the server with the specified reason.
-     *
-     * @param reason the reason for the kick
-     */
-    boolean kick(String reason);
-
-    /**
-     * Kicks the source with a specified reason.
-     *
-     * @param reason the reason for kicking the source; must not be null
-     */
-    boolean kick(@NotNull Component reason);
-
-    /**
-     * Retrieves the name associated with the source.
-     *
-     * @return the name of the source as a String
-     */
-    String getName();
-
-    /**
-     * Retrieves the unique identifier associated with this source.
-     * <p>
-     * If the source is not a player, this method may return null.
-     *
-     * @return a UUID representing the unique identifier of this source, or null if unavailable
-     */
-    @Nullable UUID getUniqueId();
 
     /**
      * Retrieves the arguments associated with the source. The arguments are typically
@@ -85,6 +48,14 @@ public interface SourceImpl<C> {
     @Nullable Locale locale();
 
     /**
+     * Checks if the entity associated with this source has the specified permission.
+     *
+     * @param permission the permission node to check for
+     * @return true if the entity has the specified permission, otherwise false
+     */
+    boolean hasPermission(String permission);
+
+    /**
      * Sends a message to the source.
      *
      * @param message the message to be sent
@@ -97,4 +68,13 @@ public interface SourceImpl<C> {
      * @param message the message to be sent; must not be null
      */
     void sendMessage(@NotNull Component message);
+
+    /**
+     * Attempts to retrieve the source as a {@link MongoPlayer}.
+     * If the source does not represent a player, this method will return {@code null}.
+     *
+     * @return a {@code MongoPlayer<R>} instance if the source is a player, or
+     *         {@code null} if the source is not a player.
+     */
+    @Nullable MongoPlayer<R> asPlayer();
 }

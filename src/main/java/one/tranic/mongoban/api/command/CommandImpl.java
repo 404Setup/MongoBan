@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @param <C> the type of the source implementing {@link SourceImpl}, representing the context in which the command is executed
  */
-public interface CommandImpl<C extends SourceImpl<?>> {
+public interface CommandImpl<C extends SourceImpl<?, ?>> {
     /**
      * Executes the command for the provided source.
      *

@@ -1,13 +1,13 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
+import one.tranic.mongoban.api.command.player.PaperPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * Implementation of the SourceImpl interface for the Bukkit/Spigot Paper platform.
@@ -18,7 +18,7 @@ import java.util.UUID;
  * It defines methods to handle actions such as sending messages or kicking
  * players and retrieves information about the source.
  */
-public class PaperSource implements SourceImpl<CommandSender> {
+public class PaperSource implements SourceImpl<CommandSender, Player> {
     private final CommandSender commandSender;
     private final String[] args;
     private final boolean isPlayer;
@@ -40,38 +40,6 @@ public class PaperSource implements SourceImpl<CommandSender> {
     }
 
     @Override
-    public boolean kick() {
-        if (!isPlayer) return false;
-        ((Player) commandSender).kick();
-        return true;
-    }
-
-    @Override
-    public boolean kick(String reason) {
-        if (!isPlayer) return false;
-        ((Player) commandSender).kick(Component.text(reason));
-        return true;
-    }
-
-    @Override
-    public boolean kick(@NotNull Component reason) {
-        if (!isPlayer) return false;
-        ((Player) commandSender).kick(reason);
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return commandSender.getName();
-    }
-
-    @Override
-    public @Nullable UUID getUniqueId() {
-        return isPlayer ? ((Player) commandSender).getUniqueId()
-                : null;
-    }
-
-    @Override
     public String[] getArgs() {
         return args;
     }
@@ -82,6 +50,11 @@ public class PaperSource implements SourceImpl<CommandSender> {
     }
 
     @Override
+    public boolean hasPermission(String permission) {
+        return commandSender.hasPermission(permission);
+    }
+
+    @Override
     public void sendMessage(String message) {
         commandSender.sendMessage(message);
     }
@@ -89,5 +62,11 @@ public class PaperSource implements SourceImpl<CommandSender> {
     @Override
     public void sendMessage(@NotNull Component message) {
         commandSender.sendMessage(message);
+    }
+
+    @Override
+    public @Nullable PaperPlayer asPlayer() {
+        if (!isPlayer) return null;
+        return new PaperPlayer(commandSender);
     }
 }

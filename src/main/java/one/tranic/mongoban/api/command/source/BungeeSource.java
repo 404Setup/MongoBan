@@ -4,12 +4,12 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import one.tranic.mongoban.api.command.MessageSender;
+import one.tranic.mongoban.api.command.player.BungeePlayer;
+import one.tranic.mongoban.api.command.player.MongoPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * This class represents a source implementation for BungeeCord command senders.
@@ -19,7 +19,7 @@ import java.util.UUID;
  * Developing plugins on modern platforms like Paper and Velocity is easier and provides better support and features.
  */
 @Deprecated
-public class BungeeSource implements SourceImpl<CommandSender> {
+public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
     private final CommandSender commandSender;
     private final String[] args;
     private final boolean isPlayer;
@@ -49,38 +49,6 @@ public class BungeeSource implements SourceImpl<CommandSender> {
     }
 
     @Override
-    public boolean kick() {
-        if (!isPlayer) return false;
-        ((ProxiedPlayer) commandSender).disconnect();
-        return true;
-    }
-
-    @Override
-    public boolean kick(String reason) {
-        if (!isPlayer) return false;
-        ((ProxiedPlayer) commandSender).disconnect(reason);
-        return true;
-    }
-
-    @Override
-    public boolean kick(@NotNull Component reason) {
-        if (!isPlayer) return false;
-        ((ProxiedPlayer) commandSender).disconnect(LegacyComponentSerializer.legacySection().serialize(reason));
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return commandSender.getName();
-    }
-
-    @Override
-    public @Nullable UUID getUniqueId() {
-        return isPlayer ? ((ProxiedPlayer) commandSender).getUniqueId()
-                : null;
-    }
-
-    @Override
     public String[] getArgs() {
         return args;
     }
@@ -91,12 +59,23 @@ public class BungeeSource implements SourceImpl<CommandSender> {
     }
 
     @Override
+    public boolean hasPermission(String permission) {
+        return commandSender.hasPermission(permission);
+    }
+
+    @Override
     public void sendMessage(String message) {
         commandSender.sendMessage(message);
     }
 
     @Override
     public void sendMessage(@NotNull Component message) {
-        MessageSender.bungeeAdventure().sender(commandSender).sendMessage(message);
+        commandSender.sendMessage(LegacyComponentSerializer.legacySection().serialize(message));
+    }
+
+    @Override
+    public BungeePlayer asPlayer() {
+        if (!isPlayer) return null;
+        return new BungeePlayer(commandSender);
     }
 }

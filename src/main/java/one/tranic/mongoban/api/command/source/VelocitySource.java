@@ -4,11 +4,11 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
+import one.tranic.mongoban.api.command.player.VelocityPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * Implementation of the SourceImpl interface for the VelocityProxy platform.
@@ -16,7 +16,7 @@ import java.util.UUID;
  * This class serves as a representation of a command source in VelocityProxy,
  * which may be a player or the console.
  */
-public class VelocitySource implements SourceImpl<CommandSource> {
+public class VelocitySource implements SourceImpl<CommandSource, Player> {
     private final SimpleCommand.Invocation invocation;
     private final CommandSource commandSource;
     private final boolean isPlayer;
@@ -38,38 +38,6 @@ public class VelocitySource implements SourceImpl<CommandSource> {
     }
 
     @Override
-    public boolean kick() {
-        if (!isPlayer) return false;
-        ((Player) commandSource).disconnect(Component.text("<kick by server>"));
-        return true;
-    }
-
-    @Override
-    public boolean kick(String reason) {
-        if (!isPlayer) return false;
-        ((Player) commandSource).disconnect(Component.text(reason));
-        return true;
-    }
-
-    @Override
-    public boolean kick(@NotNull Component reason) {
-        if (!isPlayer) return false;
-        ((Player) commandSource).disconnect(reason);
-        return true;
-    }
-
-    @Override
-    public String getName() {
-        return isPlayer ? ((Player) commandSource).getUsername() : "Console";
-    }
-
-    @Override
-    public @Nullable UUID getUniqueId() {
-        return isPlayer ? ((Player) commandSource).getUniqueId()
-                : null;
-    }
-
-    @Override
     public String[] getArgs() {
         return invocation.arguments();
     }
@@ -81,6 +49,11 @@ public class VelocitySource implements SourceImpl<CommandSource> {
     }
 
     @Override
+    public boolean hasPermission(String permission) {
+        return commandSource.hasPermission(permission);
+    }
+
+    @Override
     public void sendMessage(String message) {
         commandSource.sendMessage(Component.text(message));
     }
@@ -88,5 +61,11 @@ public class VelocitySource implements SourceImpl<CommandSource> {
     @Override
     public void sendMessage(@NotNull Component message) {
         commandSource.sendMessage(message);
+    }
+
+    @Override
+    public @Nullable VelocityPlayer asPlayer() {
+        if (!isPlayer) return null;
+        return new VelocityPlayer(commandSource);
     }
 }
