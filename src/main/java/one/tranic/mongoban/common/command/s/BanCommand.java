@@ -1,13 +1,13 @@
 package one.tranic.mongoban.common.command.s;
 
-import one.tranic.mongoban.common.command.CommandImpl;
 import one.tranic.mongoban.common.source.SourceImpl;
 
 import java.util.List;
 
 public class BanCommand<C extends SourceImpl<?>> extends Command<C> {
-    public BanCommand(C source) {
-        super(source);
+    public BanCommand() {
+        this.setName("ban");
+        this.setPermission("mongoban.ban");
     }
 
     @Override

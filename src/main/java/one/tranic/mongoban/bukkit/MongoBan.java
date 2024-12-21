@@ -1,5 +1,7 @@
 package one.tranic.mongoban.bukkit;
 
+import one.tranic.mongoban.common.command.s.BanCommand;
+import one.tranic.mongoban.common.source.s.PaperSource;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
@@ -24,6 +26,10 @@ public class MongoBan extends JavaPlugin {
             unregisterCommand("warn");
             unregisterCommand("unwarn");
 
+            commandMap.register("ban", "mongoban",
+                    new BanCommand<PaperSource>().unwrapBukkit()
+            );
+
             //commandMap.register("mongoban", "mongoban", new GPiglinCommand(this));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -37,5 +43,6 @@ public class MongoBan extends JavaPlugin {
     }
 
     @Override
-    public void onDisable() {}
+    public void onDisable() {
+    }
 }

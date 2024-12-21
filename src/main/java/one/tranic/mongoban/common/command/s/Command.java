@@ -1,18 +1,19 @@
 package one.tranic.mongoban.common.command.s;
 
+import one.tranic.mongoban.common.Platform;
 import one.tranic.mongoban.common.command.CommandImpl;
+import one.tranic.mongoban.common.command.wrap.BukkitWrap;
+import one.tranic.mongoban.common.command.wrap.VelocityWrap;
 import one.tranic.mongoban.common.source.SourceImpl;
+import one.tranic.mongoban.common.source.s.PaperSource;
+import one.tranic.mongoban.common.source.s.VelocitySource;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C> {
-    private final C source;
     private String name;
     private String description;
     private String usage;
     private String permission;
-
-    public Command(C source) {
-        this.source = source;
-    }
 
     public String getName() {
         return name;
@@ -46,7 +47,39 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
         this.permission = permission;
     }
 
-    public C getSource() {
-        return source;
+    /**
+     * Unwraps this command into a Bukkit-compatible {@link org.bukkit.command.Command} implementation
+     * if the current platform is compatible with Bukkit-based servers.
+     * <p>
+     * This method checks if the current platform is one of the Bukkit-compatible platforms
+     * (e.g., Paper, Folia, ShreddedPaper).
+     * <p>
+     * If the platform matches, it wraps the command and returns a new {@link BukkitWrap} instance.
+     * <p>
+     * If the platform is not compatible, this method returns null.
+     *
+     * @return a {@link org.bukkit.command.Command} instance representing this command
+     * for Bukkit-based platforms, or null if the platform is not compatible.
+     */
+    public @Nullable org.bukkit.command.Command unwrapBukkit() {
+        if (Platform.get() == Platform.Paper ||
+                Platform.get() == Platform.Folia ||
+                Platform.get() == Platform.ShreddedPaper) return new BukkitWrap((Command<PaperSource>) this);
+        return null;
+    }
+
+    /**
+     * Attempts to unwrap the current command into a Velocity-specific command.
+     * <p>
+     * This method is intended for use on the Velocity platform, where it converts
+     * the generic command instance into a Velocity-compatible command object.
+     *
+     * @return a Velocity-specific {@link com.velocitypowered.api.command.Command} instance
+     *         if the current platform is Velocity; otherwise, returns {@code null}.
+     */
+    public @Nullable com.velocitypowered.api.command.Command unwrapVelocity() {
+        if (Platform.get() == Platform.Velocity)
+            return new VelocityWrap((Command<VelocitySource>) this);
+        return null;
     }
 }
