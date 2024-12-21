@@ -8,7 +8,7 @@ import java.util.List;
 public class BanCommand<C extends SourceImpl<?>> extends Command<C> {
     public BanCommand() {
         this.setName("ban");
-        this.setPermission("mongoban.ban");
+        this.setPermission("mongoban.command.ban");
     }
 
     @Override

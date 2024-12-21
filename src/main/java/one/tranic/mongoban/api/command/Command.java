@@ -1,11 +1,11 @@
 package one.tranic.mongoban.api.command;
 
+import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.api.command.source.SourceImpl;
+import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.api.command.wrap.BukkitWrap;
 import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.common.Platform;
-import one.tranic.mongoban.api.command.source.PaperSource;
-import one.tranic.mongoban.api.command.source.VelocitySource;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C> {
@@ -18,8 +18,20 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
         return name;
     }
 
+    /**
+     * Sets the name of the command, prefixing it with platform-specific identifiers
+     * based on the current platform (e.g., "b" for BungeeCord, "v" for Velocity).
+     *
+     * @param name the base name to set for this command
+     */
     public void setName(String name) {
-        this.name = name;
+        if (Platform.get() == Platform.BungeeCord) {
+            this.name = "b" + name;
+        } else if (Platform.get() == Platform.Velocity) {
+            this.name = "v" + name;
+        } else {
+            this.name = name;
+        }
     }
 
     public String getDescription() {
@@ -42,8 +54,23 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
         return permission;
     }
 
+    /**
+     * Sets the permission for the command with platform-specific modifications.
+     * <p>
+     * If the current platform is BungeeCord or Velocity, the permission string
+     * is modified by appending a platform-specific suffix; otherwise, the
+     * permission is set as is.
+     *
+     * @param permission the base permission string to set for this command
+     */
     public void setPermission(String permission) {
-        this.permission = permission;
+        if (Platform.get() == Platform.BungeeCord) {
+            this.permission = permission.replaceFirst("\\.([^.]+)$", ".b$1");
+        } else if (Platform.get() == Platform.Velocity) {
+            this.permission = permission.replaceFirst("\\.([^.]+)$", ".v$1");
+        } else {
+            this.permission = permission;
+        }
     }
 
     /**
