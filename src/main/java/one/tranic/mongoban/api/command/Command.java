@@ -1,8 +1,10 @@
 package one.tranic.mongoban.api.command;
 
+import one.tranic.mongoban.api.command.source.BungeeSource;
 import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.command.source.VelocitySource;
+import one.tranic.mongoban.api.command.wrap.BungeeWrap;
 import one.tranic.mongoban.api.command.wrap.PaperWrap;
 import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.common.Platform;
@@ -91,6 +93,27 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
         if (Platform.get() == Platform.Paper ||
                 Platform.get() == Platform.Folia ||
                 Platform.get() == Platform.ShreddedPaper) return new PaperWrap((Command<PaperSource>) this);
+        return null;
+    }
+
+    /**
+     * Unwraps this command into a BungeeCord-specific {@link net.md_5.bungee.api.plugin.Command} instance
+     * if the current platform is detected as BungeeCord.
+     * <p>
+     * This method checks the runtime platform using {@link Platform#get()}.
+     * If the platform is BungeeCord, it creates a new {@link BungeeWrap} instance for this command.
+     * Otherwise, it returns {@code null}.
+     *
+     * @return a BungeeCord-compatible {@link net.md_5.bungee.api.plugin.Command} instance if the
+     * current platform is BungeeCord, or {@code null} if the platform is not BungeeCord.
+     * @deprecated BungeeCord is considered outdated. It is recommended to use more modern proxies such as Velocity.
+     * <p>
+     * Developing plugins on modern platforms like Paper and Velocity is easier
+     * and provides better support and features.
+     */
+    @Deprecated
+    public @Nullable net.md_5.bungee.api.plugin.Command unwrapBungee() {
+        if (Platform.get() == Platform.BungeeCord) return new BungeeWrap((Command<BungeeSource>) this);
         return null;
     }
 

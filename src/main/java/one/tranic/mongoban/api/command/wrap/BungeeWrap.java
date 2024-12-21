@@ -29,9 +29,16 @@ import one.tranic.mongoban.api.command.source.BungeeSource;
  * <p>
  * Developing plugins on modern platforms like Paper and Velocity is easier and provides better support and features.
  */
+@Deprecated
 public class BungeeWrap extends net.md_5.bungee.api.plugin.Command implements TabExecutor {
     private final Command<BungeeSource> command;
 
+    /**
+     * @deprecated BungeeCord is considered outdated. It is recommended to use more modern proxies such as Velocity.
+     * <p>
+     * Developing plugins on modern platforms like Paper and Velocity is easier and provides better support and features.
+     */
+    @Deprecated
     public BungeeWrap(Command<BungeeSource> command) {
         super(command.getName(), command.getPermission());
         this.command = command;
