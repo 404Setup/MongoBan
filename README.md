@@ -1,35 +1,39 @@
 # MongoBan
-MongoBan is still under development. It is an experimental project, 
+
+MongoBan is still under development. It is an experimental project,
 and you will not be able to use it until the first version is released.
 
 ## Install
+
 MongoBan needs the following dependencies:
+
 - MongoDB 8
 - Redis (Optional)
-- A Minecraft server (Spigot, Paper, Folia, BungeeCord, Velocity)
+- A Minecraft server (Paper, Purpur, Folia, BungeeCord, Velocity)
 - Java 21
 
 The following is a compatible version of the server:
-- Spigot, Paper, Folia: 1.18.2+
+
+- Paper, Purpur, Folia: 1.18.2+
 - Velocity: 3.3.0+
 - BungeeCord: 1.18.2+
 
 ## Development Plan
+
 The development plan is carried out in sequence, and the core logic is still not completed yet.
 
 1. Velocity
-2. Spigot/Paper/Folia
+2. Paper/Purpur/Folia
 3. BungeeCord
 4. Mod (Possible launch)
 
 ## Usage Agreement
 
 MongoBan is a plugin designed to provide advanced banning capabilities for Minecraft server software,
-including Spigot, BungeeCord, and Velocity.
+including Paper, BungeeCord, and Velocity.
 
 It utilizes MongoDB solely as a storage database and has no affiliation with MongoDB or MongoDB,
 Inc. MongoDB® is a registered trademark of MongoDB, Inc.
-
 
 ### License and Usage
 
@@ -38,7 +42,8 @@ It is free to use under all circumstances, and no paid support is provided.
 
 By using MongoBan, you agree to comply with the Apache 2.0 License as well as the following additional terms:
 
-**Attribution:** When redistributing MongoBan, you must give appropriate credit to the original creators. Misrepresenting yourself as the original creator is prohibited.
+**Attribution:** When redistributing MongoBan, you must give appropriate credit to the original creators.
+Misrepresenting yourself as the original creator is prohibited.
 
 **Monetization:** If you wish to monetize MongoBan, you must:
 

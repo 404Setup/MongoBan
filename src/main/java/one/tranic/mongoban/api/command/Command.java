@@ -3,7 +3,7 @@ package one.tranic.mongoban.api.command;
 import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.command.source.VelocitySource;
-import one.tranic.mongoban.api.command.wrap.BukkitWrap;
+import one.tranic.mongoban.api.command.wrap.PaperWrap;
 import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.common.Platform;
 import org.jetbrains.annotations.Nullable;
@@ -80,7 +80,7 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
      * This method checks if the current platform is one of the Bukkit-compatible platforms
      * (e.g., Paper, Folia, ShreddedPaper).
      * <p>
-     * If the platform matches, it wraps the command and returns a new {@link BukkitWrap} instance.
+     * If the platform matches, it wraps the command and returns a new {@link PaperWrap} instance.
      * <p>
      * If the platform is not compatible, this method returns null.
      *
@@ -90,7 +90,7 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
     public @Nullable org.bukkit.command.Command unwrapBukkit() {
         if (Platform.get() == Platform.Paper ||
                 Platform.get() == Platform.Folia ||
-                Platform.get() == Platform.ShreddedPaper) return new BukkitWrap((Command<PaperSource>) this);
+                Platform.get() == Platform.ShreddedPaper) return new PaperWrap((Command<PaperSource>) this);
         return null;
     }
 
