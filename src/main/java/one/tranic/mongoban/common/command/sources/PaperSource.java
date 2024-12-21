@@ -1,7 +1,7 @@
-package one.tranic.mongoban.common.source.s;
+package one.tranic.mongoban.common.command.sources;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.common.source.SourceImpl;
+import one.tranic.mongoban.api.command.source.SourceImpl;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

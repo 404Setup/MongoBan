@@ -1,8 +1,8 @@
 package one.tranic.mongoban.common.command.wrap;
 
 import com.velocitypowered.api.command.SimpleCommand;
-import one.tranic.mongoban.common.command.s.Command;
-import one.tranic.mongoban.common.source.s.VelocitySource;
+import one.tranic.mongoban.api.command.s.Command;
+import one.tranic.mongoban.common.command.sources.VelocitySource;
 
 import java.util.List;
 

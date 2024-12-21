@@ -1,14 +1,14 @@
 package one.tranic.mongoban.common.command.wrap;
 
-import one.tranic.mongoban.common.source.s.PaperSource;
+import one.tranic.mongoban.common.command.sources.PaperSource;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 public class BukkitWrap extends Command {
-    private final one.tranic.mongoban.common.command.s.Command<PaperSource> command;
+    private final one.tranic.mongoban.api.command.s.Command<PaperSource> command;
 
-    public BukkitWrap(one.tranic.mongoban.common.command.s.Command<PaperSource> command) {
+    public BukkitWrap(one.tranic.mongoban.api.command.s.Command<PaperSource> command) {
         super(command.getName());
         if (command.getPermission() != null) setPermission(command.getPermission());
         if (command.getDescription() != null) setDescription(command.getDescription());

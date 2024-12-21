@@ -1,12 +1,12 @@
-package one.tranic.mongoban.common.command.s;
+package one.tranic.mongoban.api.command.s;
 
 import one.tranic.mongoban.common.Platform;
-import one.tranic.mongoban.common.command.CommandImpl;
+import one.tranic.mongoban.api.command.CommandImpl;
 import one.tranic.mongoban.common.command.wrap.BukkitWrap;
 import one.tranic.mongoban.common.command.wrap.VelocityWrap;
-import one.tranic.mongoban.common.source.SourceImpl;
-import one.tranic.mongoban.common.source.s.PaperSource;
-import one.tranic.mongoban.common.source.s.VelocitySource;
+import one.tranic.mongoban.api.command.source.SourceImpl;
+import one.tranic.mongoban.common.command.sources.PaperSource;
+import one.tranic.mongoban.common.command.sources.VelocitySource;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C> {

@@ -1,4 +1,4 @@
-package one.tranic.mongoban.common.source;
+package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
