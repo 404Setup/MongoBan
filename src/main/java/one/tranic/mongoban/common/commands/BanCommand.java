@@ -1,6 +1,6 @@
-package one.tranic.mongoban.common.command.s;
+package one.tranic.mongoban.common.commands;
 
-import one.tranic.mongoban.api.command.s.Command;
+import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 
 import java.util.List;

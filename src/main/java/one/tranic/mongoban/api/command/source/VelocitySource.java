@@ -1,10 +1,9 @@
-package one.tranic.mongoban.common.command.sources;
+package one.tranic.mongoban.api.command.source;
 
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.command.source.SourceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

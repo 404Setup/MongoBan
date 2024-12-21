@@ -1,7 +1,7 @@
 package one.tranic.mongoban.bukkit;
 
-import one.tranic.mongoban.common.command.s.BanCommand;
-import one.tranic.mongoban.common.command.sources.PaperSource;
+import one.tranic.mongoban.common.commands.BanCommand;
+import one.tranic.mongoban.api.command.source.PaperSource;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
