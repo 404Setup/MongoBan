@@ -1,10 +1,10 @@
 package one.tranic.mongoban.api.command.s;
 
-import one.tranic.mongoban.common.Platform;
 import one.tranic.mongoban.api.command.CommandImpl;
-import one.tranic.mongoban.common.command.wrap.BukkitWrap;
-import one.tranic.mongoban.common.command.wrap.VelocityWrap;
 import one.tranic.mongoban.api.command.source.SourceImpl;
+import one.tranic.mongoban.api.command.wrap.BukkitWrap;
+import one.tranic.mongoban.api.command.wrap.VelocityWrap;
+import one.tranic.mongoban.common.Platform;
 import one.tranic.mongoban.common.command.sources.PaperSource;
 import one.tranic.mongoban.common.command.sources.VelocitySource;
 import org.jetbrains.annotations.Nullable;
@@ -75,7 +75,7 @@ public abstract class Command<C extends SourceImpl<?>> implements CommandImpl<C>
      * the generic command instance into a Velocity-compatible command object.
      *
      * @return a Velocity-specific {@link com.velocitypowered.api.command.Command} instance
-     *         if the current platform is Velocity; otherwise, returns {@code null}.
+     * if the current platform is Velocity; otherwise, returns {@code null}.
      */
     public @Nullable com.velocitypowered.api.command.Command unwrapVelocity() {
         if (Platform.get() == Platform.Velocity)
