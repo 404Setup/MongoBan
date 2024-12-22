@@ -90,10 +90,33 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
      * for Bukkit-based platforms, or null if the platform is not compatible.
      */
     public @Nullable org.bukkit.command.Command unwrapBukkit() {
-        if (Platform.get() == Platform.Paper ||
-                Platform.get() == Platform.Folia ||
-                Platform.get() == Platform.ShreddedPaper) return new PaperWrap((Command<PaperSource>) this);
+        if (Platform.isBukkit()) return new PaperWrap((Command<PaperSource>) this);
         return null;
+    }
+
+    /**
+     * Registers this command with a Bukkit-compatible {@link org.bukkit.command.SimpleCommandMap}.
+     * <p>
+     * This method checks if the current platform is one of the Bukkit-compatible platforms
+     * (e.g., Paper, Folia, ShreddedPaper).
+     * <p>
+     * If the platform matches,
+     * the command is registered using the provided {@code simpleCommandMap} and the specified {@code prefix}.
+     * <p>
+     * If the platform is not compatible, the method does not register the command and returns false.
+     *
+     * @param simpleCommandMap the {@link org.bukkit.command.SimpleCommandMap} where the command should be registered
+     * @param prefix           a string prefix to use for the registration
+     * @return {@code true} if the command is successfully registered on a supported platform;
+     * <p>
+     * {@code false} if the platform is not compatible or registration fails
+     */
+    public boolean registerWithBukkit(org.bukkit.command.SimpleCommandMap simpleCommandMap, String prefix) {
+        if (Platform.isBukkit()) {
+            simpleCommandMap.register(getName(), prefix, unwrapBukkit());
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -118,6 +141,28 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
     }
 
     /**
+     * Registers this command with the BungeeCord plugin's command manager.
+     * <p>
+     * This method checks if the current platform is BungeeCord.
+     * If true, it registers the command using BungeeCord's {@link net.md_5.bungee.api.plugin.PluginManager}.
+     * Otherwise, no action is taken, and the method returns {@code false}.
+     *
+     * @param bungeePlugin an instance of the BungeeCord plugin used to register the command
+     * @return {@code true} if the command is registered successfully on BungeeCord;
+     * <p>
+     * {@code false} if the platform is not BungeeCord or registration fails
+     * @deprecated BungeeCord is considered outdated, and using newer platforms is recommended.
+     */
+    @Deprecated
+    public boolean registerWithBungee(net.md_5.bungee.api.plugin.Plugin bungeePlugin) {
+        if (Platform.get() == Platform.BungeeCord) {
+            bungeePlugin.getProxy().getPluginManager().registerCommand(bungeePlugin, unwrapBungee());
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Attempts to unwrap the current command into a Velocity-specific command.
      * <p>
      * This method is intended for use on the Velocity platform, where it converts
@@ -130,5 +175,31 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
         if (Platform.get() == Platform.Velocity)
             return new VelocityWrap((Command<VelocitySource>) this);
         return null;
+    }
+
+    /**
+     * Registers this command with the Velocity platform.
+     * <p>
+     * This method ensures the current platform is Velocity before proceeding
+     * with command registration using the provided Velocity plugin and ProxyServer.
+     *
+     * @param velocityPlugin the plugin instance used for command registration
+     * @param proxy          the {@link com.velocitypowered.api.proxy.ProxyServer} instance representing the Velocity server
+     * @return {@code true} if the command is successfully registered on the Velocity platform;
+     * <p>
+     * {@code false} if the current platform is not Velocity or registration fails
+     */
+    public boolean registerWithVelocity(Object velocityPlugin, com.velocitypowered.api.proxy.ProxyServer proxy) {
+        if (Platform.get() != Platform.Velocity) return false;
+
+        com.velocitypowered.api.command.CommandManager commandManager = proxy.getCommandManager();
+        com.velocitypowered.api.command.CommandMeta commandMeta = commandManager.metaBuilder(getName())
+                .plugin(velocityPlugin)
+                .build();
+
+        @Nullable com.velocitypowered.api.command.Command cmd = unwrapVelocity();
+
+        commandManager.register(commandMeta, cmd);
+        return true;
     }
 }

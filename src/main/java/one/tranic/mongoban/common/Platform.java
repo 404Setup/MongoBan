@@ -145,6 +145,17 @@ public enum Platform {
     }
 
     /**
+     * Determines whether the current platform is a Bukkit-based platform.
+     *
+     * @return true if the platform is one of Paper, Folia, or ShreddedPaper; false otherwise
+     */
+    public static boolean isBukkit() {
+        return get() == Paper ||
+                get() == Folia ||
+                get() == ShreddedPaper;
+    }
+
+    /**
      * Returns the lowercase string representation of the platform.
      *
      * @return the platform name in lowercase (e.g., "velocity", "spigot").

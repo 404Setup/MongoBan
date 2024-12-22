@@ -63,7 +63,7 @@ public class MongoBanAPI {
      */
     public final static Executor executor = new ThreadPoolExecutor(0, 12,
             60L, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(),
+            new SynchronousQueue<>(),
             Thread.ofVirtual().factory());
 
     private static boolean geyser = false;

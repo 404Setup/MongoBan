@@ -19,6 +19,7 @@ public class MongoBan extends JavaPlugin {
             commandMapField.setAccessible(true);
             commandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
 
+            // I don't know what to do here, so for now.
             unregisterCommand("ban");
             unregisterCommand("unban");
             unregisterCommand("ban-ip");
@@ -26,11 +27,7 @@ public class MongoBan extends JavaPlugin {
             unregisterCommand("warn");
             unregisterCommand("unwarn");
 
-            commandMap.register("ban", "mongoban",
-                    new BanCommand<PaperSource>().unwrapBukkit()
-            );
-
-            //commandMap.register("mongoban", "mongoban", new GPiglinCommand(this));
+            new BanCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

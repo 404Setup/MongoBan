@@ -11,7 +11,7 @@ public class MongoBan extends Plugin {
     public void onEnable() {
         Config.loadConfig(getDataFolder().toPath());
 
-        ProxyServer.getInstance().getPluginManager().registerCommand(this, new BanCommand<>().unwrapBungee());
+        new BanCommand<>().registerWithBungee(this);
     }
 
     @Override

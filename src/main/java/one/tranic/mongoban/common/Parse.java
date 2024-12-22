@@ -60,24 +60,24 @@ public class Parse {
     }
 
     /**
-     * Retrieves a list of names of players currently online.
+     * Retrieves a list of player names from the currently active platform.
+     * <p>
+     * The method detects the specific platform (Bukkit, Velocity, or BungeeCord)
+     * and collects the names of online players accordingly.
      *
-     * @return a list of player names based on the detected platform.
-     *         For Spigot, Paper, Folia, or ShreddedPaper, the names are retrieved from Bukkit.
-     *         For Velocity, the names are retrieved from the Velocity proxy.
+     * @return a list of player names currently online in the detected platform.
+     *         Returns an empty list if no players are online or if the platform is unsupported.
      */
     public static List<String> players() {
         List<String> matchingPlayers = Collections.newArrayList();
-        switch (Platform.get()) {
-            case Spigot, Paper, Folia, ShreddedPaper -> {
-                for (org.bukkit.entity.Player player : org.bukkit.Bukkit.getOnlinePlayers())
-                    matchingPlayers.add(player.getName());
-            }
-            case Velocity -> {
-                for (com.velocitypowered.api.proxy.Player player : one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers())
-                    matchingPlayers.add(player.getUsername());
-            }
-        }
+        if (Platform.isBukkit()) for (org.bukkit.entity.Player player : org.bukkit.Bukkit.getOnlinePlayers())
+            matchingPlayers.add(player.getName());
+        else if (Platform.get() == Platform.Velocity)
+            for (com.velocitypowered.api.proxy.Player player : one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers())
+                matchingPlayers.add(player.getUsername());
+        else
+            for (net.md_5.bungee.api.connection.ProxiedPlayer player : net.md_5.bungee.api.ProxyServer.getInstance().getPlayers())
+                matchingPlayers.add(player.getName());
         return matchingPlayers;
     }
 }

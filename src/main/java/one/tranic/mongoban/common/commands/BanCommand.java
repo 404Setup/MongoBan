@@ -23,7 +23,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
     @Override
     public void execute(C source) {
-        MongoPlayer player = source.asPlayer();
+        MongoPlayer<?> player = source.asPlayer();
 
         if (player != null) {
             if (!hasPermission(source)) {
