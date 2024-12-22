@@ -1,5 +1,6 @@
 package one.tranic.mongoban.common;
 
+import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.exception.ParseException;
 
 import java.util.List;

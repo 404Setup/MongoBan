@@ -1,6 +1,6 @@
 package one.tranic.mongoban.api.command.player;
 
-import one.tranic.mongoban.common.Platform;
+import one.tranic.mongoban.api.Platform;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;

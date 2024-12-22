@@ -1,4 +1,4 @@
-package one.tranic.mongoban.common;
+package one.tranic.mongoban.api;
 
 import org.jetbrains.annotations.NotNull;
 
