@@ -1,5 +1,9 @@
 package one.tranic.mongoban.api.command;
 
+import one.tranic.mongoban.common.Collections;
+
+import java.util.List;
+
 /**
  * Represents command flags that can be used to identify and handle
  * specific options in a command-line parsing context.
@@ -35,6 +39,28 @@ public enum CommandFlag {
             }
         }
         return null;
+    }
+
+    /**
+     * Retrieves an unmodifiable list of the full names of all command flags.
+     *
+     * @return a list containing the full names of all command flags in the order they are defined
+     */
+    public static List<String> getFullNames() {
+        List<String> list = Collections.newArrayList();
+        for (CommandFlag f : values()) list.add(f.fullName);
+        return Collections.newUnmodifiableList(list);
+    }
+
+    /**
+     * Retrieves a list of all the short names associated with the available command flags.
+     *
+     * @return an unmodifiable list of short names for all defined command flags
+     */
+    public static List<String> getShortNames() {
+        List<String> list = Collections.newArrayList();
+        for (CommandFlag f : values()) list.add(f.shortName);
+        return Collections.newUnmodifiableList(list);
     }
 
     /**

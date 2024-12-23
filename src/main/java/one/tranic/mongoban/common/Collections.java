@@ -178,6 +178,7 @@ public class Collections {
 
     /**
      * Creates a new {@link Map} instance with keys of type {@code K} and boolean values.
+     * <p>
      * Allows specifying the initial capacity for the map to optimize performance.
      * <p>
      * If the `fastutil` flag is enabled, it uses a `Object2BooleanOpenHashMap` from the fastutil library;
@@ -215,6 +216,7 @@ public class Collections {
 
     /**
      * Creates a new HashMap instance and populates it with the entries from the provided map.
+     * <p>
      * Depending on the configuration, it will use either a standard HashMap or a
      * fastutil-specific Object2ObjectOpenHashMap implementation.
      *
@@ -227,6 +229,7 @@ public class Collections {
 
     /**
      * Creates a new empty HashSet instance.
+     * <p>
      * Depending on the configuration, this method returns either an instance
      * of {@code it.unimi.dsi.fastutil.objects.ObjectOpenHashSet} if the fastutil
      * optimization is enabled, or a standard {@code java.util.HashSet} otherwise.
@@ -236,6 +239,43 @@ public class Collections {
      */
     public static <T> Set<T> newHashSet() {
         return fastutil ? new it.unimi.dsi.fastutil.objects.ObjectOpenHashSet<>() : new HashSet<>();
+    }
+
+    /**
+     * Creates a new unmodifiable empty set.
+     * The implementation of the set may vary depending on the internal configuration.
+     *
+     * @param <T> the type of elements that the set can hold
+     * @return a new unmodifiable empty set
+     */
+    public static <T> Set<T> newUnmodifiableHashSet() {
+        return fastutil ? it.unimi.dsi.fastutil.objects.ObjectSet.of() : java.util.Collections.unmodifiableSet(new HashSet<>());
+    }
+
+    /**
+     * Creates a new unmodifiable hash set containing the elements of the provided set.
+     *
+     * @param set the input set whose elements will be included in the new unmodifiable set; must not be null
+     * @return an unmodifiable set containing the elements of the input set
+     */
+    public static <T> Set<T> newUnmodifiableHashSet(@NotNull Set<T> set) {
+        return fastutil ? it.unimi.dsi.fastutil.objects.ObjectSet.of((T[]) set.toArray()) : java.util.Collections.unmodifiableSet(set);
+    }
+
+    /**
+     * Creates a new unmodifiable {@link Set} that contains the specified elements.
+     *
+     * @param elements the elements to be included in the set; cannot be null.
+     * @return an unmodifiable set containing the specified elements.
+     */
+    @SafeVarargs
+    public static <T> Set<T> newUnmodifiableHashSet(@NotNull @Flow(sourceIsContainer = true, targetIsContainer = true) T... elements) {
+        if (fastutil) {
+            return it.unimi.dsi.fastutil.objects.ObjectSet.of(elements);
+        }
+        List<T> list = new ArrayList<>(elements.length);
+        java.util.Collections.addAll(list, elements);
+        return Set.copyOf(list);
     }
 
     /**
@@ -282,6 +322,26 @@ public class Collections {
      */
     public static <T> List<T> newArrayList() {
         return fastutil ? new it.unimi.dsi.fastutil.objects.ObjectArrayList<>() : new ArrayList<>();
+    }
+
+    public static <T> List<T> newUnmodifiableList() {
+        return fastutil ? it.unimi.dsi.fastutil.objects.ObjectList.of() : java.util.Collections.unmodifiableList(new ArrayList<>());
+    }
+
+    public static <T> List<T> newUnmodifiableList(@NotNull List<T> list) {
+        return fastutil
+                ? it.unimi.dsi.fastutil.objects.ObjectList.of((T[]) list.toArray())
+                : java.util.Collections.unmodifiableList(list);
+    }
+
+    @SafeVarargs
+    public static <T> List<T> newUnmodifiableList(@NotNull T... elements) {
+        if (fastutil) {
+            return it.unimi.dsi.fastutil.objects.ObjectList.of(elements);
+        }
+        List<T> list = new ArrayList<>(elements.length);
+        java.util.Collections.addAll(list, elements);
+        return java.util.Collections.unmodifiableList(list);
     }
 
     /**

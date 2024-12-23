@@ -1,5 +1,6 @@
 package one.tranic.mongoban.api;
 
+import one.tranic.mongoban.api.command.CommandFlag;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.common.Collections;
 import org.geysermc.cumulus.form.Form;
@@ -12,29 +13,55 @@ import java.util.concurrent.*;
 
 public class MongoBanAPI {
     /**
-     * An immutable, empty list of strings.
+     * An immutable and unmodifiable list that is intended to represent an empty list of strings.
      * <p>
-     * This constant provides an empty list that can be returned or used in situations
-     * where no elements are required. It is initialized with no elements and does not
-     * allow modification, making it safe for shared or unmodifiable usage contexts.
+     * This constant provides a shared immutable list with no elements
+     * to avoid unnecessary object creation when an empty list is required.
      */
-    public final static List<String> EMPTY_LIST = Collections.newArrayList();
+    public final static List<String> EMPTY_LIST = Collections.newUnmodifiableList();
+
     /**
-     * A list containing suggested reasons for specific actions such as bans or reports.
+     * A list of the full names of all available command flags.
      * <p>
-     * Predefined reasons include "Griefing", "Cheating", "Spamming", "Abusing",
-     * and a placeholder "<reason>" for custom input.
+     * This list is populated by calling the {@code CommandFlag.getFullNames()} method,
+     * which retrieves an unmodifiable list containing the full name representation
+     * of each defined {@code CommandFlag} in the order they are declared.
      */
-    public final static List<String> REASON_SUGGEST = Collections.newArrayList("Griefing", "Cheating", "Spamming", "Abusing", "OtherReason");
+    public final static List<String> COMMAND_FLAGS_LIST = CommandFlag.getFullNames();
+
     /**
-     * A predefined immutable list of time duration suggestions for use in various contexts.
+     * A predefined unmodifiable list of suggested reasons for reporting or moderating a player in the system.
      * <p>
-     * This list includes common time units such as seconds, minutes, hours, days, months,
-     * and years, as well as a placeholder for customization ("<reason>").
+     * These reasons include typical violations such as "Griefing", "Cheating", "Spamming", "Abusing",
+     * and a generic "OtherReason" for cases not covered by specific reasons.
      * <p>
-     * Entries in the list are represented as strings.
+     * This list is utilized to standardize the reasons provided in moderation-related actions
+     * and ensures consistency throughout the system when identifying and addressing issues.
      */
-    public final static List<String> TIME_SUGGEST = Collections.newArrayList("10s", "1m", "1h", "1d", "1mo", "1y", "forever");
+    public final static List<String> REASON_SUGGEST = Collections.newUnmodifiableList("Griefing", "Cheating", "Spamming", "Abusing", "OtherReason");
+    /**
+     * A predefined, unmodifiable list of suggested time durations for banning or restricting users.
+     * <p>
+     * The list includes commonly used time intervals represented as strings:
+     * <p>
+     * - "10s" for 10 seconds
+     * <p>
+     * - "1m" for 1 minute
+     * <p>
+     * - "1h" for 1 hour
+     * <p>
+     * - "1d" for 1 day
+     * <p>
+     * - "1mo" for 1 month
+     * <p>
+     * - "1y" for 1 year
+     * <p>
+     * - "forever" for indefinite restriction
+     * <p>
+     * This list is immutable and intended to provide consistent options across different components
+     * of the application where time-based inputs are required.
+     */
+    public final static List<String> TIME_SUGGEST = Collections.newUnmodifiableList("10s", "1m", "1h", "1d", "1mo", "1y", "forever");
 
     /**
      * Represents a predefined system operator designed for administrative tasks within the application.

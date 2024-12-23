@@ -8,6 +8,7 @@ import java.util.Map;
 /**
  * The Parse class is responsible for parsing an array of command-line arguments
  * and mapping their corresponding values to predefine flags.
+ * <p>
  * It supports both long-form (e.g., --flag) and short-form (e.g., -f) syntax for flags.
  * <p>
  * Flags and their corresponding possible forms are defined within the {@code CommandFlag} enum.
@@ -18,6 +19,7 @@ public class Parse {
     /**
      * Parses an array of command-line arguments and associates each recognized flag
      * with its corresponding value in a map.
+     * <p>
      * The method supports both long-form (e.g., --flag) and short-form (e.g., -f) flag syntax.
      *
      * @param args an array of strings representing the command-line arguments to parse;
@@ -49,6 +51,7 @@ public class Parse {
      * Retrieves the value associated with the specified command-line flag.
      *
      * @param flag the {@code CommandFlag} whose value is to be retrieved.
+     *             <p>
      *             This can represent a command-line flag in both long-form (e.g., "--flag")
      *             and short-form (e.g., "-f") notation.
      * @return the value corresponding to the specified flag, or {@code null} if the flag
