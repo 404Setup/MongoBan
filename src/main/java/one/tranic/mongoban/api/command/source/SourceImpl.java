@@ -1,7 +1,7 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.command.player.MongoPlayer;
+import one.tranic.mongoban.api.player.MongoPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

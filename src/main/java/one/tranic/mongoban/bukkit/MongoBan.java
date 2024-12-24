@@ -10,10 +10,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Field;
 
 public class MongoBan extends JavaPlugin {
+    private static MongoBan instance;
+
     private SimpleCommandMap commandMap;
+
+    public static MongoBan getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
+        instance = this;
+
         try {
             Field commandMapField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");
             commandMapField.setAccessible(true);

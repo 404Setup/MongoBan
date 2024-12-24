@@ -1,4 +1,4 @@
-package one.tranic.mongoban.api.command.player;
+package one.tranic.mongoban.api.player;
 
 import one.tranic.mongoban.api.Platform;
 import org.jetbrains.annotations.Nullable;

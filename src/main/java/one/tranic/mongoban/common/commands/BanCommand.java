@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.command.Command;
-import one.tranic.mongoban.api.command.player.MongoPlayer;
+import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.exception.ParseException;
 import one.tranic.mongoban.common.Parse;
@@ -36,7 +36,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                 @NonNull CustomForm form = CustomForm.builder()
                         .title("MongoBan Console - Ban")
                         .dropdown("Player", Parse.players())
-                        .input("Duration")
+                        .slider("Duration", 1, 3650)
                         .dropdown("Duration unit", MongoBanAPI.TIME_SUGGEST)
                         .input("Reason")
                         .toggle("Ban IP")
@@ -61,7 +61,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
         String timeArg = args.length > 1 ? args[1] : null;
         String reason = null;
 
-        Player target = one.tranic.mongoban.api.command.player.Player.getPlayer(playerName);
+        Player target = one.tranic.mongoban.api.player.Player.getPlayer(playerName);
         if (target != null) {
             long parsedTime = 0;
             try {

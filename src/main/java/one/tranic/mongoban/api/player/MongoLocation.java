@@ -1,4 +1,4 @@
-package one.tranic.mongoban.api.command.player;
+package one.tranic.mongoban.api.player;
 
 /**
  * Represents a location in a specific world with precise x, y, and z coordinates.
@@ -14,5 +14,5 @@ package one.tranic.mongoban.api.command.player;
  * <p>
  * This record is immutable and serves as a lightweight data container.
  */
-public record MongoLocation(String world, double x, double y, double z) {
+public record MongoLocation(String world, double x, double y, double z, float yaw, float pitch) {
 }

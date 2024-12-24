@@ -1,7 +1,7 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.command.player.PaperPlayer;
+import one.tranic.mongoban.api.player.PaperPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;

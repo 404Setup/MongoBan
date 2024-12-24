@@ -1,27 +1,25 @@
-package one.tranic.mongoban.api.command.player;
+package one.tranic.mongoban.api.player;
 
+import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.data.PlayerInfo;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.geysermc.cumulus.form.Form;
+import one.tranic.mongoban.velocity.MongoBan;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.UUID;
 
-public class PaperPlayer implements MongoPlayer<Player> {
+public class VelocityPlayer implements MongoPlayer<Player> {
     private final Player player;
 
-    public PaperPlayer(Player player) {
-        this.player = player;
+    public VelocityPlayer(CommandSource commandSource) {
+        this.player = (Player) commandSource;
     }
 
-    public PaperPlayer(CommandSender commandSender) {
-        this.player = (Player) commandSender;
+    public VelocityPlayer(Player player) {
+        this.player = player;
     }
 
     @Override
@@ -31,25 +29,22 @@ public class PaperPlayer implements MongoPlayer<Player> {
 
     @Override
     public String getConnectHost() {
-        @Nullable InetSocketAddress addr = player.getAddress();
-        if (addr == null) return null;
-        return addr.getAddress().getHostAddress();
+        return player.getRemoteAddress().getAddress().getHostAddress();
     }
 
     @Override
     public PlayerInfo getPlayerInfo() {
-        return null;
+        return MongoBan.getDatabase().getPlayerApplication().getPlayerSync(getUniqueId());
     }
 
     @Override
     public Locale getLocale() {
-        return player.locale();
+        return player.getEffectiveLocale();
     }
 
     @Override
     public @Nullable MongoLocation getLocation() {
-        @NotNull Location l = player.getLocation();
-        return new MongoLocation(l.getWorld().getName(), l.getX(), l.getY(), l.getZ());
+        return null;
     }
 
     @Override
@@ -59,12 +54,12 @@ public class PaperPlayer implements MongoPlayer<Player> {
 
     @Override
     public boolean isOnline() {
-        return player.isOnline();
+        return player.isActive();
     }
 
     @Override
     public @Nullable String getClientBrand() {
-        return player.getClientBrandName();
+        return player.getClientBrand();
     }
 
     @Override
@@ -74,25 +69,25 @@ public class PaperPlayer implements MongoPlayer<Player> {
 
     @Override
     public boolean kick() {
-        player.kick();
+        player.disconnect(Component.text("<kick by server>"));
         return true;
     }
 
     @Override
     public boolean kick(String reason) {
-        player.kick(Component.text(reason));
+        player.disconnect(Component.text(reason));
         return true;
     }
 
     @Override
     public boolean kick(@NotNull Component reason) {
-        player.kick(reason);
+        player.disconnect(reason);
         return true;
     }
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(message);
+        player.sendMessage(Component.text(message));
     }
 
     @Override

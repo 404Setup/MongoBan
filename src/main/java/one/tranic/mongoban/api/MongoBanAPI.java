@@ -126,6 +126,16 @@ public class MongoBanAPI {
         return false;
     }
 
+    /**
+     * Sends a form to a player identified by their UUID.
+     * This method leverages either the Floodgate or Geyser API, depending on their availability, to deliver the form.
+     * <p>
+     * If neither API is available, the method will return false.
+     *
+     * @param uuid the unique identifier of the player to whom the form should be sent
+     * @param form the form object to be sent to the player
+     * @return true if the form was successfully sent using Floodgate or Geyser; false otherwise
+     */
     public static boolean sendForm(UUID uuid, Form form) {
         if (floodgate)
             return FloodgateApi.getInstance().sendForm(uuid, form);

@@ -1,4 +1,4 @@
-package one.tranic.mongoban.api.command.player;
+package one.tranic.mongoban.api.player;
 
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;

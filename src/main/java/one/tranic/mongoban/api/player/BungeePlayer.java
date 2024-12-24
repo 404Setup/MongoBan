@@ -1,26 +1,26 @@
-package one.tranic.mongoban.api.command.player;
+package one.tranic.mongoban.api.player;
 
-import com.velocitypowered.api.command.CommandSource;
-import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import one.tranic.mongoban.api.data.PlayerInfo;
-import one.tranic.mongoban.velocity.MongoBan;
-import org.geysermc.cumulus.form.Form;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.UUID;
 
-public class VelocityPlayer implements MongoPlayer<Player> {
-    private final Player player;
+@Deprecated
+public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
+    private final ProxiedPlayer player;
 
-    public VelocityPlayer(CommandSource commandSource) {
-        this.player = (Player) commandSource;
+    public BungeePlayer(ProxiedPlayer player) {
+        this.player = player;
     }
 
-    public VelocityPlayer(Player player) {
-        this.player = player;
+    public BungeePlayer(CommandSender commandSender) {
+        this.player = (ProxiedPlayer) commandSender;
     }
 
     @Override
@@ -30,17 +30,17 @@ public class VelocityPlayer implements MongoPlayer<Player> {
 
     @Override
     public String getConnectHost() {
-        return player.getRemoteAddress().getAddress().getHostAddress();
+        return player.getAddress().getAddress().getHostAddress();
     }
 
     @Override
     public PlayerInfo getPlayerInfo() {
-        return MongoBan.getDatabase().getPlayerApplication().getPlayerSync(getUniqueId());
+        return null;
     }
 
     @Override
     public Locale getLocale() {
-        return player.getEffectiveLocale();
+        return player.getLocale();
     }
 
     @Override
@@ -55,44 +55,44 @@ public class VelocityPlayer implements MongoPlayer<Player> {
 
     @Override
     public boolean isOnline() {
-        return player.isActive();
+        return player.isConnected();
     }
 
     @Override
     public @Nullable String getClientBrand() {
-        return player.getClientBrand();
+        return null;
     }
 
     @Override
-    public Player getSourcePlayer() {
+    public ProxiedPlayer getSourcePlayer() {
         return player;
     }
 
     @Override
     public boolean kick() {
-        player.disconnect(Component.text("<kick by server>"));
+        player.disconnect();
         return true;
     }
 
     @Override
     public boolean kick(String reason) {
-        player.disconnect(Component.text(reason));
-        return true;
-    }
-
-    @Override
-    public boolean kick(@NotNull Component reason) {
         player.disconnect(reason);
         return true;
     }
 
     @Override
+    public boolean kick(@NotNull Component reason) {
+        player.disconnect(LegacyComponentSerializer.legacySection().serialize(reason));
+        return true;
+    }
+
+    @Override
     public void sendMessage(String message) {
-        player.sendMessage(Component.text(message));
+        player.sendMessage(message);
     }
 
     @Override
     public void sendMessage(@NotNull Component message) {
-        player.sendMessage(message);
+        player.sendMessage(LegacyComponentSerializer.legacySection().serialize(message));
     }
 }
