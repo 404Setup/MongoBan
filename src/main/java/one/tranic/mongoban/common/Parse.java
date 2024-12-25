@@ -4,61 +4,71 @@ import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.exception.ParseException;
 import org.jetbrains.annotations.Range;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class Parse {
     /**
-     * Parses the provided time argument string and calculates a future time in milliseconds
-     * by adding the specified time duration to the current system time.
+     * Parses a time argument string, interprets its value based on the
+     * specified time unit (e.g., seconds, minutes, hours, days, months, years),
+     * and converts it to a timestamp in milliseconds from the epoch.
      * <p>
-     * The time argument must end with a valid unit suffix: "s" (seconds), "m" (minutes), "h" (hours),
-     * "d" (days), "mo" (months), or "y" (years).
-     * <p>
-     * If the format is invalid or the input cannot be parsed, a {@code ParseException} is thrown.
+     * Special cases like "forever" return a default value of 0.
      *
-     * @param arg the time argument string ending with a time unit suffix (e.g., "10s", "5m").
-     *            <p>
-     *            Supported units are:
-     *            <p>
-     *            - "s" for seconds
-     *            <p>
-     *            - "m" for minutes
-     *            <p>
-     *            - "h" for hours
-     *            <p>
-     *            - "d" for days
-     *            <p>
-     *            - "mo" for months
-     *            <p>
-     *            - "y" for years
-     * @return the calculated future time in milliseconds based on the provided time argument
-     * @throws ParseException if the input string is null, improperly formatted, or contains
-     *                        an invalid numeric value
+     * @param arg the time argument string to parse; must not be null, empty, or consist only of whitespace
+     * @return the parsed timestamp in milliseconds since the epoch
+     * @throws ParseException if the argument cannot be resolved due to invalid format, unsupported time unit,
+     *                        or if the numeric value cannot be parsed
      */
     public static long timeArg(String arg) throws ParseException {
+        if (arg == null || arg.isBlank())
+            throw new ParseException("Time argument cannot be null, empty, or only whitespace.");
+
         long parsedTime = 0;
-        if (arg != null) {
-            try {
-                if (arg.endsWith("s")) {
-                    parsedTime = System.currentTimeMillis() + Long.parseLong(arg.replace("s", "")) * 1000;
-                } else if (arg.endsWith("m")) {
-                    parsedTime = System.currentTimeMillis() + Long.parseLong(arg.replace("m", "")) * 60000;
-                } else if (arg.endsWith("h")) {
-                    parsedTime = System.currentTimeMillis() + Long.parseLong(arg.replace("h", "")) * 3600000;
-                } else if (arg.endsWith("d")) {
-                    parsedTime = System.currentTimeMillis() + Long.parseLong(arg.replace("d", "")) * 86400000;
-                } else if (arg.endsWith("mo")) {
-                    parsedTime = System.currentTimeMillis() + Long.parseLong(arg.replace("mo", "")) * 2592000000L;
-                } else if (arg.endsWith("y")) {
-                    parsedTime = System.currentTimeMillis() + Long.parseLong(arg.replace("y", "")) * 31536000000L;
-                } else {
-                    throw new ParseException();
-                }
-            } catch (NumberFormatException e) {
-                throw new ParseException();
-            }
+        if (arg.equals("forever")) return parsedTime;
+
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime future;
+            if (arg.endsWith("s")) future = now.plusSeconds(parseTimeValue("s", arg));
+            else if (arg.endsWith("m"))
+                future = now.plusMinutes(parseTimeValue("m", arg));
+            else if (arg.endsWith("h"))
+                future = now.plusHours(parseTimeValue("h", arg));
+            else if (arg.endsWith("d"))
+                future = now.plusDays(parseTimeValue("d", arg));
+            else if (arg.endsWith("mo"))
+                future = now.plusMonths(parseTimeValue("mo", arg));
+            else if (arg.endsWith("y"))
+                future = now.plusYears(parseTimeValue("y", arg));
+            else
+                throw new ParseException("Invalid time format or unsupported time unit: " + arg);
+            return future.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        } catch (NumberFormatException e) {
+            throw new ParseException("Invalid numeric value in argument: '" + arg + "' - " + e.getMessage());
         }
-        return parsedTime;
+    }
+
+    /**
+     * Parses a time value string with a specified unit tag and converts it into a numeric value.
+     * The method ensures that the provided string ends with the given tag and that the numeric portion
+     * of the string is non-negative.
+     *
+     * @param tag the unit tag that the time value must end with (e.g., "s" for seconds, "m" for minutes)
+     * @param arg the time value string to parse; must end with the specified tag
+     * @return the numeric value of the time, extracted from the string
+     * @throws ParseException if the provided string does not end with the specified tag,
+     *                        if the numeric value cannot be parsed, or if the value is negative
+     */
+    private static long parseTimeValue(String tag, String arg) throws ParseException {
+        if (!arg.endsWith(tag)) {
+            throw new ParseException("Time unit '" + tag + "' not found at the end of argument: " + arg);
+        }
+        String numberPart = arg.substring(0, arg.length() - tag.length());
+        long t = Long.parseLong(numberPart);
+        if (t < 0) throw new ParseException("Time value cannot be negative: " + arg);
+        return t;
     }
 
     /**
