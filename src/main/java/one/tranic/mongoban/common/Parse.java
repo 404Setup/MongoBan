@@ -1,32 +1,43 @@
 package one.tranic.mongoban.common;
 
 import one.tranic.mongoban.api.Platform;
+import one.tranic.mongoban.api.exception.ForeverNonException;
 import one.tranic.mongoban.api.exception.ParseException;
 import org.jetbrains.annotations.Range;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class Parse {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     /**
-     * Parses a time argument string, interprets its value based on the
-     * specified time unit (e.g., seconds, minutes, hours, days, months, years),
-     * and converts it to a timestamp in milliseconds from the epoch.
+     * Parses a time argument string and returns the formatted future time or a special value such as "forever".
      * <p>
-     * Special cases like "forever" return a default value of 0.
+     * The input string must specify a time duration and unit (e.g., "10s" for 10 seconds, "2d" for 2 days, etc.),
+     * or the literal "forever".
+     * <p>
+     * Invalid input formats or unsupported time units will result in a {@link ParseException}.
+     * <p>
+     * Example usage:
+     * <pre>
+     *     String result1 = Parse.timeArg("10s"); // Returns a formatted future time 10 seconds from now
+     *     String result2 = Parse.timeArg("forever"); // Returns "forever"
+     *     String result3 = Parse.timeArg("2d"); // Returns a formatted future time 2 days from now
+     * </pre>
      *
-     * @param arg the time argument string to parse; must not be null, empty, or consist only of whitespace
-     * @return the parsed timestamp in milliseconds since the epoch
-     * @throws ParseException if the argument cannot be resolved due to invalid format, unsupported time unit,
-     *                        or if the numeric value cannot be parsed
+     * @param arg the time argument as a string; can be literal "forever" or a duration string with a valid unit
+     * @return a formatted string representing the calculated future time, or the literal "forever" for the special case
+     * @throws ParseException if the argument is null, empty, contains invalid characters, has an unsupported unit,
+     *                        or if the numeric portion of the duration is invalid
      */
-    public static long timeArg(String arg) throws ParseException {
+    public static String timeArg(String arg) throws ParseException {
         if (arg == null || arg.isBlank())
             throw new ParseException("Time argument cannot be null, empty, or only whitespace.");
 
-        long parsedTime = 0;
-        if (arg.equals("forever")) return parsedTime;
+        if (arg.equals("forever")) return "forever";
 
         try {
             LocalDateTime now = LocalDateTime.now();
@@ -44,7 +55,7 @@ public class Parse {
                 future = now.plusYears(parseTimeValue("y", arg));
             else
                 throw new ParseException("Invalid time format or unsupported time unit: " + arg);
-            return future.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            return future.format(FORMATTER);
         } catch (NumberFormatException e) {
             throw new ParseException("Invalid numeric value in argument: '" + arg + "' - " + e.getMessage());
         }
@@ -69,6 +80,41 @@ public class Parse {
         long t = Long.parseLong(numberPart);
         if (t < 0) throw new ParseException("Time value cannot be negative: " + arg);
         return t;
+    }
+
+    /**
+     * Parses a string representation of a time into a {@code LocalDateTime} object.
+     * <p>
+     * If the input string is "forever", a {@code ForeverNonException} is thrown.
+     * <p>
+     * If the input string does not match the expected time format, a {@code ParseException} is thrown.
+     *
+     * @param timeString the string representing the time to parse; must conform to the expected format
+     *                   or be the literal "forever"
+     * @return the parsed {@code LocalDateTime} object based on the input string
+     * @throws ParseException      if the input string is invalid or cannot be parsed into a {@code LocalDateTime}
+     * @throws ForeverNonException if the input string is the literal "forever"
+     */
+    public static LocalDateTime parseStringTime(String timeString) throws ParseException, ForeverNonException {
+        if (Objects.equals(timeString, "forever")) {
+            throw new ForeverNonException();
+        }
+
+        try {
+            return LocalDateTime.parse(timeString, FORMATTER);
+        } catch (Exception e) {
+            throw new ParseException("Invalid time string format: '" + timeString + "'");
+        }
+    }
+
+    /**
+     * Checks if the given LocalDateTime is earlier than the current time.
+     *
+     * @param dateTime the LocalDateTime object to check
+     * @return true if the specified time is in the past; false otherwise
+     */
+    public static boolean isTimeInPast(LocalDateTime dateTime) {
+        return dateTime.isBefore(LocalDateTime.now());
     }
 
     /**

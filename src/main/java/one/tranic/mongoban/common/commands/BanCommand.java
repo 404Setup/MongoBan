@@ -51,7 +51,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
         Player target = one.tranic.mongoban.api.player.Player.getPlayer(playerName);
         if (target != null) {
-            long parsedTime = 0;
+            String parsedTime = null;
             try {
                 parsedTime = Parse.timeArg(timeArg);
             } catch (ParseException ignored) {
@@ -64,7 +64,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
             source.sendMessage(Component.text(
                     "Player " + playerName + " has been banned." +
-                            (parsedTime > 0 ? " Duration: " + timeArg : " Permanently.") +
+                            (parsedTime != null ? " Duration: " + parsedTime : " Permanently.") +
                             (reason != null ? " Reason: " + reason : ""), NamedTextColor.GREEN));
         } else {
             source.sendMessage(Component.text("Player not found!", NamedTextColor.RED));

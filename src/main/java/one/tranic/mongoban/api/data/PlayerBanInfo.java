@@ -1,29 +1,29 @@
 package one.tranic.mongoban.api.data;
 
-import org.jetbrains.annotations.Nullable;
+import one.tranic.mongoban.common.Parse;
 
 import java.util.UUID;
 
 /**
- * Represents ban information associated with a player in a system or database.
+ * Represents information regarding a player's ban, including details such as the player's unique
+ * identifier, the operator responsible for issuing the ban, the duration of the ban, and the reason
+ * for the ban.
  * <p>
- * This record encapsulates details regarding a ban issued to a player, including:
- * <p>
- * - The unique identifier (UUID) of the banned player.
- * <p>
- * - The operator responsible for issuing the ban.
- * <p>
- * - The duration of the ban (in an unspecified unit of time).
- * <p>
- * - A reason for the ban, which may be null if no reason is provided.
- * <p>
- * Instances of this record are immutable, ensuring consistency and reliability when handling
- * ban-related data within the system.
+ * Instances of this record are immutable, ensuring consistent handling of ban-related data.
  *
- * @param uuid     The unique identifier (UUID) of the banned player.
+ * @param uuid     The unique identifier of the banned player.
  * @param operator The operator responsible for issuing the ban.
- * @param duration The duration of the ban, in an unspecified unit of time.
+ * @param duration The duration of the ban, specified as a string.
  * @param reason   The reason for the ban.
  */
-public record PlayerBanInfo(UUID uuid, Operator operator, int duration, String reason) {
+public record PlayerBanInfo(UUID uuid, Operator operator, String duration, String reason) {
+    public boolean expired() {
+        if (duration == null || duration.isBlank()) return true;
+        if (duration.equals("forever")) return false;
+        try {
+            return Parse.isTimeInPast(Parse.parseStringTime(duration));
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

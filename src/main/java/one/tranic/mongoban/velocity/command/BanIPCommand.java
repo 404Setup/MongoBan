@@ -44,13 +44,13 @@ public class BanIPCommand implements SimpleCommand {
             InetAddress inip = InetAddress.getByName(ip);
             IPBanInfo result = MongoDataAPI.getDatabase().getBanApplication().getIPBanInfoSync(inip);
             if (result != null) {
-                if (result.duration() > 0 && System.currentTimeMillis() > result.duration()) {
+                if (result.expired()) {
                     MongoDataAPI.getDatabase().getBanApplication().removePlayerBanAsync(inip);
                 } else {
                     source.sendMessage(Component.text("The specified IP address is already banned:", NamedTextColor.YELLOW));
                     source.sendMessage(Component.text("IP: " + result.ip(), NamedTextColor.GOLD));
                     source.sendMessage(Component.text("Operator: " + result.operator().name(), NamedTextColor.GREEN));
-                    source.sendMessage(Component.text("Duration: " + (result.duration() > 0 ? result.duration() + " seconds" : "Permanent"), NamedTextColor.BLUE));
+                    source.sendMessage(Component.text("Duration: " + (result.duration() != null ? result.duration() : "Permanent"), NamedTextColor.BLUE));
                     source.sendMessage(Component.text("Reason: " + result.reason(), NamedTextColor.RED));
                     return;
                 }
@@ -67,7 +67,7 @@ public class BanIPCommand implements SimpleCommand {
                 ip = mongoPlayer.ip().getLast();
             }
         }
-        long parsedTime = 0;
+        String parsedTime = null;
         try {
             parsedTime = Parse.timeArg(timeArg);
         } catch (ParseException ignored) {
@@ -80,7 +80,7 @@ public class BanIPCommand implements SimpleCommand {
 
         source.sendMessage(Component.text(
                 "IP " + ip + " has been banned." +
-                        (parsedTime > 0 ? " Duration: " + timeArg : " Permanently.") +
+                        (parsedTime != null ? " Duration: " + timeArg : " Permanently.") +
                         (reason != null ? " Reason: " + reason : ""), NamedTextColor.GREEN));
     }
 
