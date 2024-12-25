@@ -34,11 +34,6 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
     }
 
     @Override
-    public PlayerInfo getPlayerInfo() {
-        return null;
-    }
-
-    @Override
     public Locale getLocale() {
         return player.getLocale();
     }

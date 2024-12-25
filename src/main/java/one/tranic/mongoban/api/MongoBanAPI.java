@@ -10,6 +10,7 @@ import org.geysermc.geyser.api.GeyserApi;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.function.Supplier;
 
 public class MongoBanAPI {
     /**
@@ -151,5 +152,18 @@ public class MongoBanAPI {
      */
     public static CompletableFuture<Void> runAsync(Runnable runnable) {
         return CompletableFuture.runAsync(runnable, executor);
+    }
+
+    /**
+     * Executes the given supplier asynchronously using a pre-configured executor.
+     * <p>
+     * This method is intended for running tasks that return a result in an asynchronous manner.
+     *
+     * @param <T> the type of the result produced by the supplier
+     * @param supplier the {@code Supplier} task to be executed asynchronously
+     * @return a {@code CompletableFuture<T>} that completes with the result of the supplier execution
+     */
+    public static <T> CompletableFuture<T> runAsync(Supplier<T> supplier) {
+        return CompletableFuture.supplyAsync(supplier, executor);
     }
 }

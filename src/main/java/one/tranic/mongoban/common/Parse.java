@@ -2,6 +2,7 @@ package one.tranic.mongoban.common;
 
 import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.exception.ParseException;
+import org.jetbrains.annotations.Range;
 
 import java.util.List;
 
@@ -61,13 +62,11 @@ public class Parse {
     }
 
     /**
-     * Retrieves a list of player names from the currently active platform.
+     * Retrieves a list of player names currently online across different server platforms.
      * <p>
-     * The method detects the specific platform (Bukkit, Velocity, or BungeeCord)
-     * and collects the names of online players accordingly.
+     * This method checks the platform type (Bukkit, Velocity, or BungeeCord) and gathers player names accordingly.
      *
-     * @return a list of player names currently online in the detected platform.
-     *         Returns an empty list if no players are online or if the platform is unsupported.
+     * @return an unmodifiable list of online player names
      */
     public static List<String> players() {
         List<String> matchingPlayers = Collections.newArrayList();
@@ -79,6 +78,45 @@ public class Parse {
         else
             for (net.md_5.bungee.api.connection.ProxiedPlayer player : net.md_5.bungee.api.ProxyServer.getInstance().getPlayers())
                 matchingPlayers.add(player.getName());
-        return matchingPlayers;
+        return Collections.newUnmodifiableList(matchingPlayers);
+    }
+
+    /**
+     * Retrieves a list of player names currently online across different server platforms,
+     * limited to a specified maximum number of players.
+     * <p>
+     * This method determines the current server platform (Bukkit, Velocity, or BungeeCord)
+     * and retrieves the player names accordingly.
+     * <p>
+     * The list will contain a maximum number of players as specified by the input parameter.
+     * <p>
+     * The returned list is unmodifiable.
+     *
+     * @param max the maximum number of player names to include in the list; must be greater than or equal to 1
+     * @return an unmodifiable list of online player names, limited by the specified maximum
+     * @throws IllegalArgumentException if the specified maximum is less than 1
+     */
+    public static List<String> players(@Range(from = 1, to = Integer.MAX_VALUE) int max) throws IllegalArgumentException {
+        if (max < 1) {
+            throw new IllegalArgumentException("Parameter max must be greater than or equal to 1");
+        }
+        List<String> matchingPlayers;
+        if (Platform.isBukkit()) {
+            matchingPlayers = org.bukkit.Bukkit.getOnlinePlayers().stream()
+                    .map(org.bukkit.entity.Player::getName)
+                    .limit(max)
+                    .collect(Collections::newArrayList, List::add, List::addAll);
+        } else if (Platform.get() == Platform.Velocity) {
+            matchingPlayers = one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers().stream()
+                    .map(com.velocitypowered.api.proxy.Player::getUsername)
+                    .limit(max)
+                    .collect(Collections::newArrayList, List::add, List::addAll);
+        } else {
+            matchingPlayers = net.md_5.bungee.api.ProxyServer.getInstance().getPlayers().stream()
+                    .map(net.md_5.bungee.api.connection.ProxiedPlayer::getName)
+                    .limit(max)
+                    .collect(Collections::newArrayList, List::add, List::addAll);
+        }
+        return Collections.newUnmodifiableList(matchingPlayers);
     }
 }

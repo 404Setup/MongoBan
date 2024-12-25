@@ -3,8 +3,6 @@ package one.tranic.mongoban.api.player;
 import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.data.PlayerInfo;
-import one.tranic.mongoban.velocity.MongoBan;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +28,6 @@ public class VelocityPlayer implements MongoPlayer<Player> {
     @Override
     public String getConnectHost() {
         return player.getRemoteAddress().getAddress().getHostAddress();
-    }
-
-    @Override
-    public PlayerInfo getPlayerInfo() {
-        return MongoBan.getDatabase().getPlayerApplication().getPlayerSync(getUniqueId());
     }
 
     @Override

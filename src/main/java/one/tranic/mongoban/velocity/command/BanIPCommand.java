@@ -7,11 +7,11 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.exception.ParseException;
 import one.tranic.mongoban.common.Parse;
-import one.tranic.mongoban.velocity.MongoBan;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -42,10 +42,10 @@ public class BanIPCommand implements SimpleCommand {
 
         try {
             InetAddress inip = InetAddress.getByName(ip);
-            IPBanInfo result = MongoBan.getDatabase().getBanApplication().getIPBanInfoSync(inip);
+            IPBanInfo result = MongoDataAPI.getDatabase().getBanApplication().getIPBanInfoSync(inip);
             if (result != null) {
                 if (result.duration() > 0 && System.currentTimeMillis() > result.duration()) {
-                    MongoBan.getDatabase().getBanApplication().removePlayerBanAsync(inip);
+                    MongoDataAPI.getDatabase().getBanApplication().removePlayerBanAsync(inip);
                 } else {
                     source.sendMessage(Component.text("The specified IP address is already banned:", NamedTextColor.YELLOW));
                     source.sendMessage(Component.text("IP: " + result.ip(), NamedTextColor.GOLD));
@@ -59,7 +59,7 @@ public class BanIPCommand implements SimpleCommand {
             Player player = proxy.getPlayer(ip).orElse(null);
             if (player != null) ip = player.getRemoteAddress().getAddress().getHostAddress();
             else {
-                PlayerInfo mongoPlayer = MongoBan.getDatabase().getPlayerApplication().getPlayerSync(ip);
+                PlayerInfo mongoPlayer = MongoDataAPI.getDatabase().getPlayerApplication().getPlayerSync(ip);
                 if (mongoPlayer == null || mongoPlayer.ip().isEmpty()) {
                     source.sendMessage(Component.text("Invalid IP address provided!", NamedTextColor.RED));
                     return;

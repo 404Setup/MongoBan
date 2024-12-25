@@ -5,12 +5,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.command.Command;
-import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.exception.ParseException;
+import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.common.Parse;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.geysermc.cumulus.form.CustomForm;
+import one.tranic.mongoban.common.form.GeyserForm;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,18 +32,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
             // TODO： Bedrock command executors will pass a form instead of a command
             if (player.isBedrockPlayer()) {
-                @NonNull CustomForm form = CustomForm.builder()
-                        .title("MongoBan Console - Ban")
-                        .dropdown("Player", Parse.players())
-                        .slider("Duration", 1, 3650)
-                        .dropdown("Duration unit", MongoBanAPI.TIME_SUGGEST)
-                        .input("Reason")
-                        .toggle("Ban IP")
-                        .validResultHandler(response -> {
-
-                        })
-                        .build();
-                player.sendForm(form);
+                player.sendForm(GeyserForm.getDoForm());
                 return;
             }
         }
@@ -53,7 +41,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
         if (args.length < 1) {
             source.sendMessage(Component.text(
-                    "Invalid usage! Use: /ban|vban|bban <playerName> [time] [reason]", NamedTextColor.RED));
+                    "Invalid usage! Use: /" + getName() + " --name <playerName> --time [time] --reason [reason]", NamedTextColor.RED));
             return;
         }
 

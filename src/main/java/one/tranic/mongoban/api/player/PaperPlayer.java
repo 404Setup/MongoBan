@@ -2,7 +2,6 @@ package one.tranic.mongoban.api.player;
 
 import net.kyori.adventure.text.Component;
 import one.tranic.irs.PluginSchedulerBuilder;
-import one.tranic.mongoban.api.data.PlayerInfo;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -34,11 +33,6 @@ public class PaperPlayer implements MongoPlayer<Player> {
         @Nullable InetSocketAddress addr = player.getAddress();
         if (addr == null) return null;
         return addr.getAddress().getHostAddress();
-    }
-
-    @Override
-    public PlayerInfo getPlayerInfo() {
-        return null;
     }
 
     @Override
