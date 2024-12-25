@@ -10,7 +10,7 @@ SimpleCommand API is just to minimize duplicate model code, it is not suitable f
 
 ### Create a command class
 ```java
-public class BanCommand<C extends SourceImpl<?>> extends Command<C> {
+public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
     public BanCommand() {
         // There is no need to register according to the platform as different names and different 
         // permissions, the SimpleCommand API will automatically handle it.
@@ -45,9 +45,7 @@ public class BanCommand<C extends SourceImpl<?>> extends Command<C> {
             commandMapField.setAccessible(true);
             commandMap = (SimpleCommandMap) commandMapField.get(Bukkit.getPluginManager());
 
-            commandMap.register("ban", "mongoban",
-                    new BanCommand<PaperSource>().unwrapBukkit()
-            );
+            new BanCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
