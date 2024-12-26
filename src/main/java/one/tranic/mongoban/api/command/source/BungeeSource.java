@@ -4,6 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.BungeePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +23,7 @@ import java.util.Locale;
 public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
     private final CommandSender commandSender;
     private final String[] args;
-    private final boolean isPlayer;
+    private final BungeePlayer player;
 
     /**
      * Constructs a new BungeeSource instance.
@@ -34,7 +36,14 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
     public BungeeSource(CommandSender commandSender, String[] args) {
         this.commandSender = commandSender;
         this.args = args;
-        this.isPlayer = commandSender instanceof ProxiedPlayer;
+        this.player = commandSender instanceof ProxiedPlayer ? new BungeePlayer(commandSender) : null;
+    }
+
+    @Override
+    public Operator getOperator() {
+        if (player != null)
+            return new Operator(player.getUsername(), player.getUniqueId());
+        return MongoBanAPI.console;
     }
 
     @Override
@@ -44,7 +53,7 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
 
     @Override
     public boolean isPlayer() {
-        return isPlayer;
+        return player != null;
     }
 
     @Override
@@ -54,7 +63,7 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
 
     @Override
     public @Nullable Locale locale() {
-        return isPlayer ? ((ProxiedPlayer) commandSender).getLocale() : Locale.getDefault();
+        return player != null ? player.getLocale() : Locale.getDefault();
     }
 
     @Override
@@ -74,7 +83,6 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
 
     @Override
     public BungeePlayer asPlayer() {
-        if (!isPlayer) return null;
-        return new BungeePlayer(commandSender);
+        return player;
     }
 }

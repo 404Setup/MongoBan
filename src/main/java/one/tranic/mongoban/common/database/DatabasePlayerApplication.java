@@ -1,13 +1,12 @@
 package one.tranic.mongoban.common.database;
 
-import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.Actions;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.common.Collections;
 import org.bson.Document;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class DatabasePlayerApplication {
     private final Database database;
@@ -15,10 +14,10 @@ public class DatabasePlayerApplication {
     private final String collection = "mongo_player";
 
     /**
-     * Constructs a new instance of the DatabasePlayerApplication with the specified database and service.
+     * Constructs an instance of the DatabasePlayerApplication.
      *
-     * @param database The database instance to be used for managing player data.
-     * @param service  The database service instance to handle database operations.
+     * @param database the Database instance used for performing database operations
+     * @param service  the DatabaseService instance for accessing additional database-related functionality
      */
     public DatabasePlayerApplication(Database database, DatabaseService service) {
         this.database = database;
@@ -26,109 +25,81 @@ public class DatabasePlayerApplication {
     }
 
     /**
-     * Synchronously adds or updates player information in the database.
+     * Adds or updates a player's information in the database, including their name and associated IP address.
      * <p>
-     * This method either creates a new entry for the specified player if no existing data is found,
-     * or updates the existing document with the player's name and IP address.
+     * If the player does not already exist, a new entry is created.
      * <p>
-     * IP management is handled to ensure that a player can have up to six IP addresses stored.
-     * <p>
-     * If the limit is exceeded, the oldest IP is removed to accommodate the new one.
+     * If they exist, their IP list is updated,
+     * ensuring it maintains a maximum size of 6 by removing the oldest entry if necessary.
      *
-     * @param name The name of the player to be added or updated.
-     * @param uuid The unique identifier (UUID) of the player.
-     * @param ip   The IP address of the player to be included in the database.
+     * @param name the name of the player to add or update
+     * @param uuid the unique identifier (UUID) of the player
+     * @param ip   the IP address to associate with the player
+     * @return an {@code Actions<Void>} instance encapsulating this operation
      */
-    public void addPlayerSync(String name, UUID uuid, String ip) {
-        Document query = new Document("id", uuid);
-        Document playerDoc = database.queryOne(this.collection, query);
-        Document updateDoc;
-        if (playerDoc == null) {
-            updateDoc = new Document()
-                    .append("name", name)
-                    .append("ip", Collections.newArrayList(ip));
-        } else {
-            List<String> ips = playerDoc.getList("ip", String.class);
-            if (ips.size() >= 6) ips.removeFirst();
-            if (!ips.isEmpty()) ips.remove(ip);
-            ips.add(ip);
-            updateDoc = new Document()
-                    .append("name", name)
-                    .append("ip", ips);
-        }
-        database.update(this.collection, query, updateDoc);
+    public Actions<Void> add(String name, UUID uuid, String ip) {
+        return new Actions<>(() -> {
+            Document query = new Document("id", uuid);
+            Document playerDoc = database.queryOne(this.collection, query);
+            Document updateDoc;
+            if (playerDoc == null) {
+                updateDoc = new Document()
+                        .append("name", name)
+                        .append("ip", Collections.newArrayList(ip));
+            } else {
+                List<String> ips = playerDoc.getList("ip", String.class);
+                if (ips.size() >= 6) ips.removeFirst();
+                if (!ips.isEmpty()) ips.remove(ip);
+                ips.add(ip);
+                updateDoc = new Document()
+                        .append("name", name)
+                        .append("ip", ips);
+            }
+            database.update(this.collection, query, updateDoc);
+
+            return null;
+        });
     }
 
     /**
-     * Asynchronously adds a player to the database.
+     * Retrieves player information from the database by the player's name.
+     *
+     * @param name The name of the player to search for in the database.
+     * @return An {@code Actions<PlayerInfo>} containing a task that, when executed,
+     * will return a {@code PlayerInfo} object representing the player's details,
+     * or {@code null} if no player with the specified name is found.
+     */
+    public Actions<PlayerInfo> find(String name) {
+        return new Actions<>(() -> {
+            Document query = new Document("name", name);
+            Document playerDoc = database.queryOne(this.collection, query);
+            return playerDoc != null ? new PlayerInfo(
+                    name,
+                    playerDoc.get("id", UUID.class),
+                    playerDoc.getList("ip", String.class)
+            ) : null;
+        });
+    }
+
+    /**
+     * Finds a player's information based on their unique identifier (UUID).
+     *
+     * @param uuid The unique identifier of the player to search for.
+     * @return An {@code Actions<PlayerInfo>} object encapsulating the operation to retrieve
+     * the player's information.
      * <p>
-     * The operation is executed in a separate thread using the configured executor.
-     *
-     * @param name The name of the player to add.
-     * @param uuid The unique identifier (UUID) of the player to add.
-     * @param ip   The IP address of the player to add.
-     * @return A {@code CompletableFuture<Void>} representing the completion of the operation.
+     * The result includes the player's name, UUID, and list of associated IP addresses, or {@code null} if no player is found
+     * with the given UUID.
      */
-    public CompletableFuture<Void> addPlayerAsync(String name, UUID uuid, String ip) {
-        return CompletableFuture.runAsync(() -> addPlayerSync(name, uuid, ip), MongoBanAPI.executor);
-    }
-
-    /**
-     * Synchronously retrieves player information from the database based on the specified name.
-     *
-     * @param name The name of the player whose information is being retrieved.
-     * @return A {@code PlayerInfo} object containing the player's data, including name, UUID, and IP addresses.
-     * Returns {@code null} if no player matches the provided name.
-     */
-    public PlayerInfo getPlayerSync(String name) {
-        Document query = new Document("name", name);
-        Document playerDoc = database.queryOne(this.collection, query);
-        return playerDoc != null ? new PlayerInfo(
-                name,
-                playerDoc.get("id", UUID.class),
-                playerDoc.getList("ip", String.class)
-        ) : null;
-    }
-
-    /**
-     * Asynchronously retrieves player information associated with the specified name.
-     * <p>
-     * The operation is executed in a separate thread using the configured executor.
-     *
-     * @param name The name of the player whose information is to be retrieved.
-     * @return A {@link CompletableFuture} that completes with the {@link PlayerInfo}
-     * corresponding to the given name, or {@code null} if no player is found.
-     */
-    public CompletableFuture<PlayerInfo> getPlayerAsync(String name) {
-        return CompletableFuture.supplyAsync(() -> getPlayerSync(name), MongoBanAPI.executor);
-    }
-
-    /**
-     * Synchronously retrieves player information from the database based on the specified UUID.
-     *
-     * @param uuid The UUID of the player whose information is being retrieved.
-     * @return A {@code PlayerInfo} object containing the player's data, including name, UUID, and IP addresses.
-     * Returns {@code null} if no player matches the provided UUID.
-     */
-    public PlayerInfo getPlayerSync(UUID uuid) {
-        Document query = new Document("id", uuid);
-        Document playerDoc = database.queryOne(this.collection, query);
-        return playerDoc != null ? new PlayerInfo(
-                playerDoc.getString("name"),
-                uuid,
-                playerDoc.getList("ip", String.class)
-        ) : null;
-    }
-
-    /**
-     * Asynchronously retrieves player information associated with the specified UUID.
-     * The operation is executed in a separate thread using the configured executor.
-     *
-     * @param uuid The UUID of the player whose information is to be retrieved.
-     * @return A {@link CompletableFuture} that completes with the {@link PlayerInfo}
-     * corresponding to the given UUID, or {@code null} if no player is found.
-     */
-    public CompletableFuture<PlayerInfo> getPlayerAsync(UUID uuid) {
-        return CompletableFuture.supplyAsync(() -> getPlayerSync(uuid), MongoBanAPI.executor);
+    public Actions<PlayerInfo> find(UUID uuid) {
+        return new Actions<>(() -> {
+            Document query = new Document("id", uuid);
+            Document playerDoc = database.queryOne(this.collection, query);
+            return playerDoc != null ? new PlayerInfo(
+                    playerDoc.getString("name"),
+                    uuid,
+                    playerDoc.getList("ip", String.class)
+            ) : null;
+        });
     }
 }

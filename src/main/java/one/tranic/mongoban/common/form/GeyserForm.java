@@ -32,17 +32,20 @@ public class GeyserForm {
                 .input("Reason")
                 .toggle("Ban IP")
                 .validResultHandler(response -> {
+                    // Todo
                 })
                 .build();
     }
 
     public static Form getUndoForm() {
         return getSimpleForm(response -> {
+            // Todo
         });
     }
 
     public static Form getSearchForm() {
         return getSimpleForm(response -> {
+            // Todo
         });
     }
 }

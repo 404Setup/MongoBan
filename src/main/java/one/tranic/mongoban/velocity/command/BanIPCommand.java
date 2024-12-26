@@ -18,11 +18,14 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * @deprecated Merge IPBan logic into Ban
+ */
 public class BanIPCommand implements SimpleCommand {
     private final ProxyServer proxy;
 
     public BanIPCommand(ProxyServer proxy) {
-        this.proxy = proxy;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -42,10 +45,10 @@ public class BanIPCommand implements SimpleCommand {
 
         try {
             InetAddress inip = InetAddress.getByName(ip);
-            IPBanInfo result = MongoDataAPI.getDatabase().getBanApplication().getIPBanInfoSync(inip);
+            IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(inip.getHostAddress()).sync();
             if (result != null) {
                 if (result.expired()) {
-                    MongoDataAPI.getDatabase().getBanApplication().removePlayerBanAsync(inip);
+                    MongoDataAPI.getDatabase().ban().ip().remove(inip.getHostAddress()).async();
                 } else {
                     source.sendMessage(Component.text("The specified IP address is already banned:", NamedTextColor.YELLOW));
                     source.sendMessage(Component.text("IP: " + result.ip(), NamedTextColor.GOLD));
@@ -59,7 +62,7 @@ public class BanIPCommand implements SimpleCommand {
             Player player = proxy.getPlayer(ip).orElse(null);
             if (player != null) ip = player.getRemoteAddress().getAddress().getHostAddress();
             else {
-                PlayerInfo mongoPlayer = MongoDataAPI.getDatabase().getPlayerApplication().getPlayerSync(ip);
+                PlayerInfo mongoPlayer = MongoDataAPI.getDatabase().player().find(ip).sync();
                 if (mongoPlayer == null || mongoPlayer.ip().isEmpty()) {
                     source.sendMessage(Component.text("Invalid IP address provided!", NamedTextColor.RED));
                     return;

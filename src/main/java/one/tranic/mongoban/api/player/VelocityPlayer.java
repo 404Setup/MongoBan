@@ -21,6 +21,11 @@ public class VelocityPlayer implements MongoPlayer<Player> {
     }
 
     @Override
+    public String getUsername() {
+        return player.getUsername();
+    }
+
+    @Override
     public UUID getUniqueId() {
         return player.getUniqueId();
     }

@@ -1,6 +1,8 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
+import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +16,17 @@ import java.util.Locale;
  * @param <R> the player-specific type related to the platform (e.g., Player)
  */
 public interface SourceImpl<C, R> {
+    /**
+     * Retrieves the operator associated with this source implementation.
+     * <p>
+     * The operator typically represents the entity that executes administrative or management tasks.
+     *
+     * @return the operator, defaulting to the system console operator.
+     */
+    default Operator getOperator() {
+        return MongoBanAPI.console;
+    }
+
     /**
      * Retrieves the source entity that this implementation represents.
      *

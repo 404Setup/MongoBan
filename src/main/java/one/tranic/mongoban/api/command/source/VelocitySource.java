@@ -4,6 +4,8 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
+import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.VelocityPlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -19,12 +21,19 @@ import java.util.Locale;
 public class VelocitySource implements SourceImpl<CommandSource, Player> {
     private final SimpleCommand.Invocation invocation;
     private final CommandSource commandSource;
-    private final boolean isPlayer;
+    private final VelocityPlayer player;
 
     public VelocitySource(SimpleCommand.Invocation invocation) {
         this.invocation = invocation;
         this.commandSource = invocation.source();
-        this.isPlayer = (commandSource instanceof Player);
+        this.player = commandSource instanceof Player ? new VelocityPlayer(commandSource) : null;
+    }
+
+    @Override
+    public Operator getOperator() {
+        if (player != null)
+            return new Operator(player.getUsername(), player.getUniqueId());
+        return MongoBanAPI.console;
     }
 
     @Override
@@ -34,7 +43,7 @@ public class VelocitySource implements SourceImpl<CommandSource, Player> {
 
     @Override
     public boolean isPlayer() {
-        return isPlayer;
+        return player != null;
     }
 
     @Override
@@ -44,7 +53,7 @@ public class VelocitySource implements SourceImpl<CommandSource, Player> {
 
     @Override
     public @Nullable Locale locale() {
-        return isPlayer ? ((Player) commandSource).getEffectiveLocale()
+        return player != null ? player.getLocale()
                 : Locale.getDefault();
     }
 
@@ -65,7 +74,6 @@ public class VelocitySource implements SourceImpl<CommandSource, Player> {
 
     @Override
     public @Nullable VelocityPlayer asPlayer() {
-        if (!isPlayer) return null;
-        return new VelocityPlayer(commandSource);
+        return player;
     }
 }

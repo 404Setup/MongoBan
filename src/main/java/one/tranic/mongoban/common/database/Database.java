@@ -45,8 +45,9 @@ public class Database {
 
     /**
      * Establishes a connection to the MongoDB database using the configured connection string.
+     * <p>
      * If an existing client connection exists, it will be closed and reset before establishing a new connection.
-     * Logs the success or failure of the connection attempt.
+     * <p>
      * In case of a failure, the connection will be cleaned up by calling the {@link #disconnect()} method.
      */
     public void connect() {
@@ -76,6 +77,7 @@ public class Database {
     /**
      * Updates a document in the specified MongoDB collection by finding a document that matches the query
      * and applying the update document.
+     * <p>
      * If no matching document is found, this method inserts a new document.
      *
      * @param collectionName the name of the MongoDB collection in which the operation is to be performed
@@ -178,7 +180,7 @@ public class Database {
      *
      * @return The DatabaseService instance used for interacting with the database.
      */
-    public DatabaseService getService() {
+    public DatabaseService service() {
         return service;
     }
 
@@ -189,7 +191,7 @@ public class Database {
      *
      * @return The {@code DatabasePlayerApplication} instance used for player-related database operations.
      */
-    public DatabasePlayerApplication getPlayerApplication() {
+    public DatabasePlayerApplication player() {
         return service.getPlayerApplication();
     }
 
@@ -198,7 +200,7 @@ public class Database {
      *
      * @return the DatabaseBanApplication instance used for handling ban-related operations.
      */
-    public DatabaseBanApplication getBanApplication() {
+    public DatabaseBanApplication ban() {
         return service.getBanApplication();
     }
 
@@ -207,7 +209,7 @@ public class Database {
      *
      * @return The DatabaseWarnApplication instance used for managing player warnings.
      */
-    public DatabaseWarnApplication getWarnApplication() {
+    public DatabaseWarnApplication warn() {
         return service.getWarnApplication();
     }
 

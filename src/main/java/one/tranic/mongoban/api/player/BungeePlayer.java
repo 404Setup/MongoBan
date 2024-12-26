@@ -24,6 +24,11 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
     }
 
     @Override
+    public String getUsername() {
+        return player.getName();
+    }
+
+    @Override
     public UUID getUniqueId() {
         return player.getUniqueId();
     }

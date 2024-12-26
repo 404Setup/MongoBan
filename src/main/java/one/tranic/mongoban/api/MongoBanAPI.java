@@ -77,20 +77,23 @@ public class MongoBanAPI {
      * operator remains consistent and unmodifiable throughout the application's lifecycle.
      */
     public final static Operator console = new Operator("Console", UUID.fromString("05b11eee-24db-4a21-ba9d-e12e8df9a92f"));
+
     /**
      * A shared executor for handling asynchronous tasks with flexible scaling capabilities.
      * <p>
      * This executor is configured to have a core pool size of 0 and a maximum pool size of 12 threads.
      * <p>
-     * Threads are kept alive for 60 seconds when idle. It uses a {@link SynchronousQueue} for
-     * task handoff and a virtual thread factory for lightweight, efficient threading.
+     * Threads are kept alive for 45 seconds when idle.
+     * <p>
+     * It uses a {@link SynchronousQueue} for task handoff and a virtual thread factory for lightweight,
+     * efficient threading.
      * <p>
      * Designed for use cases where tasks are short-lived and the system dynamically scales thread usage
      * within the defined limits. The use of virtual threads promotes concurrency while minimizing resource
      * consumption.
      */
     public final static Executor executor = new ThreadPoolExecutor(0, 12,
-            60L, TimeUnit.SECONDS,
+            45L, TimeUnit.SECONDS,
             new SynchronousQueue<>(),
             Thread.ofVirtual().factory());
 
@@ -159,7 +162,7 @@ public class MongoBanAPI {
      * <p>
      * This method is intended for running tasks that return a result in an asynchronous manner.
      *
-     * @param <T> the type of the result produced by the supplier
+     * @param <T>      the type of the result produced by the supplier
      * @param supplier the {@code Supplier} task to be executed asynchronously
      * @return a {@code CompletableFuture<T>} that completes with the result of the supplier execution
      */

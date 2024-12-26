@@ -1,6 +1,8 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
+import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.PaperPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,12 +23,19 @@ import java.util.Locale;
 public class PaperSource implements SourceImpl<CommandSender, Player> {
     private final CommandSender commandSender;
     private final String[] args;
-    private final boolean isPlayer;
+    private final PaperPlayer player;
 
     public PaperSource(CommandSender commandSender, String[] args) {
         this.commandSender = commandSender;
         this.args = args;
-        this.isPlayer = commandSender instanceof Player;
+        this.player = commandSender instanceof Player ? new PaperPlayer(commandSender) : null;
+    }
+
+    @Override
+    public Operator getOperator() {
+        if (player != null)
+            return new Operator(player.getUsername(), player.getUniqueId());
+        return MongoBanAPI.console;
     }
 
     @Override
@@ -36,7 +45,7 @@ public class PaperSource implements SourceImpl<CommandSender, Player> {
 
     @Override
     public boolean isPlayer() {
-        return isPlayer;
+        return player != null;
     }
 
     @Override
@@ -46,7 +55,7 @@ public class PaperSource implements SourceImpl<CommandSender, Player> {
 
     @Override
     public @Nullable Locale locale() {
-        return isPlayer ? ((Player) commandSender).locale() : Locale.getDefault();
+        return player != null ? player.getLocale() : Locale.getDefault();
     }
 
     @Override
@@ -66,7 +75,6 @@ public class PaperSource implements SourceImpl<CommandSender, Player> {
 
     @Override
     public @Nullable PaperPlayer asPlayer() {
-        if (!isPlayer) return null;
-        return new PaperPlayer(commandSender);
+        return player;
     }
 }

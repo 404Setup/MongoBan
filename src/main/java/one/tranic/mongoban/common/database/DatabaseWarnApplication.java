@@ -1,6 +1,6 @@
 package one.tranic.mongoban.common.database;
 
-import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.Actions;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerWarnInfo;
 import one.tranic.mongoban.common.Collections;
@@ -9,7 +9,6 @@ import org.bson.Document;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class DatabaseWarnApplication {
     private final Database database;
@@ -22,159 +21,105 @@ public class DatabaseWarnApplication {
     }
 
     /**
-     * Adds a warning to a player synchronously by creating a warning document and saving it to the database.
-     * <p>
-     * The warning is uniquely identified with a generated warning ID.
+     * Adds a warning to the database for a specified player with the given details.
      *
-     * @param playerId the unique identifier of the player being warned
+     * @param playerId the unique identifier of the player to be warned
      * @param operator the operator issuing the warning
-     * @param duration the duration of the warning in an appropriate time unit
-     * @param reason   the reason for the warning being issued
+     * @param duration the duration of the warning in integer format
+     * @param reason   the reason for issuing the warning
+     * @return an {@code Actions<Void>} instance representing the operation to add the warning
      */
-    public void addPlayerWarnSync(UUID playerId, Operator operator, int duration, String reason) {
-        String warnId = Rand.generateRandomWarnId(21);
-        Document query = new Document("id", warnId);
-        Document warnDoc = new Document()
-                .append("playerId", playerId)
-                .append("operator", operator)
-                .append("duration", duration)
-                .append("reason", reason);
+    public Actions<Void> add(UUID playerId, Operator operator, int duration, String reason) {
+        return new Actions<>(() -> {
+            String warnId = Rand.generateRandomWarnId(21);
+            Document query = new Document("id", warnId);
+            Document warnDoc = new Document()
+                    .append("playerId", playerId)
+                    .append("operator", operator)
+                    .append("duration", duration)
+                    .append("reason", reason);
 
-        database.update(this.collection, query, warnDoc);
+            database.update(this.collection, query, warnDoc);
+
+            return null;
+        });
     }
 
     /**
-     * Asynchronously adds a warning to a player by delegating the creation of a warning document
-     * and saving it to the database to a separate thread.
-     * <p>
-     * This allows for non-blocking execution on the caller's end.
+     * Finds and retrieves a player's warning information by its unique warning ID.
      *
-     * @param playerId the unique identifier of the player being warned
-     * @param operator the operator issuing the warning
-     * @param duration the duration of the warning in an appropriate time unit
-     * @param reason   the reason for the warning being issued
-     * @return a CompletableFuture that completes when the warning has been successfully created
+     * @param warnId The unique identifier for the warning.
+     * @return An {@code Actions<PlayerWarnInfo>} object that, when executed, returns
+     *         a {@code PlayerWarnInfo} instance containing the details of the warning
+     *         if found, or {@code null} if no warning matches the provided ID.
      */
-    public CompletableFuture<Void> addPlayerWarnAsync(UUID playerId, Operator operator, int duration, String reason) {
-        return CompletableFuture.runAsync(() -> addPlayerWarnSync(playerId, operator, duration, reason), MongoBanAPI.executor);
-    }
-
-    /**
-     * Retrieves a player's warning information synchronously by the warning ID.
-     * <p>
-     * If a warning is found, returns a {@code PlayerWarnInfo} containing details
-     * about the warning such as the player ID, operator, duration, and reason.
-     * <p>
-     * If no matching warning is found, returns {@code null}.
-     *
-     * @param warnId The unique identifier for the warning to retrieve.
-     * @return A {@code PlayerWarnInfo} object containing the details of the warning
-     * if found, or {@code null} if no warning matches the specified ID.
-     */
-    public PlayerWarnInfo findPlayerWarnSync(String warnId) {
-        Document query = new Document("id", warnId);
-        Document warnDoc = database.queryOne(this.collection, query);
-        return warnDoc != null ? new PlayerWarnInfo(
-                warnDoc.get("playerId", UUID.class),
-                warnDoc.get("operator", Operator.class),
-                warnDoc.getInteger("duration"),
-                warnDoc.getString("reason")
-        ) : null;
-    }
-
-    /**
-     * Asynchronously retrieves warning information associated with a specified warning ID.
-     * <p>
-     * This method runs the operation in a separate thread using the provided executor service.
-     *
-     * @param warnId The unique identifier of the warning to retrieve.
-     * @return A CompletableFuture containing the PlayerWarnInfo associated with the given warning ID,
-     * or null if no matching warning is found.
-     */
-    public CompletableFuture<PlayerWarnInfo> findPlayerWarnAsync(String warnId) {
-        return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(warnId), MongoBanAPI.executor);
-    }
-
-    /**
-     * Retrieves all warning information associated with a specific player identified by their UUID
-     * from the database in a synchronous manner.
-     *
-     * @param playerId The unique identifier (UUID) of the player whose warnings are to be retrieved.
-     * @return An array of {@code PlayerWarnInfo} objects containing details about the warnings
-     * associated with the specified player. If no warnings are found, an empty array is returned.
-     */
-    public PlayerWarnInfo[] findPlayerWarnSync(UUID playerId) {
-        Document query = new Document("playerId", playerId);
-        List<Document> warnDocs = database.queryMany(this.collection, query);
-        List<PlayerWarnInfo> warnings = Collections.newArrayList();
-        for (Document warnDoc : warnDocs) {
-            warnings.add(new PlayerWarnInfo(
-                    playerId,
+    public Actions<PlayerWarnInfo> find(String warnId) {
+        return new Actions<>(() -> {
+            Document query = new Document("id", warnId);
+            Document warnDoc = database.queryOne(this.collection, query);
+            return warnDoc != null ? new PlayerWarnInfo(
+                    warnDoc.get("playerId", UUID.class),
                     warnDoc.get("operator", Operator.class),
                     warnDoc.getInteger("duration"),
                     warnDoc.getString("reason")
-            ));
-        }
-        return warnings.toArray(new PlayerWarnInfo[0]);
+            ) : null;
+        });
     }
 
     /**
-     * Asynchronously fetches all warnings associated with a specific player from the database.
-     * The method performs the operation in a non-blocking manner, leveraging a separate thread
-     * and returning a CompletableFuture encapsulating the result.
+     * Retrieves all warning information associated with a specific player, identified by their unique player ID.
+     * This method queries the underlying database for all documents where the player ID matches the specified ID,
+     * and converts these documents into an array of {@link PlayerWarnInfo} objects representing the warnings
+     * issued to the player.
      *
-     * @param playerId The unique identifier (UUID) of the player whose warnings are to be retrieved.
-     * @return A CompletableFuture that, when completed, contains an array of PlayerWarnInfo
-     * objects representing the warnings associated with the specified player.
+     * @param playerId the unique identifier (UUID) of the player whose warning information is to be retrieved
+     * @return an {@link Actions} object wrapping an array of {@link PlayerWarnInfo} objects containing
+     * the warnings issued to the specified player; if no warnings are found, an empty array is returned
      */
-    public CompletableFuture<PlayerWarnInfo[]> findPlayerWarnAsync(UUID playerId) {
-        return CompletableFuture.supplyAsync(() -> findPlayerWarnSync(playerId), MongoBanAPI.executor);
+    public Actions<PlayerWarnInfo[]> finds(UUID playerId) {
+        return new Actions<>(() -> {
+            Document query = new Document("playerId", playerId);
+            List<Document> warnDocs = database.queryMany(this.collection, query);
+            List<PlayerWarnInfo> warnings = Collections.newArrayList();
+            for (Document warnDoc : warnDocs) {
+                warnings.add(new PlayerWarnInfo(
+                        playerId,
+                        warnDoc.get("operator", Operator.class),
+                        warnDoc.getInteger("duration"),
+                        warnDoc.getString("reason")
+                ));
+            }
+            return warnings.toArray(new PlayerWarnInfo[0]);
+        });
     }
 
     /**
-     * Removes a player warning synchronously based on the provided warning ID.
-     * This method constructs a query using the warning ID and deletes the corresponding document
-     * from the MongoDB collection associated with player warnings.
+     * Removes a warning from the database based on the given warning ID.
      *
-     * @param warnId the unique identifier of the player warning to be removed
+     * @param warnId the unique identifier of the warning to be removed
+     * @return an {@code Actions<Void>} instance representing the operation
      */
-    public void removePlayerWarnSync(String warnId) {
-        Document query = new Document("id", warnId);
-        database.delete(this.collection, query);
+    public Actions<Void> remove(String warnId) {
+        return new Actions<>(() -> {
+            Document query = new Document("id", warnId);
+            database.delete(this.collection, query);
+
+            return null;
+        });
     }
 
     /**
-     * Asynchronously removes a player warning from the database based on the provided warning ID.
-     * <p>
-     * This method uses a separate thread to execute the removal, ensuring non-blocking behavior
-     * for the caller.
+     * Removes all warning records associated with the specified player's UUID from the database.
      *
-     * @param warnId the unique identifier of the warning to be removed from the database
-     * @return a CompletableFuture<Void> that completes once the warning has been removed
+     * @param playerId the UUID of the player whose warning records are to be removed
+     * @return an {@code Actions<Void>} object representing the execution task of the removal operation
      */
-    public CompletableFuture<Void> removePlayerWarnAsync(String warnId) {
-        return CompletableFuture.runAsync(() -> removePlayerWarnSync(warnId), MongoBanAPI.executor);
-    }
+    public Actions<Void> remove(UUID playerId) {
+        return new Actions<>(() -> {
+            Document query = new Document("playerId", playerId);
+            database.deleteMany(this.collection, query);
 
-    /**
-     * Removes all warnings associated with a specific player from the database in a synchronous manner.
-     *
-     * @param playerId the unique identifier of the player whose warnings are to be removed
-     */
-    public void removePlayerWarnSync(UUID playerId) {
-        Document query = new Document("playerId", playerId);
-        database.deleteMany(this.collection, query);
-    }
-
-    /**
-     * Asynchronously removes all warnings associated with the specified player from the database.
-     * <p>
-     * This method executes the removal operation on a separate thread using the service's executor.
-     *
-     * @param playerId the unique identifier of the player whose warnings should be removed
-     * @return a CompletableFuture that completes when the warnings have been successfully removed
-     */
-    public CompletableFuture<Void> removePlayerWarnAsync(UUID playerId) {
-        return CompletableFuture.runAsync(() -> removePlayerWarnSync(playerId), MongoBanAPI.executor);
+            return null;
+        });
     }
 }

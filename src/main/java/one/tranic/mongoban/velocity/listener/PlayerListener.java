@@ -19,18 +19,23 @@ public class PlayerListener {
         Player player = event.getPlayer();
 
         InetAddress ip = player.getRemoteAddress().getAddress();
-        IPBanInfo result = MongoDataAPI.getDatabase().getBanApplication().getIPBanInfoSync(ip);
+        IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(ip.getHostAddress()).sync();
         if (result != null) {
             if (result.expired()) {
-                MongoDataAPI.getDatabase().getBanApplication().removePlayerBanAsync(ip);
+                MongoDataAPI.getDatabase().ban().ip().remove(ip.getHostAddress()).async();
             } else {
                 // A "permissive mode" option is needed
-                MongoDataAPI.getDatabase().getBanApplication().addPlayerBanAsync(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip, result.reason());
+                MongoDataAPI.getDatabase().ban()
+                        .player()
+                        .add(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip.getHostAddress(), result.reason())
+                        .async();
                 event.setResult(ResultedEvent.ComponentResult.denied(Component.text(result.reason())));
                 return;
             }
         } else {
-            PlayerBanInfo playerResult = MongoDataAPI.getDatabase().getBanApplication().findPlayerBanSync(player.getUniqueId());
+            PlayerBanInfo playerResult = MongoDataAPI.getDatabase().ban().player()
+                    .find(player.getUniqueId())
+                    .sync();
             if (playerResult != null) {
                 event.setResult(ResultedEvent.ComponentResult.denied(Component.text(playerResult.reason())));
                 return;
@@ -41,6 +46,6 @@ public class PlayerListener {
     }
 
     private void updatePlayerInfoAsync(Player player, InetAddress ip) {
-        MongoDataAPI.getDatabase().getPlayerApplication().addPlayerAsync(player.getUsername(), player.getUniqueId(), ip.getHostAddress());
+        MongoDataAPI.getDatabase().player().add(player.getUsername(), player.getUniqueId(), ip.getHostAddress());
     }
 }

@@ -11,8 +11,11 @@ import java.util.List;
  * when processing command-line arguments.
  */
 public enum CommandFlag {
-    RESULT("result", "r"),
-    TIME("time", "t");
+    TARGET("target", "e"),
+    REASON("reason"),
+    TIME("time"),
+    // In strict mode, if the selector is a player (not an IP), the player's IP will be banned
+    STRICT("strict");
 
     private final String fullName;
     private final String shortName;
@@ -20,6 +23,11 @@ public enum CommandFlag {
     CommandFlag(String fullName, String shortName) {
         this.fullName = fullName;
         this.shortName = shortName;
+    }
+
+    CommandFlag(String fullName) {
+        this.fullName = fullName;
+        this.shortName = fullName.substring(0, 1);
     }
 
     /**

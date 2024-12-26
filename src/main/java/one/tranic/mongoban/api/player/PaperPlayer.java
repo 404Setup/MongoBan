@@ -24,6 +24,11 @@ public class PaperPlayer implements MongoPlayer<Player> {
     }
 
     @Override
+    public String getUsername() {
+        return player.getName();
+    }
+
+    @Override
     public UUID getUniqueId() {
         return player.getUniqueId();
     }

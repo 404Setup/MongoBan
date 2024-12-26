@@ -1,8 +1,8 @@
 package one.tranic.mongoban.api.player;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import org.geysermc.cumulus.form.Form;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +13,13 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public interface MongoPlayer<C> {
+    /**
+     * Retrieves the username of the player.
+     *
+     * @return the username of the player as a string
+     */
+    String getUsername();
+
     /**
      * Retrieves the unique identifier (UUID) of the player.
      *
@@ -39,6 +46,10 @@ public interface MongoPlayer<C> {
         return MongoBanAPI.sendForm(getUniqueId(), form);
     }
 
+    default CompletableFuture<Boolean> sendFormAsync(Form form) {
+        return MongoBanAPI.runAsync(() -> sendForm(form));
+    }
+
     /**
      * Determines whether the player associated with this instance is a Bedrock player.
      * This method utilizes the {@link MongoBanAPI#isBedrockPlayer(UUID)} implementation.
@@ -55,7 +66,7 @@ public interface MongoPlayer<C> {
      * @return a {@link CompletableFuture} that, when completed, provides an instance of {@link PlayerInfo}
      * containing details about the player, such as their name, UUID, and associated IP addresses.
      */
-    default CompletableFuture<PlayerInfo> getPlayerInfoAsync() {
+    default CompletableFuture<PlayerInfo> getPlayerInfoAsync()   {
         return MongoBanAPI.runAsync(this::getPlayerInfo);
     }
 
@@ -65,7 +76,7 @@ public interface MongoPlayer<C> {
      * @return a {@link PlayerInfo} object representing the player's details
      */
     default PlayerInfo getPlayerInfo() {
-        return MongoDataAPI.getDatabase().getPlayerApplication().getPlayerSync(getUniqueId());
+        return MongoDataAPI.getDatabase().player().find(getUniqueId()).sync();
     }
 
     /**

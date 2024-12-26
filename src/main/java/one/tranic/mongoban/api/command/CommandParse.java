@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * The Parse class is responsible for parsing an array of command-line arguments
@@ -13,7 +14,7 @@ import java.util.Map;
  * <p>
  * Flags and their corresponding possible forms are defined within the {@code CommandFlag} enum.
  */
-public class Parse {
+public class CommandParse {
     private final Map<CommandFlag, String> flags = new EnumMap<>(CommandFlag.class);
 
     /**
@@ -33,14 +34,14 @@ public class Parse {
                 String flagName = current.substring(2);
                 CommandFlag flag = CommandFlag.fromString(flagName);
                 if (flag != null) {
-                    String value = (i + 1 < args.length && !args[i + 1].startsWith("-")) ? args[++i] : null;
+                    String value = (i + 1 < args.length && !args[i + 1].startsWith("-")) ? args[++i] : "bool";
                     flags.put(flag, value);
                 }
             } else if (current.startsWith("-")) {
                 String flagName = current.substring(1);
                 CommandFlag flag = CommandFlag.fromString(flagName);
                 if (flag != null) {
-                    String value = (i + 1 < args.length && !args[i + 1].startsWith("-")) ? args[++i] : null;
+                    String value = (i + 1 < args.length && !args[i + 1].startsWith("-")) ? args[++i] : "bool";
                     flags.put(flag, value);
                 }
             }
@@ -72,12 +73,12 @@ public class Parse {
     }
 
     /**
-     * Retrieves the value associated with the RESULT flag if it is present.
+     * Retrieves the value associated with the REASON flag from the parsed command-line arguments.
      *
-     * @return the value of the RESULT flag if provided, or null if the flag is not set.
+     * @return the value of the REASON flag if specified, or {@code null} if the flag was not provided or has no value.
      */
-    public @Nullable String getResultFlag() {
-        return getFlagValue(CommandFlag.RESULT);
+    public @Nullable String getReasonFlag() {
+        return getFlagValue(CommandFlag.REASON);
     }
 
     /**
@@ -87,5 +88,25 @@ public class Parse {
      */
     public @Nullable String getTimeFlag() {
         return getFlagValue(CommandFlag.TIME);
+    }
+
+    /**
+     * Retrieves the value associated with the TARGET flag from the parsed command-line arguments.
+     *
+     * @return the value of the TARGET flag if specified, or {@code null} if the flag was not provided or has no value.
+     */
+    public @Nullable String getTargetFlag() {
+        return getFlagValue(CommandFlag.TARGET);
+    }
+
+    /**
+     * Determines whether the strict mode flag is enabled based on the parsed
+     * command-line arguments.
+     *
+     * @return {@code true} if the strict mode flag is set to "bool", indicating
+     * strict mode is active; {@code false} otherwise.
+     */
+    public boolean getStrictFlag() {
+        return Objects.equals(getFlagValue(CommandFlag.STRICT), "bool");
     }
 }
