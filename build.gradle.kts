@@ -23,12 +23,12 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
 
-    compileOnly("net.md-5:bungeecord-api:1.20-R0.1-SNAPSHOT")
-    compileOnly("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
-    annotationProcessor("com.velocitypowered:velocity-api:3.3.0-SNAPSHOT")
+    compileOnly("net.md-5:bungeecord-api:1.18-R0.1-SNAPSHOT")
+    compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
+    annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 
     compileOnly("net.kyori:adventure-platform-bungeecord:4.3.4")
-    compileOnly("net.kyori:adventure-text-minimessage:4.17.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
     implementation("one.tranic:irs:1.3.2")
 
@@ -36,21 +36,24 @@ dependencies {
     compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")
 
     compileOnly("com.google.guava:guava:33.3.0-jre")
+    compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("dev.nipafx.args:record-args:0.9.2")
     implementation("org.mongodb:mongodb-driver-sync:5.2.1")
     implementation("redis.clients:jedis:5.2.0")
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
     implementation("com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4")
 }
 
+val libPackage = "one.tranic.mongoban.libs"
+
 tasks.shadowJar {
-    relocate("one.tranic.irs", "one.tranic.mongoban.libs.irs")
-    relocate("com.github.benmanes.caffeine.cache", "one.tranic.mongoban.libs.caffeine")
-    relocate("com.mongodb", "one.tranic.mongoban.libs.mongodb")
-    relocate("redis.clients.jedis", "one.tranic.mongoban.libs.jedis")
-    relocate("org.apache.commons.pool2", "one.tranic.mongoban.libs.pool2")
-    relocate("org.bson", "one.tranic.mongoban.libs.bson")
-    relocate("org.json", "one.tranic.mongoban.libs.json")
-    relocate("org.simpleyaml", "one.tranic.mongoban.libs.simpleyaml")
+    relocate("one.tranic.irs", "${libPackage}.irs")
+    relocate("com.mongodb", "${libPackage}.mongodb")
+    relocate("redis.clients.jedis", "${libPackage}.jedis")
+    relocate("org.apache.commons.pool2", "${libPackage}.pool2")
+    relocate("org.bson", "${libPackage}.bson")
+    relocate("org.json", "${libPackage}.json")
+    relocate("org.simpleyaml", "${libPackage}.simpleyaml")
+    relocate("dev.nipafx.args", "${libPackage}.args")
 
     minimize {
         exclude("META-INF/**")

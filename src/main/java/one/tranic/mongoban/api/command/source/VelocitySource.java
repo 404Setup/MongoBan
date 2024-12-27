@@ -23,6 +23,12 @@ public class VelocitySource implements SourceImpl<CommandSource, Player> {
     private final CommandSource commandSource;
     private final VelocityPlayer player;
 
+    public VelocitySource(CommandSource commandSource) {
+        this.invocation = null;
+        this.commandSource = commandSource;
+        this.player = commandSource instanceof Player ? new VelocityPlayer(commandSource) : null;
+    }
+
     public VelocitySource(SimpleCommand.Invocation invocation) {
         this.invocation = invocation;
         this.commandSource = invocation.source();

@@ -30,4 +30,8 @@ public class ParseException extends RuntimeException {
     public ParseException() {
         super();
     }
+
+    public ParseException(Exception exception) {
+        super(exception);
+    }
 }

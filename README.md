@@ -15,7 +15,7 @@ MongoBan needs the following dependencies:
 The following is a compatible version of the server:
 
 - Paper, Purpur, Folia: 1.18.2+
-- Velocity: 3.3.0+
+- Velocity: 3.4.0+
 - BungeeCord: 1.18.2+
 
 ## Development Plan

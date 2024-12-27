@@ -10,6 +10,7 @@ import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
 
@@ -157,6 +158,19 @@ public class DatabaseBanApplication {
         }
 
         /**
+         * Adds a ban entry for an IP address to the database and extends the ban to any associated players.
+         *
+         * @param ip       The IP address to be banned.
+         * @param operator The operator initiating the ban.
+         * @param duration The duration of the ban.
+         * @param reason   The reason for the ban. If null, a default reason is used.
+         * @return An {@code Actions<Void>} object to execute the operation synchronously or asynchronously.
+         */
+        public Actions<Void> add(InetAddress ip, Operator operator, String duration, @Nullable String reason) {
+            return add(ip.getHostAddress(), operator, duration, reason);
+        }
+
+        /**
          * Finds an IP ban record associated with the specified IP address.
          * The method queries the database for an IP ban document containing details such as
          * the responsible operator, the duration of the ban, and the reason for the ban.
@@ -176,6 +190,19 @@ public class DatabaseBanApplication {
                         banDoc.getString("reason")
                 ) : null;
             });
+        }
+
+        /**
+         * Finds an IP ban record associated with the specified IP address.
+         * The method queries the database for an IP ban document containing details such as
+         * the responsible operator, the duration of the ban, and the reason for the ban.
+         *
+         * @param address the IP address to query the ban record for
+         * @return an Actions object containing an IPBanInfo instance if a ban is found,
+         * or null if no ban is associated with the specified address
+         */
+        public Actions<IPBanInfo> find(InetAddress address) {
+            return find(address.getHostAddress());
         }
 
         /**
@@ -200,6 +227,17 @@ public class DatabaseBanApplication {
         }
 
         /**
+         * Removes an entry associated with the specified IP address from the database
+         * and any players linked to the IP address.
+         *
+         * @param address the IP address to be removed from the database and associated player entries
+         * @return an {@code Actions<Void>} representing the completion of the removal process
+         */
+        public Actions<Void> remove(InetAddress address) {
+            return remove(address.getHostAddress());
+        }
+
+        /**
          * Retrieves multiple player information records associated with a specific IP address.
          *
          * @param address the IP address used to query the database and retrieve associated player information
@@ -220,6 +258,17 @@ public class DatabaseBanApplication {
                 }
                 return players.toArray(new PlayerInfo[0]);
             });
+        }
+
+        /**
+         * Retrieves multiple player information records associated with a specific IP address.
+         *
+         * @param address the IP address used to query the database and retrieve associated player information
+         * @return an {@code Actions<PlayerInfo[]>} object containing an array of {@code PlayerInfo} objects
+         * corresponding to players whose IP addresses match the provided address
+         */
+        public Actions<PlayerInfo[]> finds(InetAddress address) {
+            return finds(address.getHostAddress());
         }
     }
 }

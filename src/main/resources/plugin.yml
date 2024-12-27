@@ -5,3 +5,5 @@ api-version: '1.18'
 load: STARTUP
 authors: [ 404 ]
 website: https://tranic.one
+libraries:
+  - com.github.ben-manes.caffeine:caffeine:3.1.8

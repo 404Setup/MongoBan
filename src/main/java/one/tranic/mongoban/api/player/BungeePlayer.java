@@ -3,8 +3,8 @@ package one.tranic.mongoban.api.player;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import one.tranic.mongoban.api.data.PlayerInfo;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,6 +21,44 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
 
     public BungeePlayer(CommandSender commandSender) {
         this.player = (ProxiedPlayer) commandSender;
+    }
+
+    /**
+     * Creates a new instance of {@link BungeePlayer} based on the given {@link ProxiedPlayer}.
+     * <p>
+     * If the provided player is null, this method returns null.
+     *
+     * @param player the {@link ProxiedPlayer} instance to wrap, may be null
+     * @return a new {@link BungeePlayer} instance wrapping the given player, or null if the input is null
+     */
+    public static @Nullable BungeePlayer createPlayer(@Nullable ProxiedPlayer player) {
+        if (player == null) return null;
+        return new BungeePlayer(player);
+    }
+
+    /**
+     * Creates a new {@link BungeePlayer} instance for the specified UUID.
+     *
+     * @param uuid the UUID of the player to create a {@link BungeePlayer} for; must not be null
+     * @return a {@link BungeePlayer} instance representing the player with the given UUID,
+     * or null if no player is found
+     */
+    public static @Nullable BungeePlayer createPlayer(@NotNull UUID uuid) {
+        ProxiedPlayer p = ProxyServer.getInstance().getPlayer(uuid);
+        return createPlayer(p);
+    }
+
+    /**
+     * Creates a {@link BungeePlayer} instance based on the provided username.
+     * <p>
+     * If no player with the given username is found, this method will return null.
+     *
+     * @param username the username of the player to create a {@link BungeePlayer} instance for; must not be null
+     * @return a {@link BungeePlayer} instance if the username maps to an online player, or null if no such player is found
+     */
+    public static @Nullable BungeePlayer createPlayer(@NotNull String username) {
+        ProxiedPlayer p = ProxyServer.getInstance().getPlayer(username);
+        return createPlayer(p);
     }
 
     @Override
