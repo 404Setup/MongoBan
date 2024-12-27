@@ -14,9 +14,6 @@ import java.util.Locale;
 /**
  * Implementation of the SourceImpl interface for the Bukkit/Spigot Paper platform.
  * <p>
- * This class provides a representation of a command source within the Paper
- * environment, which can either be a Player or a generic CommandSender.
- * <p>
  * It defines methods to handle actions such as sending messages or kicking
  * players and retrieves information about the source.
  */

@@ -37,6 +37,7 @@ dependencies {
 
     compileOnly("com.google.guava:guava:33.3.0-jre")
     compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
     implementation("dev.nipafx.args:record-args:0.9.2")
     implementation("org.mongodb:mongodb-driver-sync:5.2.1")
     implementation("redis.clients:jedis:5.2.0")
@@ -54,6 +55,7 @@ tasks.shadowJar {
     relocate("org.json", "${libPackage}.json")
     relocate("org.simpleyaml", "${libPackage}.simpleyaml")
     relocate("dev.nipafx.args", "${libPackage}.args")
+    relocate("com.alibaba.fastjson2", "${libPackage}.fastjson2")
 
     minimize {
         exclude("META-INF/**")

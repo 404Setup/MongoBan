@@ -114,10 +114,40 @@ public class DatabaseBanApplication {
          */
         public Actions<Void> remove(@NotNull UUID playerId) {
             return new Actions<>(() -> {
-                Document query = new Document("id", playerId);
-                Document result = application.database.queryOne(application.collection, query);
-                if (result != null) application.database.delete(application.collection, query);
+                application.database.delete(application.collection, "id", playerId);
 
+                return null;
+            });
+        }
+
+        /**
+         * Removes records from the database associated with the specified player's IP address.
+         * <p>
+         * This method deletes all documents matching the given IP address from the relevant
+         * collection in the database.
+         *
+         * @param playerIp the {@link InetAddress} representing the player's IP address
+         *                 whose records are to be removed.
+         *                 <p>
+         *                 Must not be null.
+         * @return an {@link Actions} object encapsulating the database operation to remove
+         * the records associated with the specified IP address
+         */
+        public Actions<Void> remove(@NotNull InetAddress playerIp) {
+            return remove(playerIp.getHostAddress());
+        }
+
+        /**
+         * Removes all records associated with the given player's IP address from the database.
+         * <p>
+         * This method deletes all documents in the database collection that match the specified IP address.
+         *
+         * @param playerIp the IP address of the player whose records are to be removed; must not be null
+         * @return an {@code Actions<Void>} instance representing the operation to remove the records
+         */
+        public Actions<Void> remove(@NotNull String playerIp) {
+            return new Actions<>(() -> {
+                application.database.deleteMany(application.collection, "ip", playerIp);
                 return null;
             });
         }
@@ -214,13 +244,8 @@ public class DatabaseBanApplication {
          */
         public Actions<Void> remove(String address) {
             return new Actions<>(() -> {
-                Document query = new Document("ip", address);
-                Document result = application.database.queryOne(application.collection, query);
-                if (result != null) application.database.delete(application.collection, query);
-
-                PlayerInfo[] players = finds(address).sync();
-                if (players.length != 0)
-                    for (PlayerInfo player : players) application.player.remove(player.uuid()).sync();
+                application.database.deleteMany(application.collection, "ip", address);
+                application.player.remove(address).sync();
 
                 return null;
             });

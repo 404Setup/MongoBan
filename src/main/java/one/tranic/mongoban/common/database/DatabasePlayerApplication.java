@@ -43,9 +43,11 @@ public class DatabasePlayerApplication {
             Document playerDoc = database.queryOne(this.collection, query);
             Document updateDoc;
             if (playerDoc == null) {
-                updateDoc = new Document()
+                updateDoc = new Document("id", uuid)
                         .append("name", name)
                         .append("ip", Collections.newArrayList(ip));
+
+                database.insert(this.collection, updateDoc);
             } else {
                 List<String> ips = playerDoc.getList("ip", String.class);
                 if (ips.size() >= 6) ips.removeFirst();

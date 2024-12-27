@@ -2,7 +2,11 @@ package one.tranic.mongoban.api;
 
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.Operator;
+import one.tranic.mongoban.api.parse.json.FastJsonParser;
+import one.tranic.mongoban.api.parse.json.GsonParser;
+import one.tranic.mongoban.api.parse.json.JsonParser;
 import one.tranic.mongoban.common.Collections;
+import one.tranic.mongoban.common.Config;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.geyser.api.GeyserApi;
@@ -43,6 +47,11 @@ public class MongoBanAPI {
             45L, TimeUnit.SECONDS,
             new SynchronousQueue<>(),
             Thread.ofVirtual().factory());
+
+    /**
+     * A static instance of {@link JsonParser} that provides JSON parsing and serialization functionalities.
+     */
+    public final static JsonParser jsonParser = Config.isFastjson() ? new FastJsonParser() : new GsonParser();
 
     private static boolean geyser = false;
     private static boolean floodgate = false;

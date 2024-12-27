@@ -1,9 +1,6 @@
 package one.tranic.mongoban.velocity;
 
 import com.google.inject.Inject;
-import com.velocitypowered.api.command.Command;
-import com.velocitypowered.api.command.CommandManager;
-import com.velocitypowered.api.command.CommandMeta;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
@@ -14,7 +11,6 @@ import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.common.Config;
 import one.tranic.mongoban.common.commands.BanCommand;
-import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 
@@ -60,13 +56,6 @@ public class MongoBan {
     }
 
     private void createCommands() {
-        CommandManager commandManager = proxy.getCommandManager();
-        CommandMeta commandMeta = commandManager.metaBuilder("vban")
-                .plugin(this)
-                .build();
-
-        @Nullable Command banCommand = new BanCommand<VelocitySource>().unwrapVelocity();
-
-        commandManager.register(commandMeta, banCommand);
+        new BanCommand<VelocitySource>().registerWithVelocity(this, proxy);
     }
 }

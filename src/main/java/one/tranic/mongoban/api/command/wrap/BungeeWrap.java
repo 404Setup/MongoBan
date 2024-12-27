@@ -13,17 +13,6 @@ import one.tranic.mongoban.api.command.source.BungeeSource;
  * The class extends the BungeeCord-specific {@link net.md_5.bungee.api.plugin.Command} class
  * and implements the {@link TabExecutor} interface, enabling both command execution and tab
  * completion functionalities.
- * <p>
- * Responsibilities of this class include:
- * <p>
- * - Adapting a generic Command designed for BungeeSource to the BungeeCord API.
- * <p>
- * - Handling command execution requests through the {@link #execute(CommandSender, String[])} method.
- * <p>
- * - Generating tab completion suggestions with the {@link #onTabComplete(CommandSender, String[])} method.
- * <p>
- * This class should be used in a BungeeCord environment. For other platforms such as Velocity or Bukkit,
- * alternative wrappers like VelocityWrap or BukkitWrap should be used respectively.
  *
  * @deprecated BungeeCord is considered outdated. It is recommended to use more modern proxies such as Velocity.
  * <p>

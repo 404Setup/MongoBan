@@ -197,9 +197,7 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
                 .plugin(velocityPlugin)
                 .build();
 
-        @Nullable com.velocitypowered.api.command.Command cmd = unwrapVelocity();
-
-        commandManager.register(commandMeta, cmd);
+        commandManager.register(commandMeta, unwrapVelocity());
         return true;
     }
 }

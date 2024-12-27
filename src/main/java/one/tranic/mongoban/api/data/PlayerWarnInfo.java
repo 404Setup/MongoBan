@@ -1,5 +1,7 @@
 package one.tranic.mongoban.api.data;
 
+import one.tranic.mongoban.common.Parse;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -24,5 +26,15 @@ import java.util.UUID;
  * @param duration The duration of the warning, in an unspecified unit of time.
  * @param reason   The reason for the warning, or {@code null} if no reason is provided.
  */
-public record PlayerWarnInfo(UUID uuid, Operator operator, int duration, @Nullable String reason) {
+public record PlayerWarnInfo(UUID uuid, Operator operator, @NotNull String id, @NotNull String duration,
+                             @Nullable String reason) {
+    public boolean expired() {
+        if (duration == null || duration.isBlank()) return true;
+        if (duration.equals("forever")) return false;
+        try {
+            return Parse.isTimeInPast(Parse.parseStringTime(duration));
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

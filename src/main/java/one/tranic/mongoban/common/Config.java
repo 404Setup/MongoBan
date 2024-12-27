@@ -14,6 +14,7 @@ public class Config {
     private static int cache;
     private static database database;
     private static redis redis;
+    private static boolean fastjson = false;
     private static boolean updaterCheck = true;
     private static boolean updaterSimpleMode = true;
 
@@ -27,6 +28,10 @@ public class Config {
 
     public static redis getRedis() {
         return redis;
+    }
+
+    public static boolean isFastjson() {
+        return fastjson;
     }
 
     public static boolean isUpdaterCheck() {
@@ -77,6 +82,8 @@ public class Config {
             redis = new redis(redis_host, redis_port, redis_db, redis_user, redis_passwd);
         }
 
+        fastjson = configuration.getBoolean("fastjson");
+
         updaterCheck = configuration.getBoolean("updater.check");
         updaterSimpleMode = configuration.getBoolean("updater.simple-mode");
     }
@@ -95,6 +102,8 @@ public class Config {
         configuration.addDefault("redis.user", "");
         configuration.addDefault("redis.passwd", "");
         configuration.addDefault("redis.db", 0);
+
+        configuration.addDefault("fastjson", false);
 
         configuration.addDefault("updater.check", true);
         configuration.addDefault("updater.simple-mode", true);

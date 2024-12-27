@@ -14,9 +14,6 @@ import java.util.Locale;
 
 /**
  * Implementation of the SourceImpl interface for the VelocityProxy platform.
- * <p>
- * This class serves as a representation of a command source in VelocityProxy,
- * which may be a player or the console.
  */
 public class VelocitySource implements SourceImpl<CommandSource, Player> {
     private final SimpleCommand.Invocation invocation;

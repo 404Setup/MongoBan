@@ -6,6 +6,8 @@ import one.tranic.mongoban.api.data.PlayerWarnInfo;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Rand;
 import org.bson.Document;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,17 +31,16 @@ public class DatabaseWarnApplication {
      * @param reason   the reason for issuing the warning
      * @return an {@code Actions<Void>} instance representing the operation to add the warning
      */
-    public Actions<Void> add(UUID playerId, Operator operator, int duration, String reason) {
+    public Actions<Void> add(@NotNull UUID playerId, @NotNull Operator operator, @Nullable String duration, @Nullable String reason) {
         return new Actions<>(() -> {
             String warnId = Rand.generateRandomWarnId(21);
-            Document query = new Document("id", warnId);
-            Document warnDoc = new Document()
+            Document warnDoc = new Document("id", warnId)
                     .append("playerId", playerId)
                     .append("operator", operator)
-                    .append("duration", duration)
-                    .append("reason", reason);
+                    .append("duration", duration != null ? duration : "forever")
+                    .append("reason", reason != null ? reason : "<No reason provided>");
 
-            database.update(this.collection, query, warnDoc);
+            database.insert(this.collection, warnDoc);
 
             return null;
         });
@@ -50,8 +51,8 @@ public class DatabaseWarnApplication {
      *
      * @param warnId The unique identifier for the warning.
      * @return An {@code Actions<PlayerWarnInfo>} object that, when executed, returns
-     *         a {@code PlayerWarnInfo} instance containing the details of the warning
-     *         if found, or {@code null} if no warning matches the provided ID.
+     * a {@code PlayerWarnInfo} instance containing the details of the warning
+     * if found, or {@code null} if no warning matches the provided ID.
      */
     public Actions<PlayerWarnInfo> find(String warnId) {
         return new Actions<>(() -> {
@@ -60,7 +61,8 @@ public class DatabaseWarnApplication {
             return warnDoc != null ? new PlayerWarnInfo(
                     warnDoc.get("playerId", UUID.class),
                     warnDoc.get("operator", Operator.class),
-                    warnDoc.getInteger("duration"),
+                    warnDoc.getString("id"),
+                    warnDoc.getString("duration"),
                     warnDoc.getString("reason")
             ) : null;
         });
@@ -85,7 +87,8 @@ public class DatabaseWarnApplication {
                 warnings.add(new PlayerWarnInfo(
                         playerId,
                         warnDoc.get("operator", Operator.class),
-                        warnDoc.getInteger("duration"),
+                        warnDoc.getString("id"),
+                        warnDoc.getString("duration"),
                         warnDoc.getString("reason")
                 ));
             }
@@ -101,8 +104,7 @@ public class DatabaseWarnApplication {
      */
     public Actions<Void> remove(String warnId) {
         return new Actions<>(() -> {
-            Document query = new Document("id", warnId);
-            database.delete(this.collection, query);
+            database.delete(this.collection, "id", warnId);
 
             return null;
         });
@@ -116,8 +118,7 @@ public class DatabaseWarnApplication {
      */
     public Actions<Void> remove(UUID playerId) {
         return new Actions<>(() -> {
-            Document query = new Document("playerId", playerId);
-            database.deleteMany(this.collection, query);
+            database.deleteMany(this.collection, "playerId", playerId);
 
             return null;
         });
