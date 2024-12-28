@@ -1,6 +1,7 @@
 package one.tranic.mongoban.common.cache;
 
 import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.cache.CacheService;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 

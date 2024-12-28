@@ -3,6 +3,7 @@ package one.tranic.mongoban.velocity.listener;
 import com.velocitypowered.api.event.PostOrder;
 import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
@@ -14,7 +15,7 @@ import java.net.InetAddress;
 
 public class PlayerListener {
     @Subscribe(priority = 0, order = PostOrder.CUSTOM)
-    public void onPlayerLogin(com.velocitypowered.api.event.connection.LoginEvent event) {
+    public void onPlayerLogin(LoginEvent event) {
         if (!event.getResult().isAllowed()) return;
         Player player = event.getPlayer();
 

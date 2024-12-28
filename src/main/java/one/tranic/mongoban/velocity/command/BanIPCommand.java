@@ -11,7 +11,8 @@ import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.exception.ParseException;
-import one.tranic.mongoban.common.Parse;
+import one.tranic.mongoban.api.parse.player.PlayerParser;
+import one.tranic.mongoban.api.parse.time.TimeParser;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -72,7 +73,7 @@ public class BanIPCommand implements SimpleCommand {
         }
         String parsedTime = null;
         try {
-            parsedTime = Parse.timeArg(timeArg);
+            parsedTime = TimeParser.parse(timeArg);
         } catch (ParseException ignored) {
             reason = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
         }
@@ -91,7 +92,7 @@ public class BanIPCommand implements SimpleCommand {
     public List<String> suggest(Invocation invocation) {
         String[] args = invocation.arguments();
         if (args.length == 1) {
-            return Parse.players();
+            return PlayerParser.parse();
         } else if (args.length == 2) return MongoBanAPI.TIME_SUGGEST;
         else if (args.length == 3)
             return MongoBanAPI.REASON_SUGGEST;

@@ -1,5 +1,8 @@
 package one.tranic.mongoban.common.cache;
 
+import one.tranic.mongoban.api.cache.Cache;
+import one.tranic.mongoban.api.cache.CacheService;
+
 public class RedisCache implements Cache {
     private final RedisCacheService service;
 

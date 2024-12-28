@@ -1,4 +1,4 @@
-package one.tranic.mongoban.common.updater;
+package one.tranic.mongoban.api.updater;
 
 import java.util.ArrayList;
 import java.util.Arrays;

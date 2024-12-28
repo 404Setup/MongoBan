@@ -1,4 +1,6 @@
-package one.tranic.mongoban.api;
+package one.tranic.mongoban.api.task;
+
+import one.tranic.mongoban.api.MongoBanAPI;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;

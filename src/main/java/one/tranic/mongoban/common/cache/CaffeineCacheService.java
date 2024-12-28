@@ -2,6 +2,7 @@ package one.tranic.mongoban.common.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import one.tranic.mongoban.api.cache.CacheService;
 
 import java.time.Duration;
 import java.util.Optional;

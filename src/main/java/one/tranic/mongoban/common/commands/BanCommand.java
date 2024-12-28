@@ -11,9 +11,10 @@ import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.exception.CommandException;
+import one.tranic.mongoban.api.parse.player.PlayerParser;
+import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
-import one.tranic.mongoban.common.Parse;
 import one.tranic.mongoban.common.form.GeyserForm;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +68,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                 {
                     @Nullable String timeArg = parse.duration().orElse(null);
                     if (timeArg == null) timeArg = "forever";
-                    time = Parse.timeArg(timeArg);
+                    time = TimeParser.parse(timeArg);
                 }
 
 
@@ -114,7 +115,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
     public List<String> suggest(C source) {
         String[] args = source.getArgs();
         if (args.length == 1) {
-            return Parse.players();
+            return PlayerParser.parse();
         } else if (args.length == 2) return MongoBanAPI.TIME_SUGGEST;
         else if (args.length == 3)
             return MongoBanAPI.REASON_SUGGEST;

@@ -1,10 +1,10 @@
-package one.tranic.mongoban.common.updater;
+package one.tranic.mongoban.api.updater;
 
+import one.tranic.mongoban.api.MongoBanAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 /**
@@ -37,7 +37,7 @@ public interface Updater {
      *                 if an error occurs.
      */
     default void getUpdateAsync(@NotNull Consumer<@Nullable UpdateRecord> consumer) {
-        Thread.ofVirtual().name("MongoBan Async Updater").start(() -> {
+        MongoBanAPI.runAsync(() -> {
             try {
                 consumer.accept(getUpdate());
             } catch (IOException e) {

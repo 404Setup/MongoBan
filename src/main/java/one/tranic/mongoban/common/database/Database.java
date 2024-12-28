@@ -7,7 +7,7 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Data;
-import one.tranic.mongoban.common.cache.Cache;
+import one.tranic.mongoban.api.cache.Cache;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;

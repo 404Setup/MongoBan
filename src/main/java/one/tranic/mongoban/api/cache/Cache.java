@@ -1,4 +1,4 @@
-package one.tranic.mongoban.common.cache;
+package one.tranic.mongoban.api.cache;
 
 /**
  * Represents a generic cache interface that provides access

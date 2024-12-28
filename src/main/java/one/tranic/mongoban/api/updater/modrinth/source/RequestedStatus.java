@@ -1,4 +1,4 @@
-package one.tranic.mongoban.common.updater.modrinth.source;
+package one.tranic.mongoban.api.updater.modrinth.source;
 
 import org.jetbrains.annotations.Nullable;
 

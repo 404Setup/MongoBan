@@ -1,7 +1,7 @@
 package one.tranic.mongoban.api;
 
 import one.tranic.mongoban.common.Config;
-import one.tranic.mongoban.common.cache.Cache;
+import one.tranic.mongoban.api.cache.Cache;
 import one.tranic.mongoban.common.cache.CaffeineCache;
 import one.tranic.mongoban.common.cache.RedisCache;
 import one.tranic.mongoban.common.database.Database;

@@ -1,6 +1,6 @@
 package one.tranic.mongoban.api.data;
 
-import one.tranic.mongoban.common.Parse;
+import one.tranic.mongoban.api.parse.time.TimeParser;
 
 /**
  * Encapsulates information related to an IP ban in a system.
@@ -25,7 +25,7 @@ public record IPBanInfo(String ip, Operator operator, String duration, String re
         if (duration == null || duration.isBlank()) return true;
         if (duration.equals("forever")) return false;
         try {
-            return Parse.isTimeInPast(Parse.parseStringTime(duration));
+            return TimeParser.isTimeInPast(TimeParser.parseStringTime(duration));
         } catch (Exception e) {
             return false;
         }

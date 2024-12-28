@@ -1,4 +1,4 @@
-package one.tranic.mongoban.common.cache;
+package one.tranic.mongoban.api.cache;
 
 import java.util.Optional;
 

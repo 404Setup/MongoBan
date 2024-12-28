@@ -1,6 +1,6 @@
 package one.tranic.mongoban.common.database;
 
-import one.tranic.mongoban.api.Actions;
+import one.tranic.mongoban.api.task.Actions;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerBanInfo;

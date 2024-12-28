@@ -1,10 +1,10 @@
-package one.tranic.mongoban.common.updater.modrinth;
+package one.tranic.mongoban.api.updater.modrinth;
 
-import com.google.gson.Gson;
-import one.tranic.mongoban.common.updater.UpdateRecord;
-import one.tranic.mongoban.common.updater.VersionComparator;
-import one.tranic.mongoban.common.updater.modrinth.source.Loaders;
-import one.tranic.mongoban.common.updater.modrinth.source.ModrinthVersionSource;
+import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.updater.UpdateRecord;
+import one.tranic.mongoban.api.updater.VersionComparator;
+import one.tranic.mongoban.api.updater.modrinth.source.Loaders;
+import one.tranic.mongoban.api.updater.modrinth.source.ModrinthVersionSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,6 @@ public class ModrinthUpdate {
     private final String gameVersion;
     private final boolean simpleMode;
     private final HttpClient client = HttpClient.newHttpClient();
-    private final Gson gson = new Gson();
 
     /**
      * A default empty {@link UpdateRecord} used when no updates are available.
@@ -98,7 +97,7 @@ public class ModrinthUpdate {
             String responseBody = response.body();
             if (responseBody == null || responseBody.isEmpty()) return empty;
 
-            ModrinthVersionSource[] updater = gson.fromJson(responseBody, ModrinthVersionSource[].class);
+            ModrinthVersionSource[] updater = MongoBanAPI.jsonParser.parse(responseBody, ModrinthVersionSource[].class);
             if (updater.length == 0) return empty;
 
             for (ModrinthVersionSource source : updater) {
