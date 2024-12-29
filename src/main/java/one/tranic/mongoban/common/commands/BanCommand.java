@@ -11,7 +11,6 @@ import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.exception.CommandException;
-import one.tranic.mongoban.api.parse.player.PlayerParser;
 import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
@@ -19,7 +18,6 @@ import one.tranic.mongoban.common.form.GeyserForm;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
-import java.util.List;
 
 // Todo - Unfinished
 public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
@@ -71,7 +69,6 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                     time = TimeParser.parse(timeArg);
                 }
 
-
                 @Nullable String reason = parse.reason().orElse(null);
                 boolean strict = parse.strict().orElse(false);
 
@@ -81,11 +78,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                     if (result != null) {
                         if (result.expired()) MongoDataAPI.getDatabase().ban().ip().remove(inip).sync();
                         else {
-                            source.sendMessage(Component.text("The specified IP address is already banned:", NamedTextColor.YELLOW));
-                            source.sendMessage(Component.text("IP: " + result.ip(), NamedTextColor.GOLD));
-                            source.sendMessage(Component.text("Operator: " + result.operator().name(), NamedTextColor.GREEN));
-                            source.sendMessage(Component.text("Duration: " + (result.duration() != null ? result.duration() : "Permanent"), NamedTextColor.BLUE));
-                            source.sendMessage(Component.text("Reason: " + result.reason(), NamedTextColor.RED));
+                            source.sendMessage(Message.alreadyBannedMessage(result.ip(), result.operator(), result.duration(), result.reason()));
                             return;
                         }
                     }
@@ -109,21 +102,5 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                 throw new CommandException(e);
             }
         });
-    }
-
-    @Override
-    public List<String> suggest(C source) {
-        String[] args = source.getArgs();
-        if (args.length == 1) {
-            return PlayerParser.parse();
-        } else if (args.length == 2) return MongoBanAPI.TIME_SUGGEST;
-        else if (args.length == 3)
-            return MongoBanAPI.REASON_SUGGEST;
-        return MongoBanAPI.EMPTY_LIST;
-    }
-
-    @Override
-    public boolean hasPermission(C source) {
-        return source.hasPermission(getPermission());
     }
 }

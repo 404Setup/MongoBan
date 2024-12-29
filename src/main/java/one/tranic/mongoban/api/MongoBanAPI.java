@@ -21,19 +21,11 @@ public class MongoBanAPI {
      * Represents the console source used for command execution and interaction in the system.
      */
     public final static SourceImpl<?, ?> CONSOLE_SOURCE = getConsoleSource();
-    /**
-     * An immutable and unmodifiable list that is intended to represent an empty list of strings.
-     */
-    public final static List<String> EMPTY_LIST = Collections.newUnmodifiableList();
 
-    /**
-     * A predefined unmodifiable list of suggested reasons for reporting or moderating a player in the system.
-     */
+    public final static List<String> EMPTY_LIST = Collections.newUnmodifiableList();
+    public final static List<String> FLAG_LIST = Collections.newUnmodifiableList("--target", "--duration", "--reason", "--strict");
     public final static List<String> REASON_SUGGEST = Collections.newUnmodifiableList("Griefing", "Cheating", "Spamming", "Abusing", "OtherReason");
-    /**
-     * A predefined, unmodifiable list of suggested time durations for banning or restricting users.
-     */
-    public final static List<String> TIME_SUGGEST = Collections.newUnmodifiableList("10s", "1m", "1h", "1d", "1mo", "1y", "forever");
+    public final static List<String> TIME_SUGGEST = Collections.newUnmodifiableList("s", "m", "h", "d", "mo", "y", "forever");
 
     /**
      * Represents a predefined system operator designed for administrative tasks within the application.

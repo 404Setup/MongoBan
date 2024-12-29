@@ -6,7 +6,12 @@ import one.tranic.mongoban.api.command.source.SourceImpl;
 import java.util.List;
 
 // Todo
-public class UnWarnCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+public class MongoBanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+    public MongoBanCommand() {
+        this.setName("mban");
+        this.setPermission("mongoban.command.mban");
+    }
+
     @Override
     public void execute(C source) {
 
@@ -15,10 +20,5 @@ public class UnWarnCommand<C extends SourceImpl<?, ?>> extends Command<C> {
     @Override
     public List<String> suggest(C source) {
         return List.of();
-    }
-
-    @Override
-    public boolean hasPermission(C source) {
-        return false;
     }
 }

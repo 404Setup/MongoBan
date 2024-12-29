@@ -62,6 +62,11 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
     }
 
     @Override
+    public int argSize() {
+        return args.length;
+    }
+
+    @Override
     public @Nullable Locale locale() {
         return player != null ? player.getLocale() : Locale.getDefault();
     }

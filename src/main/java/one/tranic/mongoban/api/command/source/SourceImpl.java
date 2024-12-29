@@ -50,6 +50,13 @@ public interface SourceImpl<C, R> {
     String[] getArgs();
 
     /**
+     * Retrieves the number of arguments associated with the source.
+     *
+     * @return the number of arguments as an integer.
+     */
+    int argSize();
+
+    /**
      * Retrieves the locale associated with this source, identifying the language
      * and regional preferences set for the source.
      *

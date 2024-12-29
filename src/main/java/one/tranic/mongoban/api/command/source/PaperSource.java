@@ -51,6 +51,11 @@ public class PaperSource implements SourceImpl<CommandSender, Player> {
     }
 
     @Override
+    public int argSize() {
+        return args.length;
+    }
+
+    @Override
     public @Nullable Locale locale() {
         return player != null ? player.getLocale() : Locale.getDefault();
     }

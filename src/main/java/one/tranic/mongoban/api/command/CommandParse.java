@@ -14,6 +14,7 @@ import java.util.Objects;
  * <p>
  * Flags and their corresponding possible forms are defined within the {@code CommandFlag} enum.
  */
+@Deprecated
 public class CommandParse {
     private final Map<CommandFlag, String> flags = new EnumMap<>(CommandFlag.class);
 

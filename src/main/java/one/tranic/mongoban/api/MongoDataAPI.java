@@ -1,7 +1,7 @@
 package one.tranic.mongoban.api;
 
-import one.tranic.mongoban.common.Config;
 import one.tranic.mongoban.api.cache.Cache;
+import one.tranic.mongoban.common.Config;
 import one.tranic.mongoban.common.cache.CaffeineCache;
 import one.tranic.mongoban.common.cache.RedisCache;
 import one.tranic.mongoban.common.database.Database;
@@ -10,16 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * MongoDataAPI provides a static API for managing database and cache instances.
- * <p>
- * This class handles connections to a database and a caching system, allowing
- * the configuration, retrieval, and closure of these resources.
- * <p>
- * Methods in this class ensure controlled and synchronized access to resources
- * by enforcing security restrictions and validating inputs.
- * <p>
- * The API is designed to be used internally within packages that match a
- * specific naming convention, ensuring restricted access to critical methods
- * such as `setDatabase`, `setCache`, `close`, and `reconnect`.
  */
 public class MongoDataAPI {
     private static Database database;
@@ -27,8 +17,6 @@ public class MongoDataAPI {
 
     /**
      * Retrieves the current instance of the database being used by the application.
-     * <p>
-     * The database instance provides access to MongoDB operations and configurations.
      *
      * @return the current {@code Database} instance used by the application, or {@code null} if no database is set.
      */
@@ -38,10 +26,6 @@ public class MongoDataAPI {
 
     /**
      * Sets the database connection for the MongoDataAPI.
-     * <p>
-     * If a previous database connection exists, it disconnects the existing connection before assigning the new one.
-     * <p>
-     * Ensures that the caller has the appropriate permissions to modify the database connection.
      *
      * @param database the new database to be set; must not be null
      * @throws SecurityException        if the caller is not authorized to modify the database connection
@@ -59,8 +43,6 @@ public class MongoDataAPI {
 
     /**
      * Retrieves the currently set cache instance.
-     * <p>
-     * If no cache has been set, returns null.
      *
      * @return the currently set {@link Cache} instance, or null if no cache is available
      */
@@ -71,8 +53,6 @@ public class MongoDataAPI {
     /**
      * Sets the cache instance for the MongoDataAPI class. If a cache is already set,
      * it will be closed and replaced with the provided cache instance.
-     * <p>
-     * This method ensures that only authorized callers can set a new cache.
      *
      * @param cache the cache instance to be set; must not be null
      * @throws SecurityException        if the caller is not authorized to invoke this method
@@ -90,9 +70,6 @@ public class MongoDataAPI {
 
     /**
      * Closes and releases the resources associated with the current database and cache instances.
-     * <p>
-     * This method is synchronized to ensure thread safety when accessing and updating the `database`
-     * and `cache` fields.
      *
      * @throws SecurityException if the caller is not authorized to use this method
      */
@@ -108,16 +85,6 @@ public class MongoDataAPI {
         }
     }
 
-    /**
-     * Checks whether the caller of this method belongs to the "one.tranic.mongoban" package.
-     * <p>
-     * This method examines the stack trace of the current thread to verify
-     * if any class in the invocation chain belongs to the specified package.
-     * <p>
-     * If a match is found, the caller is considered allowed.
-     *
-     * @return true if the caller belongs to the "one.tranic.mongoban" package, false otherwise
-     */
     private static boolean isCallerAllowed() {
         try {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
@@ -136,16 +103,6 @@ public class MongoDataAPI {
 
     /**
      * Reinitializes the cache and database connections for the system.
-     * <p>
-     * This method is synchronized to ensure thread safety during the reconnection process.
-     * The reconnect method fetches the necessary configurations for the cache and database
-     * from the {@link Config} class and creates instances of {@link CaffeineCache} or {@link RedisCache}
-     * based on the cache configuration. It also establishes a database connection using
-     * the specified database configuration details such as host, port, database name, user,
-     * and password. Both the cache and database instances are set in the {@link MongoDataAPI}.
-     * <p>
-     * The method validates the caller's permissions before execution to ensure only authorized
-     * invocations by utilizing the {@code isCallerAllowed} method.
      *
      * @throws SecurityException if the caller is not authorized to invoke this method.
      */

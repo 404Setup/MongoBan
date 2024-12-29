@@ -1,6 +1,7 @@
 package one.tranic.mongoban.api.parse.json;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONFactory;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -11,6 +12,9 @@ import org.jetbrains.annotations.Nullable;
  * and to serialize objects into JSON string representations using FastJSON.
  */
 public class FastJsonParser implements JsonParser {
+    public FastJsonParser() {
+        JSONFactory.setDisableJSONB(false);
+    }
 
     @Override
     public <T> T parse(@Nullable String text, Class<T> clazz) {

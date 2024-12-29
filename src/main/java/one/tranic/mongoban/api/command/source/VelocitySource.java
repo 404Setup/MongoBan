@@ -55,6 +55,11 @@ public class VelocitySource implements SourceImpl<CommandSource, Player> {
     }
 
     @Override
+    public int argSize() {
+        return invocation.arguments().length;
+    }
+
+    @Override
     public @Nullable Locale locale() {
         return player != null ? player.getLocale()
                 : Locale.getDefault();

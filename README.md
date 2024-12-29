@@ -1,7 +1,9 @@
-# MongoBan
+<img src="./assets/MongoBan_cmp.png" alt="Logo" align="right" width="250">
 
-MongoBan is still under development. It is an experimental project,
-and you will not be able to use it until the first version is released.
+# MongoBan
+MongoBan is still in beta, so please keep an eye on our changelog to prepare to modify the configuration files.
+
+I will make a database upgrade script every time the database structure is updated, and it will be automatically run when the server is started.
 
 ## Install
 
@@ -9,23 +11,14 @@ MongoBan needs the following dependencies:
 
 - MongoDB 8
 - Redis (Optional)
-- A Minecraft server (Paper, Purpur, Folia, BungeeCord, Velocity)
+- A Minecraft server (Incompatible with Mod Loader)
 - Java 21
 
 The following is a compatible version of the server:
 
-- Paper, Purpur, Folia: 1.18.2+
-- Velocity: 3.4.0+
-- BungeeCord: 1.18.2+
-
-## Development Plan
-
-The development plan is carried out in sequence, and the core logic is still not completed yet.
-
-1. Velocity
-2. Paper/Purpur/Folia
-3. BungeeCord
-4. Mod (Possible launch)
+- Paper, Purpur, Folia: 1.18.2+ (WIP)
+- Velocity: 3.4.0+ (WIP)
+- BungeeCord: 1.18.2+ (WIP)
 
 ## Usage Agreement
 

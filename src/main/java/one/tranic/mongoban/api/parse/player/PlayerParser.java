@@ -53,22 +53,28 @@ public class PlayerParser {
         if (max < 1) {
             throw new IllegalArgumentException("Parameter max must be greater than or equal to 1");
         }
-        List<String> matchingPlayers;
+        List<String> matchingPlayers = Collections.newArrayList();
         if (Platform.isBukkit()) {
-            matchingPlayers = org.bukkit.Bukkit.getOnlinePlayers().stream()
-                    .map(org.bukkit.entity.Player::getName)
-                    .limit(max)
-                    .collect(Collections::newArrayList, List::add, List::addAll);
+            int count = 0;
+            for (org.bukkit.entity.Player player : org.bukkit.Bukkit.getOnlinePlayers()) {
+                if (count >= max) break;
+                matchingPlayers.add(player.getName());
+                count++;
+            }
         } else if (Platform.get() == Platform.Velocity) {
-            matchingPlayers = one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers().stream()
-                    .map(com.velocitypowered.api.proxy.Player::getUsername)
-                    .limit(max)
-                    .collect(Collections::newArrayList, List::add, List::addAll);
+            int count = 0;
+            for (com.velocitypowered.api.proxy.Player player : one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers()) {
+                if (count >= max) break;
+                matchingPlayers.add(player.getUsername());
+                count++;
+            }
         } else {
-            matchingPlayers = net.md_5.bungee.api.ProxyServer.getInstance().getPlayers().stream()
-                    .map(net.md_5.bungee.api.connection.ProxiedPlayer::getName)
-                    .limit(max)
-                    .collect(Collections::newArrayList, List::add, List::addAll);
+            int count = 0;
+            for (net.md_5.bungee.api.connection.ProxiedPlayer player : net.md_5.bungee.api.ProxyServer.getInstance().getPlayers()) {
+                if (count >= max) break;
+                matchingPlayers.add(player.getName());
+                count++;
+            }
         }
         return Collections.newUnmodifiableList(matchingPlayers);
     }

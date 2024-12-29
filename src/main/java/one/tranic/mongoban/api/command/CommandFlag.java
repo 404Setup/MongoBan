@@ -7,9 +7,11 @@ import java.util.List;
 /**
  * Represents command flags that can be used to identify and handle
  * specific options in a command-line parsing context.
+ * <p>
  * Each flag has a full name and a short name, which can be utilized interchangeably
  * when processing command-line arguments.
  */
+@Deprecated
 public enum CommandFlag {
     TARGET("target", "e"),
     REASON("reason"),

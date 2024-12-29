@@ -1,5 +1,7 @@
 package one.tranic.mongoban.api.command;
 
+import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.command.source.BungeeSource;
 import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.api.command.source.SourceImpl;
@@ -7,22 +9,77 @@ import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.api.command.wrap.BungeeWrap;
 import one.tranic.mongoban.api.command.wrap.PaperWrap;
 import one.tranic.mongoban.api.command.wrap.VelocityWrap;
-import one.tranic.mongoban.api.Platform;
+import one.tranic.mongoban.api.parse.player.PlayerParser;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
+/**
+ * Abstract base class representing a command in a multi-platform environment.
+ * <p>
+ * This class provides methods to manage command properties such as name, description, usage,
+ * and permissions, as well as utilities to handle platform-specific command registration and unwrapping.
+ *
+ * @param <C> the type of the command source, extending from {@link SourceImpl}
+ */
 public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl<C> {
     private String name;
     private String description;
     private String usage;
     private String permission;
 
+    @Override
+    public boolean hasPermission(C source) {
+        return source.hasPermission(getPermission());
+    }
+
+    @Override
+    public List<String> suggest(C source) {
+        String[] args = source.getArgs();
+        int size = source.argSize();
+        if (size == 1) {
+            return MongoBanAPI.FLAG_LIST.stream()
+                    .filter(flag -> flag.startsWith(args[0]))
+                    .toList();
+        }
+        if (size > 1) {
+            String previousArg = args[size - 2];
+            String currentArg = args[size - 1];
+            if ("--target".equals(previousArg)) {
+                return PlayerParser.parse(30).stream()
+                        .filter(player -> player.startsWith(currentArg))
+                        .toList();
+            }
+            if ("--duration".equals(previousArg)) {
+                return MongoBanAPI.TIME_SUGGEST.stream()
+                        .filter(time -> time.startsWith(currentArg))
+                        .toList();
+            }
+            if ("--reason".equals(previousArg)) {
+                return MongoBanAPI.REASON_SUGGEST.stream()
+                        .filter(reason -> reason.startsWith(currentArg))
+                        .toList();
+            }
+            if (MongoBanAPI.FLAG_LIST.contains(previousArg)) {
+                return MongoBanAPI.FLAG_LIST.stream()
+                        .filter(flag -> flag.startsWith(currentArg))
+                        .toList();
+            }
+        }
+        return MongoBanAPI.EMPTY_LIST;
+    }
+
+    /**
+     * Retrieves the name of the command.
+     *
+     * @return the name of the command
+     */
     public String getName() {
         return name;
     }
 
     /**
-     * Sets the name of the command, prefixing it with platform-specific identifiers
-     * based on the current platform (e.g., "b" for BungeeCord, "v" for Velocity).
+     * Sets the name of the command, prefixing it with platform-specific identifiers.
      *
      * @param name the base name to set for this command
      */
@@ -36,32 +93,53 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
         }
     }
 
+    /**
+     * Retrieves the description of the command.
+     *
+     * @return the description text for this command
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets the description for this command.
+     *
+     * @param description the description to set for this command
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Retrieves the usage string for the command.
+     *
+     * @return the usage string for the command
+     */
     public String getUsage() {
         return usage;
     }
 
+    /**
+     * Sets the usage description for this command.
+     *
+     * @param usage the usage description to set for this command
+     */
     public void setUsage(String usage) {
         this.usage = usage;
     }
 
+    /**
+     * Retrieves the permission required to execute this command.
+     *
+     * @return the permission string associated with this command
+     */
     public String getPermission() {
         return permission;
     }
 
     /**
      * Sets the permission for the command with platform-specific modifications.
-     * <p>
-     * If the current platform is BungeeCord or Velocity, the permission string
-     * is modified by appending a platform-specific suffix; otherwise, the
-     * permission is set as is.
      *
      * @param permission the base permission string to set for this command
      */
@@ -78,13 +156,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
     /**
      * Unwraps this command into a Bukkit-compatible {@link org.bukkit.command.Command} implementation
      * if the current platform is compatible with Bukkit-based servers.
-     * <p>
-     * This method checks if the current platform is one of the Bukkit-compatible platforms
-     * (e.g., Paper, Folia, ShreddedPaper).
-     * <p>
-     * If the platform matches, it wraps the command and returns a new {@link PaperWrap} instance.
-     * <p>
-     * If the platform is not compatible, this method returns null.
      *
      * @return a {@link org.bukkit.command.Command} instance representing this command
      * for Bukkit-based platforms, or null if the platform is not compatible.
@@ -96,14 +167,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
 
     /**
      * Registers this command with a Bukkit-compatible {@link org.bukkit.command.SimpleCommandMap}.
-     * <p>
-     * This method checks if the current platform is one of the Bukkit-compatible platforms
-     * (e.g., Paper, Folia, ShreddedPaper).
-     * <p>
-     * If the platform matches,
-     * the command is registered using the provided {@code simpleCommandMap} and the specified {@code prefix}.
-     * <p>
-     * If the platform is not compatible, the method does not register the command and returns false.
      *
      * @param simpleCommandMap the {@link org.bukkit.command.SimpleCommandMap} where the command should be registered
      * @param prefix           a string prefix to use for the registration
@@ -122,10 +185,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
     /**
      * Unwraps this command into a BungeeCord-specific {@link net.md_5.bungee.api.plugin.Command} instance
      * if the current platform is detected as BungeeCord.
-     * <p>
-     * This method checks the runtime platform using {@link Platform#get()}.
-     * If the platform is BungeeCord, it creates a new {@link BungeeWrap} instance for this command.
-     * Otherwise, it returns {@code null}.
      *
      * @return a BungeeCord-compatible {@link net.md_5.bungee.api.plugin.Command} instance if the
      * current platform is BungeeCord, or {@code null} if the platform is not BungeeCord.
@@ -142,10 +201,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
 
     /**
      * Registers this command with the BungeeCord plugin's command manager.
-     * <p>
-     * This method checks if the current platform is BungeeCord.
-     * If true, it registers the command using BungeeCord's {@link net.md_5.bungee.api.plugin.PluginManager}.
-     * Otherwise, no action is taken, and the method returns {@code false}.
      *
      * @param bungeePlugin an instance of the BungeeCord plugin used to register the command
      * @return {@code true} if the command is registered successfully on BungeeCord;
@@ -164,9 +219,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
 
     /**
      * Attempts to unwrap the current command into a Velocity-specific command.
-     * <p>
-     * This method is intended for use on the Velocity platform, where it converts
-     * the generic command instance into a Velocity-compatible command object.
      *
      * @return a Velocity-specific {@link com.velocitypowered.api.command.Command} instance
      * if the current platform is Velocity; otherwise, returns {@code null}.
@@ -179,9 +231,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
 
     /**
      * Registers this command with the Velocity platform.
-     * <p>
-     * This method ensures the current platform is Velocity before proceeding
-     * with command registration using the provided Velocity plugin and ProxyServer.
      *
      * @param velocityPlugin the plugin instance used for command registration
      * @param proxy          the {@link com.velocitypowered.api.proxy.ProxyServer} instance representing the Velocity server
