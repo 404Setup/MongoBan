@@ -1,7 +1,8 @@
 package one.tranic.mongoban.common.database;
 
-import one.tranic.mongoban.api.task.Actions;
+import com.mongodb.client.model.Filters;
 import one.tranic.mongoban.api.data.PlayerInfo;
+import one.tranic.mongoban.api.task.Actions;
 import one.tranic.mongoban.common.Collections;
 import org.bson.Document;
 
@@ -80,6 +81,29 @@ public class DatabasePlayerApplication {
                     playerDoc.get("id", UUID.class),
                     playerDoc.getList("ip", String.class)
             ) : null;
+        });
+    }
+
+    /**
+     * Retrieves player information for multiple players from the database by their IP address.
+     *
+     * @param ip The IP address to search for in the database.
+     * @return An {@code Actions<List<PlayerInfo>>} containing a task that, when executed,
+     * will return a list of {@code PlayerInfo} objects representing the players' details,
+     * or an empty list if no players with the specified IP address are found.
+     */
+    public Actions<List<PlayerInfo>> finds(String ip) {
+        return new Actions<>(() -> {
+            List<PlayerInfo> players = Collections.newArrayList();
+            List<Document> playerDocs = database.queryMany(this.collection, Filters.elemMatch("ip", Filters.eq(ip)));
+            for (Document playerDoc : playerDocs) {
+                players.add(new PlayerInfo(
+                        playerDoc.getString("name"),
+                        playerDoc.get("id", UUID.class),
+                        playerDoc.getList("ip", String.class)
+                ));
+            }
+            return players;
         });
     }
 

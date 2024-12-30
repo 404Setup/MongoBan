@@ -8,11 +8,13 @@ import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
+import one.tranic.mongoban.api.anno.Copyright;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 
 import java.net.InetAddress;
 
+@Copyright(author = "404Setup")
 public class PlayerListener {
     @Subscribe(priority = 0, order = PostOrder.CUSTOM)
     public void onPlayerLogin(LoginEvent event) {

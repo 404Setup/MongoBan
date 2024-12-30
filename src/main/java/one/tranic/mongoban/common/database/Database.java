@@ -213,6 +213,24 @@ public class Database {
     }
 
     /**
+     * Queries a MongoDB collection and retrieves the first document that matches the specified query.
+     *
+     * @param collectionName the name of the MongoDB collection to query
+     * @param query the query criteria used to filter the results
+     * @return the first document that matches the query, or null if no matches are found or an error occurs
+     */
+    public Document queryOne(String collectionName, Bson query) {
+        try {
+            MongoCollection<Document> collection = getCollection(collectionName);
+
+            return collection.find(query).first();
+        } catch (Exception e) {
+            Data.logger.error(e.getMessage());
+        }
+        return null;
+    }
+
+    /**
      * Executes a query against the specified MongoDB collection and returns a list of documents
      * matching the query criteria.
      *
@@ -222,6 +240,27 @@ public class Database {
      * an empty list is returned if no documents match or in case of an exception
      */
     public List<Document> queryMany(String collectionName, Document query) {
+        List<Document> resultList = Collections.newArrayList();
+        try {
+            MongoCollection<Document> collection = getCollection(collectionName);
+
+            collection.find(query).into(resultList);
+        } catch (Exception e) {
+            Data.logger.error(e.getMessage());
+        }
+        return resultList;
+    }
+
+    /**
+     * Executes a query against the specified MongoDB collection and returns a list of documents
+     * matching the query criteria.
+     *
+     * @param collectionName the name of the MongoDB collection to query
+     * @param query the query criteria to filter the documents
+     * @return a list of Document objects resulting from the query execution;
+     * an empty list is returned if no documents match or in case of an exception
+     */
+    public List<Document> queryMany(String collectionName, Bson query) {
         List<Document> resultList = Collections.newArrayList();
         try {
             MongoCollection<Document> collection = getCollection(collectionName);

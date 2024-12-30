@@ -10,14 +10,18 @@ import one.tranic.mongoban.api.command.args.BanArgs;
 import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.IPBanInfo;
+import one.tranic.mongoban.api.data.PlayerBanInfo;
+import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.exception.CommandException;
 import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
+import java.util.UUID;
 
 // Todo - Unfinished
 public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
@@ -38,7 +42,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
             // TODO： Bedrock command executors will pass a form instead of a command
             if (player.isBedrockPlayer()) {
-                player.sendFormAsync(GeyserForm.getDoForm());
+                player.sendFormAsync(GeyserForm.getDoForm(source, (form) -> exec(source, true, form)));
                 return;
             }
         }
@@ -52,55 +56,103 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
         }
 
         // Test: Do not block the command execution thread
-        MongoBanAPI.runAsync(() -> {
-            try {
-                BanArgs parse = BanArgs.parse(args);
+        MongoBanAPI.runAsync(() -> exec(source, false, args));
+    }
 
-                @Nullable String target = parse.target().orElse(null);
-                if (target == null || target.isEmpty()) {
-                    source.sendMessage(Component.text("Target flag is missing! Use --target <playerName>|<ip> to specify the target.", NamedTextColor.RED));
-                    return;
-                }
+    // Todo - Need to clean up
+    private void exec(C source, boolean geyser, Object arg) {
+        @Nullable String target;
+        String reason;
+        String time;
+        boolean strict;
 
-                String time;
-                {
-                    @Nullable String timeArg = parse.duration().orElse(null);
-                    if (timeArg == null) timeArg = "forever";
-                    time = TimeParser.parse(timeArg);
-                }
+        if (arg instanceof GeyserForm.DoForm args) {
+            target = args.player();
+            reason = args.reason() == null || args.reason().isBlank() ? "<Banned by ServerAdmin>" : args.reason();
 
-                @Nullable String reason = parse.reason().orElse(null);
-                boolean strict = parse.strict().orElse(false);
+            if (args.duration() < 1) time = "forever";
+            else time = args.duration_unit() == "forever" ?
+                    "forever" : args.duration() + args.duration_unit();
 
-                try {
-                    InetAddress inip = InetAddress.getByName(target);
-                    IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(inip).sync();
-                    if (result != null) {
-                        if (result.expired()) MongoDataAPI.getDatabase().ban().ip().remove(inip).sync();
-                        else {
-                            source.sendMessage(Message.alreadyBannedMessage(result.ip(), result.operator(), result.duration(), result.reason()));
-                            return;
-                        }
-                    }
-
-                    MongoDataAPI.getDatabase().ban().ip().add(inip, source.getOperator(), time, reason);
-                } catch (Exception ignored) {
-
-                }
-
-                MongoPlayer<?> targetPlayer = Player.getPlayer(target);
-                if (targetPlayer == null) {
-                    source.sendMessage(Component.text("Player not found!", NamedTextColor.RED));
-                    return;
-                }
-
-                TextComponent msg = Message.banMessage(target, time, reason, source.getOperator());
-
-                source.sendMessage(msg);
-                MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
-            } catch (Exception e) {
-                throw new CommandException(e);
+            strict = args.strict();
+        } else if (arg instanceof BanArgs args) {
+            target = args.target().orElse(null);
+            if (target == null || target.isEmpty()) {
+                source.sendMessage(Component.text("Target flag is missing! Use --target <playerName>|<ip> to specify the target.", NamedTextColor.RED));
+                return;
             }
-        });
+
+            time = TimeParser.parse(args.duration().orElse("forever"));
+            reason = args.reason().orElse("<Banned by ServerAdmin>");
+            strict = args.strict().orElse(false);
+        } else throw new UnsupportedOperationException();
+
+        try {
+            try {
+                InetAddress inip = InetAddress.getByName(target);
+                IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(inip).sync();
+                if (result != null) {
+                    TextComponent msg = Message.alreadyBannedMessage(result.ip(), result.operator(), result.duration(), result.reason());
+                    if (geyser) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+                    else source.sendMessage(msg);
+                    return;
+                }
+
+                MongoDataAPI.getDatabase().ban().ip().add(inip, source.getOperator(), time, reason).async().thenAcceptAsync((v) -> {
+                    TextComponent msg = Message.banMessage(target, time, reason, source.getOperator());
+                    if (geyser) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+                    else source.sendMessage(msg);
+                    MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
+                });
+            } catch (Exception ignored) {
+                MongoPlayer<?> targetPlayer = Player.getPlayer(target);
+                String userIP;
+                UUID uuid;
+                if (targetPlayer == null) {
+                    PlayerInfo player = MongoDataAPI.getDatabase().player().find(target).sync();
+                    if (player == null) {
+                        @NotNull TextComponent msg = Component.text("Target " + target + " not found!", NamedTextColor.RED);
+                        if (geyser) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+                        else source.sendMessage(msg);
+                        return;
+                    }
+                    userIP = player.ip().getLast();
+                    uuid = player.uuid();
+                } else {
+                    userIP = targetPlayer.getConnectHost();
+                    uuid = targetPlayer.getUniqueId();
+                }
+
+                PlayerBanInfo pBanInfo = MongoDataAPI.getDatabase().ban().player().find(uuid).sync();
+                if (pBanInfo != null) {
+                    TextComponent msg = Message.alreadyBannedMessage(target, pBanInfo.operator(), pBanInfo.duration(), pBanInfo.reason());
+                    if (geyser) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+                    else source.sendMessage(msg);
+                    return;
+                }
+
+                if (strict) {
+                    MongoDataAPI.getDatabase().ban().ip().add(userIP, source.getOperator(), time, reason)
+                            .async()
+                            .thenAcceptAsync((v) -> {
+                                TextComponent msg = Message.banMessage(target, time, reason, source.getOperator());
+                                if (geyser) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+                                else source.sendMessage(msg);
+                                MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
+                            }, MongoBanAPI.executor);
+                } else {
+                    MongoDataAPI.getDatabase().ban().player().add(uuid, source.getOperator(), time, null, reason)
+                            .async()
+                            .thenAcceptAsync((v) -> {
+                                TextComponent msg = Message.banMessage(target, time, reason, source.getOperator());
+                                if (geyser) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+                                else source.sendMessage(msg);
+                                MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
+                            });
+                }
+            }
+        } catch (Exception e) {
+            throw new CommandException(e);
+        }
     }
 }

@@ -1,19 +1,25 @@
 package one.tranic.mongoban.common.form;
 
-import com.mongodb.lang.NonNull;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.anno.Copyright;
+import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.common.Collections;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.Form;
+import org.geysermc.cumulus.form.ModalForm;
 import org.geysermc.cumulus.response.CustomFormResponse;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@Copyright(author = "404Setup")
 public class GeyserForm {
     public static final List<String> typeList = Collections.newUnmodifiableList("Ban", "Warn");
 
-    public static Form getSimpleForm(@NonNull Consumer<CustomFormResponse> resultHandler) {
+    public static Form getSimpleForm(@NotNull Consumer<CustomFormResponse> resultHandler) {
         return CustomForm.builder()
                 .title("MongoBan Console")
                 .dropdown("Type", typeList)
@@ -22,44 +28,42 @@ public class GeyserForm {
                 .build();
     }
 
-    public static Form getDoForm() {
+    public static <C extends SourceImpl<?, ?>> Form getDoForm(C source, Consumer<DoForm> consumer) {
         return CustomForm.builder()
                 .title("MongoBan Console")
-                .dropdown("Type", typeList)
                 .input("Player")
                 .slider("Duration", 1, 3650)
                 .dropdown("Duration unit", MongoBanAPI.TIME_SUGGEST)
                 .input("Reason")
-                .toggle("Ban IP")
-                .validResultHandler(response -> {
-                    DoForm formData = DoForm.from(response);
-                })
+                .toggle("Strict")
+                .validResultHandler(response -> consumer.accept(DoForm.from(response)))
                 .build();
     }
 
-    public static Form getUndoForm() {
-        return getSimpleForm(response -> {
-            // Todo
-            SimpleForm formData = SimpleForm.from(response);
-        });
+    public static Form getMessageForm(String message) {
+        return ModalForm.builder().title("MongoBan Message").content(message).build();
     }
 
-    public static Form getSearchForm() {
-        return getSimpleForm(response -> {
-            // Todo
-            SimpleForm formData = SimpleForm.from(response);
-        });
+    public static Form getMessageForm(TextComponent message) {
+        return getMessageForm(LegacyComponentSerializer.legacySection().serialize(message));
     }
 
-    public record DoForm(int type, String player, int duration, int duration_unit, String reason, boolean banIp) {
+    public static <C extends SourceImpl<?, ?>> Form getUndoForm(C source, Consumer<SimpleForm> consumer) {
+        return getSimpleForm(response -> consumer.accept(SimpleForm.from(response)));
+    }
+
+    public static <C extends SourceImpl<?, ?>> Form getSearchForm(C source, Consumer<SimpleForm> consumer) {
+        return getSimpleForm(response -> consumer.accept(SimpleForm.from(response)));
+    }
+
+    public record DoForm(String player, int duration, String duration_unit, String reason, boolean strict) {
         public static DoForm from(CustomFormResponse response) {
             return new DoForm(
-                    response.asDropdown(0),
-                    response.asInput(1),
-                    (int) response.asSlider(2),
-                    response.asDropdown(3),
-                    response.asInput(4),
-                    response.asToggle(5));
+                    response.asInput(0),
+                    (int) response.asSlider(1),
+                    MongoBanAPI.TIME_SUGGEST.get(response.asDropdown(2)),
+                    response.asInput(3),
+                    response.asToggle(4));
         }
     }
 

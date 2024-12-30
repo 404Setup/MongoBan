@@ -15,22 +15,6 @@ import java.util.function.Predicate;
  * It dynamically determines whether to use the
  * optimized implementations from the FastUtil library or standard Java collections
  * based on the availability of FastUtil classes.
- * <p>
- * The provided methods aim to improve memory efficiency and performance by utilizing
- * specific data structures tailored for primitive types when FastUtil is available.
- * <p>
- * Key Features:
- * <p>
- * - Dynamic switching between FastUtil and standard Java collections implementations.
- * <p>
- * - Support for various map types tailored for primitive values such as int, long, float,
- * double, and boolean, as well as generic object-object mappings.
- * <p>
- * - Support for creating hash-based and tree-based sets.
- * <p>
- * - Support for creating array-backed lists with optional size or element arguments.
- * <p>
- * - Utility methods for performing operations on map entries.
  */
 public class Collections {
     private static boolean fastutil = false;

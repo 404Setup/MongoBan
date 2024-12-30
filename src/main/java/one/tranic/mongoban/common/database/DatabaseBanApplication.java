@@ -1,10 +1,11 @@
 package one.tranic.mongoban.common.database;
 
-import one.tranic.mongoban.api.task.Actions;
+import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
+import one.tranic.mongoban.api.task.Actions;
 import one.tranic.mongoban.common.Collections;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
@@ -70,12 +71,17 @@ public class DatabaseBanApplication {
             return new Actions<>(() -> {
                 Document query = new Document("id", uuid);
                 Document banDoc = application.database.queryOne(application.collection, query);
-                return banDoc != null ? new PlayerBanInfo(
-                        uuid,
-                        banDoc.get("operator", Operator.class),
-                        banDoc.getString("duration"),
-                        banDoc.getString("reason")
-                ) : null;
+                if (banDoc != null) {
+                    PlayerBanInfo info = new PlayerBanInfo(
+                            uuid,
+                            banDoc.get("operator", Operator.class),
+                            banDoc.getString("duration"),
+                            banDoc.getString("reason")
+                    );
+                    if (info.expired()) remove(uuid).async();
+                    else return info;
+                }
+                return null;
             });
         }
 
@@ -115,6 +121,26 @@ public class DatabaseBanApplication {
         public Actions<Void> remove(@NotNull UUID playerId) {
             return new Actions<>(() -> {
                 application.database.delete(application.collection, "id", playerId);
+
+                return null;
+            });
+        }
+
+        /**
+         * Removes a list of players' ban records from the database.
+         * <p>
+         * Iterates through the provided {@code banInfos} list and deletes each player's
+         * associated record from the database, using the player's unique identifier (UUID).
+         *
+         * @param banInfos a list of {@link PlayerBanInfo} objects representing the players
+         *                 whose ban records are to be removed. Must not be null.
+         * @return an {@link Actions} object encapsulating the database operation to remove
+         * the specified players' ban records.
+         */
+        public Actions<Void> remove(@NotNull List<PlayerBanInfo> banInfos) {
+            return new Actions<>(() -> {
+                for (PlayerBanInfo banInfo : banInfos)
+                    application.database.delete(application.collection, "id", banInfo.uuid());
 
                 return null;
             });
@@ -179,8 +205,8 @@ public class DatabaseBanApplication {
 
                 application.database.update(application.collection, query, updateDoc);
 
-                PlayerInfo[] players = finds(ip).sync();
-                if (players.length != 0) for (PlayerInfo player : players)
+                List<PlayerInfo> playerList = MongoDataAPI.getDatabase().player().finds(ip).sync();
+                if (playerList.size() != 0) for (PlayerInfo player : playerList)
                     application.player.add(player.uuid(), operator, duration, ip, reason).sync();
 
                 return null;
@@ -202,23 +228,31 @@ public class DatabaseBanApplication {
 
         /**
          * Finds an IP ban record associated with the specified IP address.
+         * <p>
          * The method queries the database for an IP ban document containing details such as
          * the responsible operator, the duration of the ban, and the reason for the ban.
+         * <p>
+         * If the ban is found to be expired, it is removed asynchronously.
          *
          * @param address the IP address to query the ban record for
-         * @return an Actions object containing an IPBanInfo instance if a ban is found,
+         * @return an {@code Actions<IPBanInfo>} object containing an {@code IPBanInfo} instance if a ban is found,
          * or null if no ban is associated with the specified address
          */
         public Actions<IPBanInfo> find(String address) {
             return new Actions<>(() -> {
                 Document query = new Document("ip", address);
                 Document banDoc = application.database.queryOne(application.collection, query);
-                return banDoc != null ? new IPBanInfo(
-                        address,
-                        banDoc.get("operator", Operator.class),
-                        banDoc.getString("duration"),
-                        banDoc.getString("reason")
-                ) : null;
+                if (banDoc != null) {
+                    IPBanInfo info = new IPBanInfo(
+                            address,
+                            banDoc.get("operator", Operator.class),
+                            banDoc.getString("duration"),
+                            banDoc.getString("reason")
+                    );
+                    if (info.expired()) remove(address).async();
+                    else return info;
+                }
+                return null;
             });
         }
 
@@ -263,36 +297,44 @@ public class DatabaseBanApplication {
         }
 
         /**
-         * Retrieves multiple player information records associated with a specific IP address.
+         * Retrieves multiple player ban information records associated with a specific IP address.
+         * This method queries the database to find bans related to the provided IP address and returns
+         * an array of {@code PlayerBanInfo} objects representing the bans. Expired bans are removed
+         * asynchronously from the database.
          *
-         * @param address the IP address used to query the database and retrieve associated player information
-         * @return an {@code Actions<PlayerInfo[]>} object containing an array of {@code PlayerInfo} objects
+         * @param address the IP address used to query the database and retrieve associated player ban information
+         * @return an {@code Actions<PlayerBanInfo[]>} object containing an array of {@code PlayerBanInfo} objects
          * corresponding to players whose IP addresses match the provided address
          */
-        public Actions<PlayerInfo[]> finds(String address) {
+        public Actions<PlayerBanInfo[]> finds(String address) {
             return new Actions<>(() -> {
                 Document query = new Document("ip", new Document("$elemMatch", address));
                 List<Document> playerDocs = application.database.queryMany(application.collection, query);
-                List<PlayerInfo> players = Collections.newArrayList();
+                List<PlayerBanInfo> players = Collections.newArrayList();
+                List<PlayerBanInfo> removePlayers = Collections.newArrayList();
                 for (Document playerDoc : playerDocs) {
-                    players.add(new PlayerInfo(
-                            playerDoc.getString("name"),
-                            playerDoc.get("id", UUID.class),
-                            playerDoc.getList("ip", String.class)
-                    ));
+                    PlayerBanInfo info = new PlayerBanInfo(
+                            playerDoc.get("uuid", UUID.class),
+                            playerDoc.get("operator", Operator.class),
+                            playerDoc.getString("duration"),
+                            playerDoc.getString("reason")
+                    );
+                    if (info.expired()) removePlayers.add(info);
+                    else players.add(info);
                 }
-                return players.toArray(new PlayerInfo[0]);
+                if (!removePlayers.isEmpty()) application.player.remove(removePlayers).async();
+                return players.toArray(new PlayerBanInfo[0]);
             });
         }
 
         /**
-         * Retrieves multiple player information records associated with a specific IP address.
+         * Retrieves multiple player ban information records associated with a specific IP address.
          *
-         * @param address the IP address used to query the database and retrieve associated player information
-         * @return an {@code Actions<PlayerInfo[]>} object containing an array of {@code PlayerInfo} objects
+         * @param address the IP address used to query the database and retrieve associated player ban information
+         * @return an {@code Actions<PlayerBanInfo[]>} object containing an array of {@code PlayerBanInfo} objects
          * corresponding to players whose IP addresses match the provided address
          */
-        public Actions<PlayerInfo[]> finds(InetAddress address) {
+        public Actions<PlayerBanInfo[]> finds(InetAddress address) {
             return finds(address.getHostAddress());
         }
     }
