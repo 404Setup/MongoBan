@@ -27,7 +27,7 @@ public class ModrinthUpdate {
     /**
      * A default empty {@link UpdateRecord} used when no updates are available.
      */
-    UpdateRecord empty = new UpdateRecord(false, "", "", "");
+    final UpdateRecord empty = new UpdateRecord(false, "", "", "");
 
     public ModrinthUpdate(@NotNull String slug, @NotNull String localVersion, @NotNull Loaders loader, @NotNull String gameVersion) {
         this(slug, localVersion, loader.toString(), gameVersion);
@@ -61,8 +61,8 @@ public class ModrinthUpdate {
             try {
                 consumer.accept(getUpdate());
             } catch (IOException e) {
-                e.printStackTrace();
                 consumer.accept(null);
+                e.printStackTrace();
             }
         });
     }

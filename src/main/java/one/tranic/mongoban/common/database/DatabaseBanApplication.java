@@ -187,15 +187,19 @@ public class DatabaseBanApplication {
         }
 
         /**
-         * Adds a ban entry for an IP address to the database and extends the ban to any associated players.
+         * Adds a ban record for a specified IP address along with any associated players.
+         * <p>
+         * The method updates the database with the provided ban details and propagates
+         * the ban information to players linked to the given IP address.
          *
-         * @param ip       The IP address to be banned.
-         * @param operator The operator initiating the ban.
-         * @param duration The duration of the ban.
-         * @param reason   The reason for the ban. If null, a default reason is used.
-         * @return An {@code Actions<Void>} object to execute the operation synchronously or asynchronously.
+         * @param ip       the IP address to ban
+         * @param operator the operator responsible for issuing the ban
+         * @param duration the duration of the ban (e.g., a timestamp or duration string)
+         * @param reason   an optional reason for the ban; defaults to "Banned by the server" if null
+         * @return an {@code Actions<List<PlayerInfo>>} containing a list of {@code PlayerInfo}
+         * representing players associated with the banned IP address
          */
-        public Actions<Void> add(String ip, Operator operator, String duration, @Nullable String reason) {
+        public Actions<List<PlayerInfo>> add(String ip, Operator operator, String duration, @Nullable String reason) {
             return new Actions<>(() -> {
                 Document query = new Document("ip", ip);
                 Document updateDoc = new Document()
@@ -206,23 +210,27 @@ public class DatabaseBanApplication {
                 application.database.update(application.collection, query, updateDoc);
 
                 List<PlayerInfo> playerList = MongoDataAPI.getDatabase().player().finds(ip).sync();
-                if (playerList.size() != 0) for (PlayerInfo player : playerList)
+                if (!playerList.isEmpty()) for (PlayerInfo player : playerList)
                     application.player.add(player.uuid(), operator, duration, ip, reason).sync();
 
-                return null;
+                return playerList;
             });
         }
 
         /**
-         * Adds a ban entry for an IP address to the database and extends the ban to any associated players.
+         * Adds an entry for banning a specified IP address along with associated information.
+         * <p>
+         * This method processes the IP address, operator details, ban duration, and optional ban reason,
+         * updating the database and, if applicable, associating the ban with player records.
          *
-         * @param ip       The IP address to be banned.
-         * @param operator The operator initiating the ban.
-         * @param duration The duration of the ban.
-         * @param reason   The reason for the ban. If null, a default reason is used.
-         * @return An {@code Actions<Void>} object to execute the operation synchronously or asynchronously.
+         * @param ip       the IP address to be banned
+         * @param operator the operator issuing the ban
+         * @param duration the duration of the ban
+         * @param reason   an optional reason for the ban; if null, a default reason will be used
+         * @return an {@code Actions<List<PlayerInfo>>} object
+         * containing a list of {@code PlayerInfo} for players associated with the specified IP address
          */
-        public Actions<Void> add(InetAddress ip, Operator operator, String duration, @Nullable String reason) {
+        public Actions<List<PlayerInfo>> add(InetAddress ip, Operator operator, String duration, @Nullable String reason) {
             return add(ip.getHostAddress(), operator, duration, reason);
         }
 

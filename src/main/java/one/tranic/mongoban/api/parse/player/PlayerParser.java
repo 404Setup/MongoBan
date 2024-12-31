@@ -50,9 +50,8 @@ public class PlayerParser {
      * @throws IllegalArgumentException if the specified maximum is less than 1
      */
     public static List<String> parse(@Range(from = 1, to = Integer.MAX_VALUE) int max) throws IllegalArgumentException {
-        if (max < 1) {
-            throw new IllegalArgumentException("Parameter max must be greater than or equal to 1");
-        }
+        if (max < 1) throw new IllegalArgumentException("Parameter max must be greater than or equal to 1");
+
         List<String> matchingPlayers = Collections.newArrayList();
         if (Platform.isBukkit()) {
             int count = 0;

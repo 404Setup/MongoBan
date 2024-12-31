@@ -4,7 +4,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.BungeeSource;
 import one.tranic.mongoban.common.Config;
-import one.tranic.mongoban.common.commands.BanCommand;
+import one.tranic.mongoban.common.commands.*;
 
 @Deprecated
 public class MongoBan extends Plugin {
@@ -15,6 +15,10 @@ public class MongoBan extends Plugin {
         MongoDataAPI.reconnect();
 
         new BanCommand<BungeeSource>().registerWithBungee(this);
+        new UnBanCommand<BungeeSource>().registerWithBungee(this);
+        new WarnCommand<BungeeSource>().registerWithBungee(this);
+        new UnWarnCommand<BungeeSource>().registerWithBungee(this);
+        new MongoBanCommand<BungeeSource>().registerWithBungee(this);
     }
 
     @Override

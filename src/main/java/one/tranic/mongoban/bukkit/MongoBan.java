@@ -2,8 +2,9 @@ package one.tranic.mongoban.bukkit;
 
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.PaperSource;
+import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.common.Config;
-import one.tranic.mongoban.common.commands.BanCommand;
+import one.tranic.mongoban.common.commands.*;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
@@ -41,6 +42,10 @@ public class MongoBan extends JavaPlugin {
             unregisterCommand("unwarn");
 
             new BanCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
+            new UnBanCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
+            new WarnCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
+            new UnWarnCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
+            new MongoBanCommand<PaperSource>().registerWithBukkit(commandMap, "mongoban");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -37,6 +37,7 @@ dependencies {
 
     compileOnly("com.google.guava:guava:33.3.0-jre")
     compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    compileOnly("org.jetbrains:annotations:26.0.1")
     implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
     implementation("dev.nipafx.args:record-args:0.9.2")
     implementation("org.mongodb:mongodb-driver-sync:5.2.1")

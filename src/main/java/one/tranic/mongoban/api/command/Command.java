@@ -1,5 +1,6 @@
 package one.tranic.mongoban.api.command;
 
+import net.kyori.adventure.text.TextComponent;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.command.source.BungeeSource;
@@ -10,6 +11,7 @@ import one.tranic.mongoban.api.command.wrap.BungeeWrap;
 import one.tranic.mongoban.api.command.wrap.PaperWrap;
 import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.api.parse.player.PlayerParser;
+import one.tranic.mongoban.common.form.GeyserForm;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -67,6 +69,53 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
             }
         }
         return MongoBanAPI.EMPTY_LIST;
+    }
+
+    /**
+     * Sends a result message to a specified source.
+     *
+     * @param source the command source who will receive the message
+     * @param msg    the message to be sent to the source
+     */
+    public void sendResult(C source, TextComponent msg) {
+        sendResult(source, msg, true);
+    }
+
+    /**
+     * Sends a message result to a given source, taking into account whether the source is
+     * a Bedrock player, a standard player, or whether the message should also be sent to the console.
+     *
+     * @param source      the source to which the result should be sent; can be a player or other entity
+     * @param msg         the message to be sent, represented as a {@link TextComponent}
+     * @param withConsole if true, the message will also be sent to the console
+     */
+    public void sendResult(C source, TextComponent msg, boolean withConsole) {
+        if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+        else if (source.isPlayer()) source.sendMessage(msg);
+        if (withConsole) MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
+    }
+
+    /**
+     * Sends a message result to a specified source.
+     *
+     * @param source the source (e.g., player or console) to which the result will be sent
+     * @param msg    the message to be sent to the source
+     */
+    public void sendResult(C source, String msg) {
+        sendResult(source, msg, true);
+    }
+
+    /**
+     * Sends a result message to the specified source and optionally to the console.
+     *
+     * @param source      the source to which the result is sent; it can represent a player or another entity
+     * @param msg         the message to be sent
+     * @param withConsole whether the message should also be sent to the console
+     */
+    public void sendResult(C source, String msg, boolean withConsole) {
+        if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
+        else if (source.isPlayer()) source.sendMessage(msg);
+        if (withConsole) MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
     }
 
     /**

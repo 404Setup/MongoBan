@@ -11,7 +11,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.common.Config;
-import one.tranic.mongoban.common.commands.BanCommand;
+import one.tranic.mongoban.common.commands.*;
 
 import java.nio.file.Path;
 
@@ -61,5 +61,9 @@ public class MongoBan {
 
     private void createCommands() {
         new BanCommand<VelocitySource>().registerWithVelocity(this, proxy);
+        new UnBanCommand<VelocitySource>().registerWithVelocity(this, proxy);
+        new WarnCommand<VelocitySource>().registerWithVelocity(this, proxy);
+        new UnWarnCommand<VelocitySource>().registerWithVelocity(this, proxy);
+        new MongoBanCommand<VelocitySource>().registerWithVelocity(this, proxy);
     }
 }

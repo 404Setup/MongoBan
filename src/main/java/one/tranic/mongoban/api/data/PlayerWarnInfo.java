@@ -29,8 +29,7 @@ import java.util.UUID;
 public record PlayerWarnInfo(UUID uuid, Operator operator, @NotNull String id, @NotNull String duration,
                              @Nullable String reason) {
     public boolean expired() {
-        if (duration == null || duration.isBlank()) return true;
-        if (duration.equals("forever")) return false;
+        if (duration.isBlank() || duration.equals("forever")) return true;
         try {
             return TimeParser.isTimeInPast(TimeParser.parseStringTime(duration));
         } catch (Exception e) {

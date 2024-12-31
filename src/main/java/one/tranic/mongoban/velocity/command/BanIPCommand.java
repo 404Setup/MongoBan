@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * @deprecated Merge IPBan logic into Ban
  */
+@Deprecated
 public class BanIPCommand implements SimpleCommand {
     private final ProxyServer proxy;
 

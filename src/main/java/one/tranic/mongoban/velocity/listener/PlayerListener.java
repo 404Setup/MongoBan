@@ -5,42 +5,41 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
-import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
-import one.tranic.mongoban.api.anno.Copyright;
+import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 
 import java.net.InetAddress;
 
-@Copyright(author = "404Setup")
 public class PlayerListener {
     @Subscribe(priority = 0, order = PostOrder.CUSTOM)
     public void onPlayerLogin(LoginEvent event) {
         if (!event.getResult().isAllowed()) return;
         Player player = event.getPlayer();
-
         InetAddress ip = player.getRemoteAddress().getAddress();
+
         IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(ip.getHostAddress()).sync();
         if (result != null) {
-            if (result.expired()) {
-                MongoDataAPI.getDatabase().ban().ip().remove(ip.getHostAddress()).async();
-            } else {
-                // A "permissive mode" option is needed
-                MongoDataAPI.getDatabase().ban()
-                        .player()
-                        .add(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip.getHostAddress(), result.reason())
-                        .async();
-                event.setResult(ResultedEvent.ComponentResult.denied(Component.text(result.reason())));
-                return;
-            }
+            MongoDataAPI.getDatabase().ban()
+                    .player().find(player.getUniqueId())
+                    .async()
+                    .thenAcceptAsync((p) -> {
+                        if (p != null) return;
+                        MongoDataAPI.getDatabase().ban()
+                                .player()
+                                .add(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip.getHostAddress(), result.reason())
+                                .sync();
+                    }, MongoBanAPI.executor);
+            event.setResult(ResultedEvent.ComponentResult.denied(Message.kickMessage(result)));
+            return;
         } else {
             PlayerBanInfo playerResult = MongoDataAPI.getDatabase().ban().player()
                     .find(player.getUniqueId())
                     .sync();
             if (playerResult != null) {
-                event.setResult(ResultedEvent.ComponentResult.denied(Component.text(playerResult.reason())));
+                event.setResult(ResultedEvent.ComponentResult.denied(Message.kickMessage(playerResult)));
                 return;
             }
         }

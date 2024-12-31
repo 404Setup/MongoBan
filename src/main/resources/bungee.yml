@@ -1,7 +1,7 @@
 name: MongoBan
 version: '${version}'
 main: one.tranic.mongoban.bungee.MongoBan
-author: 404
+author: "404"
 softDepends:
   - Geyser-BungeeCord
   - floodgate

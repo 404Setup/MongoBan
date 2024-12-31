@@ -35,6 +35,15 @@ public interface SourceImpl<C, R> {
     C getSource();
 
     /**
+     * Determines if the entity associated with this source is a Bedrock player.
+     *
+     * @return true if the source entity is a Bedrock player, otherwise false
+     */
+    default boolean isBedrockPlayer() {
+        return isPlayer() && asPlayer().isBedrockPlayer();
+    }
+
+    /**
      * Determines if the entity represented by this source is a player.
      *
      * @return true if the source is a player, otherwise false
@@ -94,7 +103,7 @@ public interface SourceImpl<C, R> {
      * If the source does not represent a player, this method will return {@code null}.
      *
      * @return a {@code MongoPlayer<R>} instance if the source is a player, or
-     *         {@code null} if the source is not a player.
+     * {@code null} if the source is not a player.
      */
     @Nullable MongoPlayer<R> asPlayer();
 }

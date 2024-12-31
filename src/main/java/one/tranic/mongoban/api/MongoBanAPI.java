@@ -1,6 +1,5 @@
 package one.tranic.mongoban.api;
 
-import one.tranic.mongoban.api.anno.Copyright;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.parse.json.FastJsonParser;
@@ -17,7 +16,6 @@ import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.function.Supplier;
 
-@Copyright(author = "404Setup")
 public class MongoBanAPI {
     /**
      * Represents the console source used for command execution and interaction in the system.

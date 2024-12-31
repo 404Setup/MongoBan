@@ -3,7 +3,6 @@ package one.tranic.mongoban.api.player;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
-import one.tranic.mongoban.api.anno.Copyright;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import org.geysermc.cumulus.form.Form;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +12,6 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-@Copyright(author = "404Setup")
 public interface MongoPlayer<C> {
     /**
      * Retrieves the username of the player.

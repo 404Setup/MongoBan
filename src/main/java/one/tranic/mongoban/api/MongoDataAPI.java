@@ -6,7 +6,6 @@ import one.tranic.mongoban.common.cache.CaffeineCache;
 import one.tranic.mongoban.common.cache.RedisCache;
 import one.tranic.mongoban.common.database.Database;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * MongoDataAPI provides a static API for managing database and cache instances.
@@ -20,7 +19,7 @@ public class MongoDataAPI {
      *
      * @return the current {@code Database} instance used by the application, or {@code null} if no database is set.
      */
-    public static @Nullable Database getDatabase() {
+    public static Database getDatabase() {
         return database;
     }
 
@@ -32,11 +31,9 @@ public class MongoDataAPI {
      * @throws IllegalArgumentException if the provided database is null
      */
     public synchronized static void setDatabase(@NotNull Database database) throws SecurityException, IllegalArgumentException {
-        if (database == null) throw new IllegalArgumentException("Value cannot be null");
         if (!isCallerAllowed()) throw new SecurityException("Unauthorized access to setDatabase method.");
         if (MongoDataAPI.database != null) {
             MongoDataAPI.database.disconnect();
-            MongoDataAPI.database = null;
         }
         MongoDataAPI.database = database;
     }
@@ -46,7 +43,7 @@ public class MongoDataAPI {
      *
      * @return the currently set {@link Cache} instance, or null if no cache is available
      */
-    public static @Nullable Cache getCache() {
+    public static Cache getCache() {
         return cache;
     }
 
@@ -59,11 +56,9 @@ public class MongoDataAPI {
      * @throws IllegalArgumentException if the provided cache instance is null
      */
     public synchronized static void setCache(@NotNull Cache cache) throws SecurityException, IllegalArgumentException {
-        if (cache == null) throw new IllegalArgumentException("Value cannot be null");
         if (!isCallerAllowed()) throw new SecurityException("Unauthorized access to setCache method.");
         if (MongoDataAPI.cache != null) {
             MongoDataAPI.cache.close();
-            MongoDataAPI.cache = null;
         }
         MongoDataAPI.cache = cache;
     }

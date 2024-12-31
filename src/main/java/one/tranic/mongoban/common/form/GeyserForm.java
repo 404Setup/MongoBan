@@ -3,7 +3,6 @@ package one.tranic.mongoban.common.form;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.anno.Copyright;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.common.Collections;
 import org.geysermc.cumulus.form.CustomForm;
@@ -15,7 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Copyright(author = "404Setup")
 public class GeyserForm {
     public static final List<String> typeList = Collections.newUnmodifiableList("Ban", "Warn");
 
