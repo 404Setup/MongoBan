@@ -1,66 +1,61 @@
 package one.tranic.mongoban.api.event.bukkit;
 
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
+import one.tranic.mongoban.api.data.Operator;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 /**
  * Represents an event that is triggered when a player is unbanned.
  * This event contains information about the affected player, the operator who issued the unban,
  * and the reason for the unban operation.
- * <p>
- * This event implements {@link Cancellable}, allowing listeners to cancel the unban operation.
  */
-public class UnbanPlayerEvent extends Event implements Cancellable {
+public class UnbanPlayerEvent extends Event {
     private static final HandlerList HANDLERS_LIST = new HandlerList();
-    private final Player player;
-    private final String operator;
-    private final String reason;
-
-    private boolean isCancelled;
+    private final UUID player;
+    private final Operator operator;
 
     /**
-     * Constructs an {@code UnbanPlayerEvent} with the specified player, operator, and reason.
+     * Constructs an {@code UnbanPlayerEvent} with the specified player and operator.
+     * This event is triggered when a player is unbanned and provides details about
+     * the player being unbanned and the operator performing the unban action.
      *
-     * @param player   The player who is being unbanned. Must not be {@code null}.
-     * @param operator The name of the operator who issued the unban. Must not be {@code null}.
-     * @param reason   The reason for the unban. Must not be {@code null}.
-     * @throws NullPointerException if any of the parameters are {@code null}.
+     * @param player   The unique identifier (UUID) of the player being unbanned. Must not be {@code null}.
+     * @param operator The operator issuing the unban action. Must not be {@code null}.
+     * @throws NullPointerException if {@code player} or {@code operator} is {@code null}.
      */
-    public UnbanPlayerEvent(@NotNull Player player, @NotNull String operator, @NotNull String reason) {
+    public UnbanPlayerEvent(@NotNull UUID player, @NotNull Operator operator) {
         this.player = player;
         this.operator = operator;
-        this.reason = reason;
-        this.isCancelled = false;
     }
 
     /**
-     * Gets the player who is being unbanned.
+     * Gets the static handler list for this event.
      *
-     * @return The {@link Player} object representing the affected player. Never {@code null}.
+     * @return The {@link HandlerList} for all instances of this event.
      */
-    public @NotNull Player getPlayer() {
+    public static HandlerList getHandlerList() {
+        return HANDLERS_LIST;
+    }
+
+    /**
+     * Retrieves the unique identifier (UUID) of the player associated with this event.
+     *
+     * @return The {@link UUID} of the player. Never {@code null}.
+     */
+    public @NotNull UUID getPlayer() {
         return player;
     }
 
     /**
-     * Gets the name of the operator who issued the unban.
+     * Retrieves the operator responsible for performing the associated action in this event.
      *
-     * @return A {@link String} representing the operator's name. Never {@code null}.
+     * @return The {@link Operator} who issued the corresponding action. Never {@code null}.
      */
-    public @NotNull String getOperator() {
+    public @NotNull Operator getOperator() {
         return operator;
-    }
-
-    /**
-     * Gets the reason for the unban.
-     *
-     * @return A {@link String} representing the reason for the unban. Never {@code null}.
-     */
-    public @NotNull String getReason() {
-        return reason;
     }
 
     /**
@@ -70,35 +65,6 @@ public class UnbanPlayerEvent extends Event implements Cancellable {
      */
     @Override
     public @NotNull HandlerList getHandlers() {
-        return HANDLERS_LIST;
-    }
-
-    /**
-     * Checks whether this event has been cancelled.
-     *
-     * @return {@code true} if the event is cancelled, {@code false} otherwise.
-     */
-    @Override
-    public boolean isCancelled() {
-        return isCancelled;
-    }
-
-    /**
-     * Sets whether this event is cancelled.
-     *
-     * @param cancel {@code true} to cancel the event, {@code false} to allow it.
-     */
-    @Override
-    public void setCancelled(boolean cancel) {
-        this.isCancelled = cancel;
-    }
-
-    /**
-     * Gets the static handler list for this event.
-     *
-     * @return The {@link HandlerList} for all instances of this event.
-     */
-    public static HandlerList getHandlerList() {
         return HANDLERS_LIST;
     }
 }

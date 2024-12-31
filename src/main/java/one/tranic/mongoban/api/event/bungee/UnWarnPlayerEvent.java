@@ -1,83 +1,48 @@
 package one.tranic.mongoban.api.event.bungee;
 
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.plugin.Cancellable;
 import net.md_5.bungee.api.plugin.Event;
+import one.tranic.mongoban.api.data.Operator;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.UUID;
 
 /**
  * Represents an event that is triggered when a player's warning is removed.
  * This event contains information about the affected player, the operator who removed the warning,
  * and the reason for the removal of the warning.
- * <p>
- * This event implements {@link Cancellable}, allowing listeners to cancel the un-warning operation.
  */
-public class UnWarnPlayerEvent extends Event implements Cancellable {
-    private final ProxiedPlayer player;
-    private final String operator;
-    private final String reason;
-
-    private boolean isCancelled;
+public class UnWarnPlayerEvent extends Event {
+    private final UUID player;
+    private final Operator operator;
 
     /**
-     * Constructs an {@code UnWarnPlayerEvent} with the specified player, operator, and reason.
+     * Constructs an {@code UnWarnPlayerEvent} with the specified player and operator.
+     * This event is triggered when a warning issued to a player is removed.
      *
-     * @param player   The player whose warning is being removed. Must not be {@code null}.
-     * @param operator The name of the operator who removed the warning. Must not be {@code null}.
-     * @param reason   The reason for removing the warning. Must not be {@code null}.
-     * @throws NullPointerException if any of the parameters are {@code null}.
+     * @param player   The unique identifier (UUID) of the player whose warning is being removed. Must not be {@code null}.
+     * @param operator The operator responsible for removing the warning. Must not be {@code null}.
+     * @throws NullPointerException if {@code player} or {@code operator} is {@code null}.
      */
-    public UnWarnPlayerEvent(@NotNull ProxiedPlayer player, @NotNull String operator, @NotNull String reason) {
+    public UnWarnPlayerEvent(@NotNull UUID player, @NotNull Operator operator) {
         this.player = player;
         this.operator = operator;
-        this.reason = reason;
-        this.isCancelled = false;
     }
 
     /**
-     * Gets the player whose warning is being removed.
+     * Retrieves the unique identifier (UUID) of the player associated with this event.
      *
-     * @return The {@link ProxiedPlayer} object representing the affected player. Never {@code null}.
+     * @return The {@link UUID} of the player. Never null.
      */
-    public @NotNull ProxiedPlayer getPlayer() {
+    public @NotNull UUID getPlayer() {
         return player;
     }
 
     /**
-     * Gets the name of the operator who removed the warning.
+     * Retrieves the operator responsible for executing the action associated with this event.
      *
-     * @return A {@link String} representing the operator's name. Never {@code null}.
+     * @return The {@link Operator} object representing the operator. Never {@code null}.
      */
-    public @NotNull String getOperator() {
+    public @NotNull Operator getOperator() {
         return operator;
-    }
-
-    /**
-     * Gets the reason for removing the warning.
-     *
-     * @return A {@link String} representing the reason for removing the warning. Never {@code null}.
-     */
-    public @NotNull String getReason() {
-        return reason;
-    }
-
-    /**
-     * Checks whether this event has been cancelled.
-     *
-     * @return {@code true} if the event is cancelled, {@code false} otherwise.
-     */
-    @Override
-    public boolean isCancelled() {
-        return isCancelled;
-    }
-
-    /**
-     * Sets whether this event is cancelled.
-     *
-     * @param cancel {@code true} to cancel the event, {@code false} to allow it.
-     */
-    @Override
-    public void setCancelled(boolean cancel) {
-        this.isCancelled = cancel;
     }
 }
