@@ -5,6 +5,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import one.tranic.mongoban.api.MongoBanAPI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -88,6 +89,10 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
 
     @Override
     public long getPing() {
+        if (isBedrockPlayer()) {
+            long ping = BedrockPlayer.getPing(getUniqueId());
+            if (ping != -1) return ping;
+        }
         return player.getPing();
     }
 
@@ -98,6 +103,8 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
 
     @Override
     public @Nullable String getClientBrand() {
+        if (isBedrockPlayer()) {
+        }
         return null;
     }
 

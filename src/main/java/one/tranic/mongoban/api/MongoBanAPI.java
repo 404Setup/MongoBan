@@ -7,9 +7,6 @@ import one.tranic.mongoban.api.parse.json.GsonParser;
 import one.tranic.mongoban.api.parse.json.JsonParser;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Config;
-import org.geysermc.cumulus.form.Form;
-import org.geysermc.floodgate.api.FloodgateApi;
-import org.geysermc.geyser.api.GeyserApi;
 
 import java.util.List;
 import java.util.UUID;
@@ -45,23 +42,6 @@ public class MongoBanAPI {
      */
     public final static JsonParser jsonParser = Config.isFastjson() ? new FastJsonParser() : new GsonParser();
 
-    private static boolean geyser = false;
-    private static boolean floodgate = false;
-
-    static {
-        try {
-            Class.forName("org.geysermc.floodgate.api.FloodgateApi");
-            floodgate = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-
-        try {
-            Class.forName("org.geysermc.geyser.api.GeyserApi");
-            geyser = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-    }
-
     /**
      * Retrieves the console source implementation based on the platform being used.
      * <p>
@@ -80,40 +60,6 @@ public class MongoBanAPI {
             return new one.tranic.mongoban.api.command.source.VelocitySource(one.tranic.mongoban.velocity.MongoBan.getProxy().getConsoleCommandSource());
         }
         return new one.tranic.mongoban.api.command.source.PaperSource(org.bukkit.Bukkit.getConsoleSender(), null);
-    }
-
-    /**
-     * Determines whether the player associated with the given UUID is a Bedrock player.
-     * <p>
-     * This method checks if the UUID belongs to a Bedrock player, utilizing either the
-     * Floodgate or Geyser API based on the availability of these integrations.
-     *
-     * @param uuid The UUID of the player to check.
-     * @return {@code true} if the player is a Bedrock player; {@code false} otherwise.
-     */
-    public static boolean isBedrockPlayer(UUID uuid) {
-        if (floodgate)
-            return FloodgateApi.getInstance().isFloodgatePlayer(uuid);
-        if (geyser) return GeyserApi.api().isBedrockPlayer(uuid);
-        return false;
-    }
-
-    /**
-     * Sends a form to a player identified by their UUID.
-     * <p>
-     * This method leverages either the Floodgate or Geyser API, depending on their availability, to deliver the form.
-     * <p>
-     * If neither API is available, the method will return false.
-     *
-     * @param uuid the unique identifier of the player to whom the form should be sent
-     * @param form the form object to be sent to the player
-     * @return true if the form was successfully sent using Floodgate or Geyser; false otherwise
-     */
-    public static boolean sendForm(UUID uuid, Form form) {
-        if (floodgate)
-            return FloodgateApi.getInstance().sendForm(uuid, form);
-        if (geyser) return GeyserApi.api().sendForm(uuid, form);
-        return false;
     }
 
     /**

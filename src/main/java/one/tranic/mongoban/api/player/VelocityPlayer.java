@@ -85,6 +85,10 @@ public class VelocityPlayer implements MongoPlayer<Player> {
 
     @Override
     public long getPing() {
+        if (isBedrockPlayer()) {
+            long ping = BedrockPlayer.getPing(getUniqueId());
+            if (ping != -1) return ping;
+        }
         return player.getPing();
     }
 

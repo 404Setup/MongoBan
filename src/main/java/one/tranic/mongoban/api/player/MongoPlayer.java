@@ -28,6 +28,18 @@ public interface MongoPlayer<C> {
     UUID getUniqueId();
 
     /**
+     * Retrieves the Xbox Unique Identifier (XUID) for the player if the player is a Bedrock player.
+     * This method determines whether the player is a Bedrock player and, if so, utilizes
+     * the {@link BedrockPlayer#getXUID(UUID)} implementation to fetch the XUID.
+     *
+     * @return the XUID as a string if the player is identified as a Bedrock player;
+     * otherwise, {@code null}.
+     */
+    default @Nullable String getXUID() {
+        return isBedrockPlayer() ? BedrockPlayer.getXUID(getUniqueId()) : null;
+    }
+
+    /**
      * Retrieves the host address to which the player is connected.
      *
      * @return the connect host as a string.
@@ -36,14 +48,14 @@ public interface MongoPlayer<C> {
 
     /**
      * Sends a form to the player associated with the current instance.
-     * This method utilizes the {@link MongoBanAPI} to deliver the form,
+     * This method utilizes the {@link BedrockPlayer} to deliver the form,
      * associating it with the unique identifier (UUID) of the player.
      *
      * @param form the form to be sent to the player; must not be null
      * @return {@code true} if the form was successfully sent, {@code false} otherwise
      */
     default boolean sendForm(Form form) {
-        return MongoBanAPI.sendForm(getUniqueId(), form);
+        return BedrockPlayer.sendForm(getUniqueId(), form);
     }
 
     default CompletableFuture<Boolean> sendFormAsync(Form form) {
@@ -52,12 +64,12 @@ public interface MongoPlayer<C> {
 
     /**
      * Determines whether the player associated with this instance is a Bedrock player.
-     * This method utilizes the {@link MongoBanAPI#isBedrockPlayer(UUID)} implementation.
+     * This method utilizes the {@link BedrockPlayer#isBedrockPlayer(UUID)} implementation.
      *
      * @return true if the player is a Bedrock player; false otherwise.
      */
     default boolean isBedrockPlayer() {
-        return MongoBanAPI.isBedrockPlayer(getUniqueId());
+        return BedrockPlayer.isBedrockPlayer(getUniqueId());
     }
 
     /**
@@ -66,7 +78,7 @@ public interface MongoPlayer<C> {
      * @return a {@link CompletableFuture} that, when completed, provides an instance of {@link PlayerInfo}
      * containing details about the player, such as their name, UUID, and associated IP addresses.
      */
-    default CompletableFuture<PlayerInfo> getPlayerInfoAsync()   {
+    default CompletableFuture<PlayerInfo> getPlayerInfoAsync() {
         return MongoBanAPI.runAsync(this::getPlayerInfo);
     }
 
