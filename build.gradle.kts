@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "one.tranic"
-version = "24.12.0"
+version = "25.01.0"
 
 repositories {
     maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
@@ -38,25 +38,27 @@ dependencies {
     compileOnly("com.google.guava:guava:33.3.0-jre")
     compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.8")
     compileOnly("org.jetbrains:annotations:26.0.1")
-    implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
+    //implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
     implementation("dev.nipafx.args:record-args:0.9.2")
     implementation("org.mongodb:mongodb-driver-sync:5.2.1")
     implementation("redis.clients:jedis:5.2.0")
-    implementation("com.github.Carleslc.Simple-YAML:Simple-Yaml:1.8.4")
+    implementation("com.amihaiemil.web:eo-yaml:8.0.6")
 }
 
 val libPackage = "one.tranic.mongoban.libs"
 
 tasks.shadowJar {
+    exclude("org/bson/codecs/pojo/**")
+
     relocate("one.tranic.irs", "${libPackage}.irs")
     relocate("com.mongodb", "${libPackage}.mongodb")
     relocate("redis.clients.jedis", "${libPackage}.jedis")
     relocate("org.apache.commons.pool2", "${libPackage}.pool2")
-    relocate("org.bson", "${libPackage}.bson")
     relocate("org.json", "${libPackage}.json")
-    relocate("org.simpleyaml", "${libPackage}.simpleyaml")
+    relocate("com.amihaiemil.eoyaml", "${libPackage}.eoyaml")
+    relocate("javax.json", "${libPackage}.jxjson")
     relocate("dev.nipafx.args", "${libPackage}.args")
-    relocate("com.alibaba.fastjson2", "${libPackage}.fastjson2")
+    //relocate("org.bson", "${libPackage}.bson")
 
     minimize {
         exclude("META-INF/**")

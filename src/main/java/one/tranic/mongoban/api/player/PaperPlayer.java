@@ -2,6 +2,7 @@ package one.tranic.mongoban.api.player;
 
 import net.kyori.adventure.text.Component;
 import one.tranic.irs.PluginSchedulerBuilder;
+import one.tranic.mongoban.api.Platform;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -104,6 +105,7 @@ public class PaperPlayer implements MongoPlayer<Player> {
 
     @Override
     public @Nullable String getClientBrand() {
+        if (isBedrockPlayer()) return BedrockPlayer.getPlatform(getUniqueId());
         return player.getClientBrandName();
     }
 
@@ -122,17 +124,16 @@ public class PaperPlayer implements MongoPlayer<Player> {
 
     @Override
     public boolean kick(String reason) {
-        PluginSchedulerBuilder.builder(one.tranic.mongoban.bukkit.MongoBan.getInstance())
-                .sync(player)
-                .task(() -> player.kick(Component.text(reason))).run();
-        return true;
+        return kick(Component.text(reason));
     }
 
     @Override
     public boolean kick(@NotNull Component reason) {
-        PluginSchedulerBuilder.builder(one.tranic.mongoban.bukkit.MongoBan.getInstance())
-                .sync(player)
-                .task(() -> player.kick(reason)).run();
+        if (Platform.get() == Platform.Folia || Platform.get() == Platform.ShreddedPaper) {
+            PluginSchedulerBuilder.builder(one.tranic.mongoban.bukkit.MongoBan.getInstance())
+                    .sync(player)
+                    .task(() -> player.kick(reason)).run();
+        } else player.kick(reason);
         return true;
     }
 

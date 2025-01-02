@@ -5,49 +5,36 @@ import com.velocitypowered.api.event.ResultedEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
-import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.MongoDataAPI;
+import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.command.message.Message;
-import one.tranic.mongoban.api.data.IPBanInfo;
-import one.tranic.mongoban.api.data.PlayerBanInfo;
+import one.tranic.mongoban.api.listener.Listener;
+import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
+import java.util.Objects;
 
-public class PlayerListener {
+public class PlayerListener extends Listener<LoginEvent> {
+    @Override
+    public boolean isAllowed(LoginEvent event) {
+        return event.getResult().isAllowed();
+    }
+
+    @Override
+    public void disallow(LoginEvent event, @Nullable Component reason) {
+        event.setResult(
+                ResultedEvent.ComponentResult.denied(
+                        Objects.requireNonNullElse(reason, Message.DEFAULT_KICK_MESSAGE)
+                )
+        );
+    }
+
+    @Override
     @Subscribe(priority = 0, order = PostOrder.CUSTOM)
-    public void onPlayerLogin(LoginEvent event) {
-        if (!event.getResult().isAllowed()) return;
+    public void onPreLoginEvent(LoginEvent event) {
+        if (!isAllowed(event)) return;
         Player player = event.getPlayer();
         InetAddress ip = player.getRemoteAddress().getAddress();
 
-        IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(ip.getHostAddress()).sync();
-        if (result != null) {
-            MongoDataAPI.getDatabase().ban()
-                    .player().find(player.getUniqueId())
-                    .async()
-                    .thenAcceptAsync((p) -> {
-                        if (p != null) return;
-                        MongoDataAPI.getDatabase().ban()
-                                .player()
-                                .add(player.getUniqueId(), MongoBanAPI.console, result.duration(), ip.getHostAddress(), result.reason())
-                                .sync();
-                    }, MongoBanAPI.executor);
-            event.setResult(ResultedEvent.ComponentResult.denied(Message.kickMessage(result)));
-            return;
-        } else {
-            PlayerBanInfo playerResult = MongoDataAPI.getDatabase().ban().player()
-                    .find(player.getUniqueId())
-                    .sync();
-            if (playerResult != null) {
-                event.setResult(ResultedEvent.ComponentResult.denied(Message.kickMessage(playerResult)));
-                return;
-            }
-        }
-
-        updatePlayerInfoAsync(player, ip);
-    }
-
-    private void updatePlayerInfoAsync(Player player, InetAddress ip) {
-        MongoDataAPI.getDatabase().player().add(player.getUsername(), player.getUniqueId(), ip.getHostAddress());
+        doIt(event, player.getUsername(), player.getUniqueId(), ip);
     }
 }

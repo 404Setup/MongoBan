@@ -72,33 +72,25 @@ If you would like to support the MongoBan project, consider the following:
 
 For further questions or clarifications, please contact the developers through the official support channels.
 
-## Gratitude
+## License
 
 ### A
 - Adventure [MIT] [[Github](https://github.com/KyoriPowered/adventure)]
 - Annotations [Apache-2.0] [[Github](https://github.com/JetBrains/java-annotations)]
-
 ### C
 - Caffeine [Apache-2.0] [[Github](https://github.com/ben-manes/caffeine)]
-
+### E
+- EO YAML [Apache-2.0] [[Github](https://github.com/decorators-squad/eo-yaml)]
 ### F
 - FastJson2 [Apache-2.0] [[Github](https://github.com/alibaba/fastjson2)]
-
 ### G
 - Gson [Apache-2.0] [[Github](https://github.com/google/gson)]
 - Guava [Apache-2.0] [[Github](https://github.com/google/guava)]
-
 ### I
 - IRScheduler [Apache-2.0] [[Github](https://github.com/404Setup/irs)]
-
 ### J
 - Jedis [MIT] [[Github](https://github.com/redis/jedis)]
-
 ### M
 - Mongo Java Driver [Apache-2.0] [[Github](https://github.com/mongodb/mongo-java-driver)]
-
 ### R
 - RecordArgs [Apache-2.0] [[Github](https://github.com/nipafx/record-args)]
-
-### S
-- Simple-YAML [GPL-3.0] [[Github](https://github.com/Carleslc/Simple-YAML)]

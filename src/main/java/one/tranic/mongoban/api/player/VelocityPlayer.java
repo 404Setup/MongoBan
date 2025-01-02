@@ -99,6 +99,7 @@ public class VelocityPlayer implements MongoPlayer<Player> {
 
     @Override
     public @Nullable String getClientBrand() {
+        if (isBedrockPlayer()) return BedrockPlayer.getPlatform(getUniqueId());
         return player.getClientBrand();
     }
 

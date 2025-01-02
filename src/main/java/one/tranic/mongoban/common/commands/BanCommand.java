@@ -17,6 +17,7 @@ import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
+import one.tranic.mongoban.common.network.Network;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,6 +87,14 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
         try {
             InetAddress inip = InetAddress.getByName(target);
+
+            // Check Private IP
+            if (Network.isPrivateIp(inip)) {
+                TextComponent msg = Message.failedPrivateIPMessage(target);
+                sendResult(source, msg, false);
+                return;
+            }
+
             IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(inip).sync();
             if (result != null) {
                 TextComponent msg = Message.alreadyBannedMessage(result.ip(), result.operator(), result.duration(), result.reason());
@@ -101,6 +110,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
             MongoPlayer<?> targetPlayer = Player.getPlayer(target);
             String userIP;
             UUID uuid;
+
             if (targetPlayer == null) {
                 PlayerInfo player = MongoDataAPI.getDatabase().player().find(target).sync();
                 if (player == null) {

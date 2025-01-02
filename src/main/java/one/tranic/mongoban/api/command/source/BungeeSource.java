@@ -1,10 +1,10 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.BungeePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -78,12 +78,12 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
 
     @Override
     public void sendMessage(String message) {
-        commandSender.sendMessage(message);
+        commandSender.sendMessage(Message.toBaseComponent(message));
     }
 
     @Override
     public void sendMessage(@NotNull Component message) {
-        commandSender.sendMessage(LegacyComponentSerializer.legacySection().serialize(message));
+        commandSender.sendMessage(Message.toBaseComponent(message));
     }
 
     @Override

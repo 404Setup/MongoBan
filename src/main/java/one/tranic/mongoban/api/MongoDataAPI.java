@@ -1,9 +1,9 @@
 package one.tranic.mongoban.api;
 
 import one.tranic.mongoban.api.cache.Cache;
-import one.tranic.mongoban.common.Config;
 import one.tranic.mongoban.common.cache.CaffeineCache;
 import one.tranic.mongoban.common.cache.RedisCache;
+import one.tranic.mongoban.common.config.NewConfig;
 import one.tranic.mongoban.common.database.Database;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,20 +103,21 @@ public class MongoDataAPI {
      */
     public synchronized static void reconnect() throws SecurityException {
         if (!isCallerAllowed()) throw new SecurityException("Unauthorized access to reconnect method.");
-        Cache cache = Config.getCache() == 0 ? new CaffeineCache() :
+
+        Cache cache = NewConfig.getConfig().cache() == 0 ? new CaffeineCache() :
                 new RedisCache(
-                        Config.getRedis().host(),
-                        Config.getRedis().port(),
-                        Config.getRedis().db(),
-                        Config.getRedis().user(),
-                        Config.getRedis().password());
+                        NewConfig.getConfig().redis().host(),
+                        NewConfig.getConfig().redis().port(),
+                        NewConfig.getConfig().redis().db(),
+                        NewConfig.getConfig().redis().user(),
+                        NewConfig.getConfig().redis().password());
         MongoDataAPI.setCache(cache);
         Database database = new Database(
-                Config.getDatabase().host(),
-                Config.getDatabase().port(),
-                Config.getDatabase().database(),
-                Config.getDatabase().user(),
-                Config.getDatabase().password(),
+                NewConfig.getConfig().database().host(),
+                NewConfig.getConfig().database().port(),
+                NewConfig.getConfig().database().database(),
+                NewConfig.getConfig().database().user(),
+                NewConfig.getConfig().database().password(),
                 cache);
         MongoDataAPI.setDatabase(database);
     }

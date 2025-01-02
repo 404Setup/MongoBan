@@ -1,8 +1,8 @@
 package one.tranic.mongoban.api.parse.json;
 
-import com.alibaba.fastjson2.JSON;
+/*import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONFactory;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;*/
 
 /**
  * An implementation of the {@link JsonParser} interface that uses the FastJSON library
@@ -11,8 +11,8 @@ import org.jetbrains.annotations.Nullable;
  * This class provides methods to convert JSON strings into instances of a specified type
  * and to serialize objects into JSON string representations using FastJSON.
  */
-public class FastJsonParser implements JsonParser {
-    public FastJsonParser() {
+public class FastJsonParser /*implements JsonParser*/ {
+    /*public FastJsonParser() {
         JSONFactory.setDisableJSONB(false);
     }
 
@@ -24,5 +24,5 @@ public class FastJsonParser implements JsonParser {
     @Override
     public String toJson(Object object) {
         return JSON.toJSONString(object);
-    }
+    }*/
 }

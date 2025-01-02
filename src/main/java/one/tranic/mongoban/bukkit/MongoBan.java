@@ -2,9 +2,8 @@ package one.tranic.mongoban.bukkit;
 
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.PaperSource;
-import one.tranic.mongoban.api.command.source.VelocitySource;
-import one.tranic.mongoban.common.Config;
 import one.tranic.mongoban.common.commands.*;
+import one.tranic.mongoban.common.config.NewConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
@@ -25,7 +24,7 @@ public class MongoBan extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        Config.loadConfig(getDataFolder().toPath());
+        NewConfig.loadConfig(getDataFolder().toPath());
         MongoDataAPI.reconnect();
 
         try {

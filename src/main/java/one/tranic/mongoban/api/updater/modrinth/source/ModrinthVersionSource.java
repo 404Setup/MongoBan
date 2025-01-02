@@ -1,6 +1,5 @@
 package one.tranic.mongoban.api.updater.modrinth.source;
 
-import com.alibaba.fastjson2.annotation.JSONField;
 import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,35 +9,27 @@ import java.util.List;
 public class ModrinthVersionSource {
     private String name;
     @SerializedName("version_number")
-    @JSONField(alternateNames = {"version_number"})
     private String versionNumber;
     private String changelog;
     private List<Dependency> dependencies;
     @SerializedName("game_versions")
-    @JSONField(alternateNames = {"game_versions"})
     private List<String> gameVersions;
     @SerializedName("version_type")
-    @JSONField(alternateNames = {"version_type"})
     private String versionType;
     private List<String> loaders;
     private boolean featured;
     private String status;
     @SerializedName("requested_status")
-    @JSONField(alternateNames = {"requested_status"})
     private String requestedStatus;
     private String id;
     @SerializedName("project_id")
-    @JSONField(alternateNames = {"project_id"})
     private String projectId;
     @SerializedName("author_id")
-    @JSONField(alternateNames = {"author_id"})
     private String authorId;
     @SerializedName("date_published")
-    @JSONField(alternateNames = {"data_published"})
     private String datePublished;
     private int downloads;
     @SerializedName("changelog_url")
-    @JSONField(alternateNames = {"changelog_url"})
     private String changelogUrl;
     private List<File> files;
 
@@ -123,16 +114,12 @@ public class ModrinthVersionSource {
 
     public static class Dependency {
         @SerializedName("version_id")
-        @JSONField(alternateNames = {"version_id"})
         private String versionId;
         @SerializedName("project_id")
-        @JSONField(alternateNames = {"project_id"})
         private String projectId;
         @SerializedName("file_name")
-        @JSONField(alternateNames = {"file_name"})
         private String fileName;
         @SerializedName("dependency_type")
-        @JSONField(alternateNames = {"dependency_type"})
         private String dependencyType;
 
         public Dependency() {
@@ -162,7 +149,6 @@ public class ModrinthVersionSource {
         private boolean primary;
         private int size;
         @SerializedName("file_type")
-        @JSONField(alternateNames = {"file_type"})
         private String fileType;
 
         public File() {

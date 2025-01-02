@@ -3,14 +3,14 @@ package one.tranic.mongoban.bungee;
 import net.md_5.bungee.api.plugin.Plugin;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.BungeeSource;
-import one.tranic.mongoban.common.Config;
 import one.tranic.mongoban.common.commands.*;
+import one.tranic.mongoban.common.config.NewConfig;
 
 @Deprecated
 public class MongoBan extends Plugin {
     @Override
     public void onEnable() {
-        Config.loadConfig(getDataFolder().toPath());
+        NewConfig.loadConfig(getDataFolder().toPath());
 
         MongoDataAPI.reconnect();
 

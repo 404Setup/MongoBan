@@ -1,11 +1,10 @@
 package one.tranic.mongoban.api.player;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.command.message.Message;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -103,8 +102,7 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
 
     @Override
     public @Nullable String getClientBrand() {
-        if (isBedrockPlayer()) {
-        }
+        if (isBedrockPlayer()) return BedrockPlayer.getPlatform(getUniqueId());
         return null;
     }
 
@@ -121,23 +119,23 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
 
     @Override
     public boolean kick(String reason) {
-        player.disconnect(reason);
+        player.disconnect(Message.toBaseComponent(reason));
         return true;
     }
 
     @Override
     public boolean kick(@NotNull Component reason) {
-        player.disconnect(LegacyComponentSerializer.legacySection().serialize(reason));
+        player.disconnect(Message.toBaseComponent(reason));
         return true;
     }
 
     @Override
     public void sendMessage(String message) {
-        player.sendMessage(message);
+        player.sendMessage(Message.toBaseComponent(message));
     }
 
     @Override
     public void sendMessage(@NotNull Component message) {
-        player.sendMessage(LegacyComponentSerializer.legacySection().serialize(message));
+        player.sendMessage(Message.toBaseComponent(message));
     }
 }

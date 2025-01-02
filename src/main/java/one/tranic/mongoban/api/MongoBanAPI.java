@@ -2,11 +2,9 @@ package one.tranic.mongoban.api;
 
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.Operator;
-import one.tranic.mongoban.api.parse.json.FastJsonParser;
 import one.tranic.mongoban.api.parse.json.GsonParser;
 import one.tranic.mongoban.api.parse.json.JsonParser;
 import one.tranic.mongoban.common.Collections;
-import one.tranic.mongoban.common.Config;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +38,7 @@ public class MongoBanAPI {
     /**
      * A static instance of {@link JsonParser} that provides JSON parsing and serialization functionalities.
      */
-    public final static JsonParser jsonParser = Config.isFastjson() ? new FastJsonParser() : new GsonParser();
+    public final static JsonParser jsonParser = new GsonParser();
 
     /**
      * Retrieves the console source implementation based on the platform being used.
