@@ -1,6 +1,8 @@
 <img src="./assets/MongoBan_2025_cmp.png" alt="Logo" align="right" width="250">
 
 # MongoBan
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F404Setup%2FMongoBan.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2F404Setup%2FMongoBan?ref=badge_shield)
+
 MongoBan is still in beta, so please keep an eye on our changelog to prepare to modify the configuration files.
 
 I will make a database upgrade script every time the database structure is updated, and it will be automatically run when the server is started.
@@ -50,6 +52,9 @@ Misrepresenting yourself as the original creator is prohibited.
 - Refrain from profiting off server bundles preloaded with MongoBan.
 
 - Comply fully with the Apache 2.0 License in any derivative or commercial use.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F404Setup%2FMongoBan.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F404Setup%2FMongoBan?ref=badge_large)
 
 ### Disclaimer
 
