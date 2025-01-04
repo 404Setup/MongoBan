@@ -7,6 +7,11 @@ import java.util.List;
 
 // Todo
 public class UnBanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+    public UnBanCommand() {
+        setName("unban");
+        setPermission("mongoban.command.unban");
+    }
+
     @Override
     public void execute(C source) {
 

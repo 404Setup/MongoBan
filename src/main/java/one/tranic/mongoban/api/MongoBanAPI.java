@@ -50,14 +50,17 @@ public class MongoBanAPI {
      * depending on the detected platform.
      */
     private static SourceImpl<?, ?> getConsoleSource() {
-        if (Platform.get() == Platform.BungeeCord) {
+        if (Platform.get() == Platform.BungeeCord)
             return new one.tranic.mongoban.api.command.source.BungeeSource(
-                    net.md_5.bungee.api.ProxyServer.getInstance().getConsole(), null);
-        }
-        if (Platform.get() == Platform.Velocity) {
-            return new one.tranic.mongoban.api.command.source.VelocitySource(one.tranic.mongoban.velocity.MongoBan.getProxy().getConsoleCommandSource());
-        }
-        return new one.tranic.mongoban.api.command.source.PaperSource(org.bukkit.Bukkit.getConsoleSender(), null);
+                    net.md_5.bungee.api.ProxyServer.getInstance().getConsole(), null
+            );
+        if (Platform.get() == Platform.Velocity)
+            return new one.tranic.mongoban.api.command.source.VelocitySource(
+                    one.tranic.mongoban.velocity.MongoBan.getProxy().getConsoleCommandSource()
+            );
+        return new one.tranic.mongoban.api.command.source.PaperSource(
+                org.bukkit.Bukkit.getConsoleSender(), null
+        );
     }
 
     /**

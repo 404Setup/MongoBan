@@ -20,6 +20,9 @@ The following is a compatible version of the server:
 - Velocity: 3.4.0+ (WIP)
 - BungeeCord: 1.18.2+ (WIP)
 
+## MongoBan API
+Mongoban API is not completed, please do not use in the production environment.
+
 ## Usage Agreement
 
 MongoBan is a plugin designed to provide advanced banning capabilities for Minecraft server software,
@@ -73,6 +76,13 @@ If you would like to support the MongoBan project, consider the following:
 For further questions or clarifications, please contact the developers through the official support channels.
 
 ## License
+
+The following is a list of third-party libraries and dependencies used in the MongoBan project along with their
+respective licenses. 
+
+Every attempt has been made to comply with the terms of these licenses. 
+
+Please review the license terms of each individual dependency for detailed information on their usage and distribution rights.
 
 ### A
 - Adventure [MIT] [[Github](https://github.com/KyoriPowered/adventure)]

@@ -1,9 +1,9 @@
-package one.tranic.mongoban.common.network;
+package one.tranic.mongoban.api.parse.network;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class Network {
+public class NetworkParser {
 
     /**
      * Checks if an InetAddress is a private IP address.

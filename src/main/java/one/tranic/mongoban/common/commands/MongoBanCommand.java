@@ -8,8 +8,8 @@ import java.util.List;
 // Todo
 public class MongoBanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
     public MongoBanCommand() {
-        this.setName("mban");
-        this.setPermission("mongoban.command.mban");
+        this.setName("mbcmd");
+        this.setPermission("mongoban.command.mbcmd");
     }
 
     @Override

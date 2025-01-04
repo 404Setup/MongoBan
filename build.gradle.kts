@@ -30,7 +30,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bungeecord:4.3.4")
     compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
-    implementation("one.tranic:irs:1.3.2")
+    implementation("one.tranic:irs:1.3.3.2")
 
     compileOnly("org.geysermc.geyser:api:2.4.2-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.2.3-SNAPSHOT")

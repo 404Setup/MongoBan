@@ -17,7 +17,7 @@ import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
-import one.tranic.mongoban.common.network.Network;
+import one.tranic.mongoban.api.parse.network.NetworkParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,7 +89,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
             InetAddress inip = InetAddress.getByName(target);
 
             // Check Private IP
-            if (Network.isPrivateIp(inip)) {
+            if (NetworkParser.isPrivateIp(inip)) {
                 TextComponent msg = Message.failedPrivateIPMessage(target);
                 sendResult(source, msg, false);
                 return;

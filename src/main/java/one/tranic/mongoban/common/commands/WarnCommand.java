@@ -7,6 +7,12 @@ import java.util.List;
 
 // Todo
 public class WarnCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+
+    public WarnCommand() {
+        setName("warn");
+        setPermission("mongoban.command.warn");
+    }
+
     @Override
     public void execute(C source) {
 
