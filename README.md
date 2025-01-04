@@ -53,9 +53,6 @@ Misrepresenting yourself as the original creator is prohibited.
 
 - Comply fully with the Apache 2.0 License in any derivative or commercial use.
 
-
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F404Setup%2FMongoBan.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F404Setup%2FMongoBan?ref=badge_large)
-
 ### Disclaimer
 
 MongoBan is intended solely for lawful purposes, assisting users in managing database-related content.
@@ -82,6 +79,8 @@ For further questions or clarifications, please contact the developers through t
 
 ## License
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2F404Setup%2FMongoBan.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2F404Setup%2FMongoBan?ref=badge_large)
+
 The following is a list of third-party libraries and dependencies used in the MongoBan project along with their
 respective licenses. 
 
@@ -95,7 +94,7 @@ Please review the license terms of each individual dependency for detailed infor
 ### C
 - Caffeine [Apache-2.0] [[Github](https://github.com/ben-manes/caffeine)]
 ### E
-- EO YAML [Apache-2.0] [[Github](https://github.com/decorators-squad/eo-yaml)]
+- EO YAML [BSD 3-Clause] [[Github](https://github.com/decorators-squad/eo-yaml)]
 ### F
 - FastJson2 [Apache-2.0] [[Github](https://github.com/alibaba/fastjson2)]
 ### G
