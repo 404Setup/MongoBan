@@ -2,6 +2,7 @@ package one.tranic.mongoban.bungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import one.tranic.mongoban.api.MongoDataAPI;
+import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.command.source.BungeeSource;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;
@@ -10,6 +11,8 @@ import one.tranic.mongoban.common.config.NewConfig;
 public class MongoBan extends Plugin {
     @Override
     public void onEnable() {
+        Message.reloadMessages();
+
         NewConfig.loadConfig(getDataFolder().toPath());
 
         MongoDataAPI.reconnect();

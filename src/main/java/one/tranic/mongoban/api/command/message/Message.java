@@ -1,5 +1,7 @@
 package one.tranic.mongoban.api.command.message;
 
+import com.amihaiemil.eoyaml.Yaml;
+import com.amihaiemil.eoyaml.YamlMapping;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -9,11 +11,61 @@ import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.exception.UnsupportedTypeException;
+import one.tranic.mongoban.api.parse.network.NetworkParser;
+import one.tranic.mongoban.common.Collections;
+import one.tranic.mongoban.common.Data;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
+import java.util.Map;
+
 public class Message {
     public static final TextComponent DEFAULT_KICK_MESSAGE = Component.text("Disconnecting...");
+    private static final Map<MessageKey, String> messages = Collections.newHashMap();
+
+    private static YamlMapping yaml(InputStream data) throws IOException {
+        return Yaml.createYamlInput(
+                data
+        ).readYamlMapping();
+    }
+
+    public static @Nullable String get(MessageKey key) {
+        return messages.get(key);
+    }
+
+    private static void getMessages(YamlMapping yaml) {
+        int i = 0;
+        for (MessageKey key : MessageKey.values()) {
+            String value = yaml.string(key.getKey());
+            if (value != null) {
+                messages.put(key, value);
+                i++;
+            }
+        }
+        Data.logger.info("Load {} data from the language file", i);
+    }
+
+    public static void reloadMessages() {
+        if (!messages.isEmpty()) messages.clear();
+
+        Data.logger.info("Searching for language packs: {}....", Locale.getDefault().toLanguageTag());
+        try (InputStream data = NetworkParser.resource("language/" + Locale.getDefault().toLanguageTag() + ".yaml")) {
+            getMessages(yaml(data));
+        } catch (Exception ignored) {
+            Data.logger.error("The language pack {} was not found or the file is damaged. Reading the default language pack: {}..."
+                    , Locale.getDefault().toLanguageTag()
+                    , Locale.US.toLanguageTag());
+            try (InputStream data = NetworkParser.resource("language/" + Locale.US.toLanguageTag() + ".yaml")) {
+                getMessages(yaml(data));
+            } catch (IOException e) {
+                Data.logger.error("Failed to read the default language pack: {}", e.getMessage());
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public static TextComponent failedPrivateIPMessage(@NotNull String ip) {
         TextComponent.Builder message = Component.text();

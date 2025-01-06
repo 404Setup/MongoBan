@@ -1,6 +1,7 @@
 package one.tranic.mongoban.bukkit;
 
 import one.tranic.mongoban.api.MongoDataAPI;
+import one.tranic.mongoban.api.command.message.Message;
 import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;
@@ -22,9 +23,12 @@ public class MongoBan extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Message.reloadMessages();
+
         instance = this;
 
         NewConfig.loadConfig(getDataFolder().toPath());
+
         MongoDataAPI.reconnect();
 
         try {

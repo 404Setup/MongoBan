@@ -1,0 +1,7 @@
+kick:
+  default: "Disconnecting..."
+ban:
+  message: "<green>Target <blue><target> <green>has been banned.\nOperator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
+  already: "<yellow>The specified target has been banned:\n<green>Target: <blue><target>\n<green>Operator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
+failed:
+  private-ip: "<yellow>Selected IP Address: <blue><ip><yellow> is not a usable public address."

@@ -5,7 +5,7 @@ plugins {
     java
     id("eclipse")
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.9"
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.0.0-beta4"
 }
 
 group = "one.tranic"
@@ -27,6 +27,7 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 
+    compileOnly("net.kyori:adventure-api:4.18.0")
     compileOnly("net.kyori:adventure-platform-bungeecord:4.3.4")
     compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
