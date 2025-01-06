@@ -1,7 +1,7 @@
 package one.tranic.mongoban.bukkit;
 
 import one.tranic.mongoban.api.MongoDataAPI;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;

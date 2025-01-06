@@ -1,6 +1,6 @@
 package one.tranic.mongoban.common.form;
 
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.command.source.SourceImpl;
@@ -42,7 +42,7 @@ public class GeyserForm {
         return ModalForm.builder().title("MongoBan Message").content(message).build();
     }
 
-    public static Form getMessageForm(TextComponent message) {
+    public static Form getMessageForm(Component message) {
         return getMessageForm(LegacyComponentSerializer.legacySection().serialize(message));
     }
 

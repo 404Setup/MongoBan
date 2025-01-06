@@ -1,7 +1,7 @@
 package one.tranic.mongoban.bukkit.listener;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.MessageKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -28,7 +28,7 @@ public class LoginListener extends one.tranic.mongoban.api.listener.Listener<Asy
     public void disallow(AsyncPlayerPreLoginEvent event, @Nullable Component reason) {
         event.disallow(
                 AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
-                Objects.requireNonNullElse(reason, Message.DEFAULT_KICK_MESSAGE)
+                Objects.requireNonNullElse(reason, MessageKey.DEFAULT_KICK.format())
         );
     }
 }

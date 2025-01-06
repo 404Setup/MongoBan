@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.BungeePlayer;
 import org.jetbrains.annotations.NotNull;

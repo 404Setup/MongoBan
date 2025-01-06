@@ -3,7 +3,7 @@ package one.tranic.mongoban.api.listener;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import org.jetbrains.annotations.Nullable;

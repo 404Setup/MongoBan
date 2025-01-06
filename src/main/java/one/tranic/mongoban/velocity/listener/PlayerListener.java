@@ -6,8 +6,9 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.listener.Listener;
+import one.tranic.mongoban.api.message.MessageKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -23,7 +24,7 @@ public class PlayerListener extends Listener<LoginEvent> {
     public void disallow(LoginEvent event, @Nullable Component reason) {
         event.setResult(
                 ResultedEvent.ComponentResult.denied(
-                        Objects.requireNonNullElse(reason, Message.DEFAULT_KICK_MESSAGE)
+                        Objects.requireNonNullElse(reason, MessageKey.DEFAULT_KICK.format())
                 )
         );
     }

@@ -1,4 +1,4 @@
-package one.tranic.mongoban.api.command.message;
+package one.tranic.mongoban.api.message;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -18,7 +18,8 @@ import java.util.Objects;
  */
 public enum MessageKey {
     DEFAULT_KICK("kick.default"),
-    BAN_MESSAGE("ban.message"), ALREADY_BANNED("ban.already");
+    BAN_MESSAGE("ban.message"), ALREADY_BANNED("ban.already"),
+    PRIVATE_IP("failed.private-ip");
 
     private final String key;
 

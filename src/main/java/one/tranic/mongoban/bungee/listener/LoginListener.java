@@ -6,7 +6,8 @@ import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.Message;
+import one.tranic.mongoban.api.message.MessageKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetSocketAddress;
@@ -30,7 +31,7 @@ public class LoginListener extends one.tranic.mongoban.api.listener.Listener<Log
     @Override
     public void disallow(LoginEvent event, @Nullable Component reason) {
         BaseComponent[] message = Message.toBaseComponent(
-                Objects.requireNonNullElse(reason, Message.DEFAULT_KICK_MESSAGE)
+                Objects.requireNonNullElse(reason, MessageKey.DEFAULT_KICK.format())
         );
         event.setCancelReason(message);
         event.setCancelled(true);

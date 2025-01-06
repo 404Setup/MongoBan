@@ -1,4 +1,4 @@
-package one.tranic.mongoban.api.command.message;
+package one.tranic.mongoban.api.message;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Message {
-    public static final TextComponent DEFAULT_KICK_MESSAGE = Component.text("Disconnecting...");
     private static final Map<MessageKey, String> messages = Collections.newHashMap();
 
     private static YamlMapping yaml(InputStream data) throws IOException {
@@ -67,49 +66,7 @@ public class Message {
         }
     }
 
-    public static TextComponent failedPrivateIPMessage(@NotNull String ip) {
-        TextComponent.Builder message = Component.text();
-
-        message.append(Component.text("Selected IP Address: ", NamedTextColor.YELLOW));
-        message.append(Component.text(ip, NamedTextColor.BLUE));
-        message.append(Component.text("is not a usable public address.", NamedTextColor.YELLOW));
-
-        return message.build();
-    }
-
-    public static TextComponent alreadyBannedMessage(@NotNull String target, @NotNull Operator operator, String duration, String reason) {
-        TextComponent.Builder message = Component.text();
-
-        message.append(Component.text("The specified target has been banned:", NamedTextColor.YELLOW));
-        message.append(Component.text("\nTarget: ", NamedTextColor.GREEN));
-        message.append(Component.text(target, NamedTextColor.BLUE));
-        message.append(Component.text("\nOperator: ", NamedTextColor.GREEN));
-        message.append(Component.text(operator.name(), NamedTextColor.BLUE));
-        message.append(Component.text("\nDuration: ", NamedTextColor.GREEN));
-        message.append(Component.text(duration, NamedTextColor.BLUE));
-        message.append(Component.text("\nReason: ", NamedTextColor.GREEN));
-        message.append(Component.text(reason, NamedTextColor.BLUE));
-
-        return message.build();
-    }
-
-    public static TextComponent banMessage(@NotNull String target, @NotNull String duration, @Nullable String reason, @NotNull Operator operator) {
-        TextComponent.Builder message = Component.text();
-
-        message.append(Component.text("Target ", NamedTextColor.GREEN));
-        message.append(Component.text(target, NamedTextColor.BLUE));
-        message.append(Component.text(" has been banned.\n", NamedTextColor.GREEN));
-        message.append(Component.text("Operator: ", NamedTextColor.GREEN));
-        message.append(Component.text(operator.name(), NamedTextColor.BLUE));
-        message.append(Component.text("\nDuration: ", NamedTextColor.GREEN));
-        message.append(Component.text(duration, NamedTextColor.BLUE));
-        message.append(Component.text("\nReason: ", NamedTextColor.GREEN));
-        message.append(Component.text(reason != null ? reason : "<None>", NamedTextColor.BLUE));
-
-        return message.build();
-    }
-
-    public static TextComponent kickMessage(@NotNull Object banInfo) {
+    public static Component kickMessage(@NotNull Object banInfo) {
         TextComponent.Builder message = Component.text();
         message.append(Component.text("Being kicked from the server\n", NamedTextColor.RED));
 

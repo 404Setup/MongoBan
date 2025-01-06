@@ -1,6 +1,6 @@
 package one.tranic.mongoban.api.command;
 
-import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.command.source.BungeeSource;
@@ -77,7 +77,7 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
      * @param source the command source who will receive the message
      * @param msg    the message to be sent to the source
      */
-    public void sendResult(C source, TextComponent msg) {
+    public void sendResult(C source, Component msg) {
         sendResult(source, msg, true);
     }
 
@@ -86,10 +86,10 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
      * a Bedrock player, a standard player, or whether the message should also be sent to the console.
      *
      * @param source      the source to which the result should be sent; can be a player or other entity
-     * @param msg         the message to be sent, represented as a {@link TextComponent}
+     * @param msg         the message to be sent, represented as a {@link Component}
      * @param withConsole if true, the message will also be sent to the console
      */
-    public void sendResult(C source, TextComponent msg, boolean withConsole) {
+    public void sendResult(C source, Component msg, boolean withConsole) {
         if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
         else if (source.isPlayer()) source.sendMessage(msg);
         if (withConsole) MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);

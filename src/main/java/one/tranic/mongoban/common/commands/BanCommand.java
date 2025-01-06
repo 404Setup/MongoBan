@@ -3,16 +3,19 @@ package one.tranic.mongoban.common.commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.args.BanArgs;
-import one.tranic.mongoban.api.command.message.Message;
+import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.exception.UnsupportedTypeException;
+import one.tranic.mongoban.api.message.MessageFormat;
+import one.tranic.mongoban.api.message.MessageKey;
 import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
@@ -90,20 +93,32 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
             // Check Private IP
             if (NetworkParser.isPrivateIp(inip)) {
-                TextComponent msg = Message.failedPrivateIPMessage(target);
+                Component msg = MessageKey.PRIVATE_IP.format(
+                        new MessageFormat("ip", Component.text(target, NamedTextColor.BLUE))
+                );
                 sendResult(source, msg, false);
                 return;
             }
 
             IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(inip).sync();
             if (result != null) {
-                TextComponent msg = Message.alreadyBannedMessage(result.ip(), result.operator(), result.duration(), result.reason());
+                Component msg = MessageKey.ALREADY_BANNED.format(
+                        new MessageFormat("target", Component.text(result.ip(), NamedTextColor.BLUE)),
+                        new MessageFormat("operator", Component.text(result.operator().name(), NamedTextColor.BLUE)),
+                        new MessageFormat("duration", Component.text(result.duration(), NamedTextColor.BLUE)),
+                        new MessageFormat("reason", Component.text(result.reason(), NamedTextColor.BLUE))
+                );
                 sendResult(source, msg, false);
                 return;
             }
 
             MongoDataAPI.getDatabase().ban().ip().add(inip, source.getOperator(), time, reason).async().thenAcceptAsync((v) -> {
-                TextComponent msg = Message.banMessage(target, time, reason, source.getOperator());
+                Component msg = MessageKey.BAN_MESSAGE.format(
+                        new MessageFormat("target", Component.text(target, NamedTextColor.BLUE)),
+                        new MessageFormat("operator", Component.text(source.getOperator().name(), NamedTextColor.BLUE)),
+                        new MessageFormat("duration", Component.text(time, NamedTextColor.BLUE)),
+                        new MessageFormat("reason", Component.text(reason, NamedTextColor.BLUE))
+                );
                 sendResult(source, msg);
             });
         } catch (Exception ignored) {
@@ -127,12 +142,22 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
             PlayerBanInfo pBanInfo = MongoDataAPI.getDatabase().ban().player().find(uuid).sync();
             if (pBanInfo != null) {
-                TextComponent msg = Message.alreadyBannedMessage(target, pBanInfo.operator(), pBanInfo.duration(), pBanInfo.reason());
+                Component msg = MessageKey.ALREADY_BANNED.format(
+                        new MessageFormat("target", Component.text(target, NamedTextColor.BLUE)),
+                        new MessageFormat("operator", Component.text(pBanInfo.operator().name(), NamedTextColor.BLUE)),
+                        new MessageFormat("duration", Component.text(pBanInfo.duration(), NamedTextColor.BLUE)),
+                        new MessageFormat("reason", Component.text(pBanInfo.reason(), NamedTextColor.BLUE))
+                );
                 sendResult(source, msg, false);
                 return;
             }
 
-            TextComponent msg = Message.banMessage(target, time, reason, source.getOperator());
+            Component msg = MessageKey.BAN_MESSAGE.format(
+                    new MessageFormat("target", Component.text(target, NamedTextColor.BLUE)),
+                    new MessageFormat("operator", Component.text(source.getOperator().name(), NamedTextColor.BLUE)),
+                    new MessageFormat("duration", Component.text(time, NamedTextColor.BLUE)),
+                    new MessageFormat("reason", Component.text(reason, NamedTextColor.BLUE))
+            );
 
             if (strict) {
                 MongoDataAPI.getDatabase().ban().ip().add(userIP, source.getOperator(), time, reason)
