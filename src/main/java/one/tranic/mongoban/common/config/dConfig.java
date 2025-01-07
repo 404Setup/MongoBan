@@ -2,12 +2,14 @@ package one.tranic.mongoban.common.config;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
+import one.tranic.mongoban.api.message.Message;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Locale;
 
 public class dConfig {
     private final File configFile;
@@ -19,6 +21,16 @@ public class dConfig {
     public Config config() throws UnsupportedOperationException, IOException {
         YamlMapping yaml = yaml();
 
+        String lang = yaml.string("language");
+        Locale language;
+        if (lang == null || lang.isBlank() || lang.equals("auto")) {
+            language = Locale.getDefault();
+            if (!Message.isSupportedLocale(language)) language = Locale.US;
+        } else {
+            language = Locale.forLanguageTag(lang);
+            if (language == null || !Message.isSupportedLocale(language)) language = Locale.US;
+        }
+
         int cache = yaml.integer("cache");
 
         YamlMapping db = yaml.yamlMapping("database");
@@ -26,6 +38,7 @@ public class dConfig {
         YamlMapping updater = yaml.yamlMapping("updater");
 
         return new Config(
+                language,
                 cache,
                 new Config.database(
                         db.string("host"),
@@ -50,6 +63,7 @@ public class dConfig {
 
     public void create() {
         YamlMapping yaml = Yaml.createYamlMappingBuilder()
+                .add("language", "auto")
                 .add("cache", 0)
                 .add("database",
                         Yaml.createYamlMappingBuilder()

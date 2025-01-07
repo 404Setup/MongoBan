@@ -37,6 +37,8 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
 
     @Override
     public List<String> suggest(C source) {
+        if (!hasPermission(source)) return MongoBanAPI.EMPTY_LIST;
+
         String[] args = source.getArgs();
         int size = source.argSize();
         if (size == 1) {

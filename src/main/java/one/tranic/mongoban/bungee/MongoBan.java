@@ -11,10 +11,8 @@ import one.tranic.mongoban.common.config.NewConfig;
 public class MongoBan extends Plugin {
     @Override
     public void onEnable() {
-        Message.reloadMessages();
-
         NewConfig.loadConfig(getDataFolder().toPath());
-
+        Message.reloadMessages();
         MongoDataAPI.reconnect();
 
         new BanCommand<BungeeSource>().registerWithBungee(this);

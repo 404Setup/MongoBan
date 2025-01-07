@@ -23,12 +23,10 @@ public class MongoBan extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        Message.reloadMessages();
-
         instance = this;
 
         NewConfig.loadConfig(getDataFolder().toPath());
-
+        Message.reloadMessages();
         MongoDataAPI.reconnect();
 
         try {

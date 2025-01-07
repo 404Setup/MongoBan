@@ -1,7 +1,16 @@
+# MongoBan language file
+# @locale Japan
+# @date 2025/01/07
+# @author 404Setup
 kick:
-  default: "Disconnecting..."
+  default: "切断しています..."
+  message: "<red>サーバーから切断されます\n<green>理由: <blue><reason>\n<green>期間: <blue><duration>"
 ban:
-  message: "<green>Target <blue><target> <green>has been banned.\nOperator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
-  already: "<yellow>The specified target has been banned:\n<green>Target: <blue><target>\n<green>Operator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
+  invalid-usage: "<red>無効な使用法です！ 使用方法: /<cmd> --name [プレイヤー名] --time [時間] --reason [理由]"
+  message: "<green>ターゲット <blue><target> <green>が禁止されました。\nオペレーター: <blue><operator>\n<green>期間: <blue><duration>\n<green>理由: <blue><reason>"
+  already: "<yellow>指定されたターゲットはすでに禁止されています:\n<green>ターゲット: <blue><target>\n<green>オペレーター: <blue><operator>\n<green>期間: <blue><duration>\n<green>理由: <blue><reason>"
 failed:
-  private-ip: "<yellow>Selected IP Address: <blue><ip><yellow> is not a usable public address."
+  private-ip: "<yellow>選択されたIPアドレス: <blue><ip><yellow> は使用可能なパブリックアドレスではありません。"
+  target-not-found: "<red>ターゲット <yellow><target> <red>が見つかりません。"
+  target-missing: "<red>ターゲットフラグがありません！ --target [プレイヤー名]/[IP] を使用してターゲットを指定してください。"
+  permission: "<red>このコマンドを実行する権限がありません。"

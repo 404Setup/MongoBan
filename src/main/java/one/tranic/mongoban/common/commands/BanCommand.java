@@ -1,14 +1,11 @@
 package one.tranic.mongoban.common.commands;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.args.BanArgs;
-import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
@@ -16,12 +13,11 @@ import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.exception.UnsupportedTypeException;
 import one.tranic.mongoban.api.message.MessageFormat;
 import one.tranic.mongoban.api.message.MessageKey;
+import one.tranic.mongoban.api.parse.network.NetworkParser;
 import one.tranic.mongoban.api.parse.time.TimeParser;
 import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
-import one.tranic.mongoban.api.parse.network.NetworkParser;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -40,7 +36,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
         if (player != null) {
             if (!hasPermission(source)) {
-                source.sendMessage(Component.text("Permission denied!", NamedTextColor.RED));
+                source.sendMessage(MessageKey.PERMISSION_DENIED.format());
                 return;
             }
 
@@ -53,8 +49,9 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
         String[] args = source.getArgs();
 
         if (args.length < 1) {
-            source.sendMessage(Component.text(
-                    "Invalid usage! Use: /" + getName() + " --name <playerName> --time [time] --reason [reason]", NamedTextColor.RED));
+            source.sendMessage(MessageKey.BAN_INVALID_USAGE.format(
+                    new MessageFormat("cmd", Component.text(getName(), NamedTextColor.BLUE))
+            ));
             return;
         }
 
@@ -79,7 +76,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
         } else if (arg instanceof BanArgs args) {
             target = args.target().orElse(null);
             if (target == null || target.isEmpty()) {
-                source.sendMessage(Component.text("Target flag is missing! Use --target <playerName>|<ip> to specify the target.", NamedTextColor.RED));
+                source.sendMessage(MessageKey.TARGET_MISSIONG.format());
                 return;
             }
 
@@ -129,7 +126,9 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
             if (targetPlayer == null) {
                 PlayerInfo player = MongoDataAPI.getDatabase().player().find(target).sync();
                 if (player == null) {
-                    @NotNull TextComponent msg = Component.text("Target " + target + " not found!", NamedTextColor.RED);
+                    Component msg = MessageKey.TARGET_NOT_FOUND.format(
+                            new MessageFormat("target", Component.text(target, NamedTextColor.YELLOW))
+                    );
                     sendResult(source, msg, false);
                     return;
                 }

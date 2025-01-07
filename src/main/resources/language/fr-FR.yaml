@@ -1,7 +1,16 @@
+# MongoBan language file
+# @locale France
+# @date 2025/01/07
+# @author 404Setup
 kick:
-  default: "Disconnecting..."
+  default: "Déconnexion..."
+  message: "<red>Vous êtes exclu du serveur\n<green>Raison : <blue><reason>\n<green>Durée : <blue><duration>"
 ban:
-  message: "<green>Target <blue><target> <green>has been banned.\nOperator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
-  already: "<yellow>The specified target has been banned:\n<green>Target: <blue><target>\n<green>Operator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
+  invalid-usage: "<red>Utilisation invalide ! Utilisez : /<cmd> --name [playerName] --time [time] --reason [reason]"
+  message: "<green>Cible <blue><target> <green>a été bannie.\nOpérateur : <blue><operator>\n<green>Durée : <blue><duration>\n<green>Raison : <blue><reason>"
+  already: "<yellow>La cible spécifiée a déjà été bannie :\n<green>Cible : <blue><target>\n<green>Opérateur : <blue><operator>\n<green>Durée : <blue><duration>\n<green>Raison : <blue><reason>"
 failed:
-  private-ip: "<yellow>Selected IP Address: <blue><ip><yellow> is not a usable public address."
+  private-ip: "<yellow>Adresse IP sélectionnée : <blue><ip><yellow> n'est pas une adresse publique utilisable."
+  target-not-found: "<red>Cible <yellow><target> <red>introuvable."
+  target-missing: "<red>Le paramètre cible est manquant ! Utilisez --target [playerName]/[ip] pour spécifier la cible."
+  permission: "<red>Permissions insuffisantes pour exécuter cette commande."

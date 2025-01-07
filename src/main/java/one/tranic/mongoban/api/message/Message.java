@@ -3,27 +3,41 @@ package one.tranic.mongoban.api.message;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.data.IPBanInfo;
-import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.exception.UnsupportedTypeException;
 import one.tranic.mongoban.api.parse.network.NetworkParser;
 import one.tranic.mongoban.common.Collections;
 import one.tranic.mongoban.common.Data;
+import one.tranic.mongoban.common.config.NewConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class Message {
     private static final Map<MessageKey, String> messages = Collections.newHashMap();
+    private static final List<Locale> supportedLocales = Collections.newArrayList();
+
+    static {
+        supportedLocales.add(Locale.US);
+        supportedLocales.add(Locale.GERMANY);
+        supportedLocales.add(Locale.FRANCE);
+        supportedLocales.add(Locale.JAPAN);
+        supportedLocales.add(Locale.SIMPLIFIED_CHINESE);
+        supportedLocales.add(Locale.TRADITIONAL_CHINESE);
+    }
+
+    public static boolean isSupportedLocale(Locale locale) {
+        return supportedLocales.contains(locale);
+    }
 
     private static YamlMapping yaml(InputStream data) throws IOException {
         return Yaml.createYamlInput(
@@ -50,12 +64,12 @@ public class Message {
     public static void reloadMessages() {
         if (!messages.isEmpty()) messages.clear();
 
-        Data.logger.info("Searching for language packs: {}....", Locale.getDefault().toLanguageTag());
-        try (InputStream data = NetworkParser.resource("language/" + Locale.getDefault().toLanguageTag() + ".yaml")) {
+        Data.logger.info("Searching for language packs: {}....", NewConfig.getConfig().language().toLanguageTag());
+        try (InputStream data = NetworkParser.resource("language/" + NewConfig.getConfig().language().toLanguageTag() + ".yaml")) {
             getMessages(yaml(data));
         } catch (Exception ignored) {
             Data.logger.error("The language pack {} was not found or the file is damaged. Reading the default language pack: {}..."
-                    , Locale.getDefault().toLanguageTag()
+                    , NewConfig.getConfig().language().toLanguageTag()
                     , Locale.US.toLanguageTag());
             try (InputStream data = NetworkParser.resource("language/" + Locale.US.toLanguageTag() + ".yaml")) {
                 getMessages(yaml(data));
@@ -67,9 +81,6 @@ public class Message {
     }
 
     public static Component kickMessage(@NotNull Object banInfo) {
-        TextComponent.Builder message = Component.text();
-        message.append(Component.text("Being kicked from the server\n", NamedTextColor.RED));
-
         String reason;
         String duration;
         if (banInfo instanceof IPBanInfo info) {
@@ -80,12 +91,10 @@ public class Message {
             duration = info.duration();
         } else throw new UnsupportedTypeException(banInfo);
 
-        message.append(Component.text("Reason: ", NamedTextColor.GREEN));
-        message.append(Component.text(reason, NamedTextColor.BLUE));
-        message.append(Component.text("\nDuration: ", NamedTextColor.GREEN));
-        message.append(Component.text(duration, NamedTextColor.BLUE));
-
-        return message.build();
+        return MessageKey.KICK_MESSAGE.format(
+                new MessageFormat("reason", Component.text(reason, NamedTextColor.BLUE)),
+                new MessageFormat("duration", Component.text(duration, NamedTextColor.BLUE))
+        );
     }
 
     /**

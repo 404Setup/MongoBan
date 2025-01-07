@@ -1,6 +1,8 @@
 package one.tranic.mongoban.common.config;
 
-public record Config(int cache, database database, redis redis, updater updater) {
+import java.util.Locale;
+
+public record Config(Locale language, int cache, database database, redis redis, updater updater) {
 
     public record database(String host, int port, String database, String user, String password) {
     }

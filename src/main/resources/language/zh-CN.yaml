@@ -1,7 +1,16 @@
+# MongoBan language file
+# @locale China
+# @date 2025/01/07
+# @author 404Setup
 kick:
-  default: "Disconnecting..."
+  default: "断开连接..."
+  message: "<red>您已被踢出服务器\n<green>原因: <blue><reason>\n<green>持续时间: <blue><duration>"
 ban:
-  message: "<green>Target <blue><target> <green>has been banned.\nOperator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
-  already: "<yellow>The specified target has been banned:\n<green>Target: <blue><target>\n<green>Operator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
+  invalid-usage: "<red>用法错误！正确用法: /<cmd> --name [玩家名] --time [时间] --reason [原因]"
+  message: "<green>目标 <blue><target> <green>已被封禁。\n操作者: <blue><operator>\n<green>持续时间: <blue><duration>\n<green>原因: <blue><reason>"
+  already: "<yellow>指定的目标已被封禁:\n<green>目标: <blue><target>\n<green>操作者: <blue><operator>\n<green>持续时间: <blue><duration>\n<green>原因: <blue><reason>"
 failed:
-  private-ip: "<yellow>Selected IP Address: <blue><ip><yellow> is not a usable public address."
+  private-ip: "<yellow>选定的 IP 地址: <blue><ip><yellow> 不是一个可用的公网地址。"
+  target-not-found: "<red>未找到目标 <yellow><target><red>。"
+  target-missing: "<red>缺少目标标志！使用 --target [玩家名]/[IP] 来指定目标。"
+  permission: "<red>没有足够的权限执行此命令。"

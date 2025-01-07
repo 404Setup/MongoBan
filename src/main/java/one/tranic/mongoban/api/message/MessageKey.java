@@ -17,9 +17,9 @@ import java.util.Objects;
  * Each constant in this enum maps to a specific key representing a message.
  */
 public enum MessageKey {
-    DEFAULT_KICK("kick.default"),
-    BAN_MESSAGE("ban.message"), ALREADY_BANNED("ban.already"),
-    PRIVATE_IP("failed.private-ip");
+    DEFAULT_KICK("kick.default"), KICK_MESSAGE("kick.message"),
+    BAN_INVALID_USAGE("ban.invalid-usage"), BAN_MESSAGE("ban.message"), ALREADY_BANNED("ban.already"),
+    PRIVATE_IP("failed.private-ip"), TARGET_NOT_FOUND("failed.target-not-found"), TARGET_MISSIONG("failed.target-missing"), PERMISSION_DENIED("failed.permission");
 
     private final String key;
 

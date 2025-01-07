@@ -33,8 +33,6 @@ public class MongoBan {
 
     @Inject
     public MongoBan(ProxyServer proxy, @DataDirectory Path dataDirectory) {
-        Message.reloadMessages();
-
         instance = this;
         MongoBan.proxy = proxy;
 
@@ -52,6 +50,8 @@ public class MongoBan {
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
         NewConfig.loadConfig(dataDirectory);
+        Message.reloadMessages();
+
         MongoDataAPI.reconnect();
 
         createCommands();

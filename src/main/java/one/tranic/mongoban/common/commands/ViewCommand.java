@@ -3,6 +3,8 @@ package one.tranic.mongoban.common.commands;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.source.SourceImpl;
+import one.tranic.mongoban.api.message.MessageKey;
+import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.common.Collections;
 
 import java.util.List;
@@ -17,18 +19,27 @@ public class ViewCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
     @Override
     public void execute(C source) {
+        MongoPlayer<?> player = source.asPlayer();
 
+        if (player != null) {
+            if (!hasPermission(source)) {
+                source.sendMessage(MessageKey.PERMISSION_DENIED.format());
+                return;
+            }
+        }
     }
 
     @Override
     public List<String> suggest(C source) {
+        if (!hasPermission(source)) return MongoBanAPI.EMPTY_LIST;
+
         String[] args = source.getArgs();
         int size = source.argSize();
         if (size == 1) return Collections.newUnmodifiableList("--target", "--type", "--strict");
         if (size > 1) {
             String previousArg = args[size - 2];
             String currentArg = args[size - 1];
-            if ("--target".equals(previousArg)) return List.of();
+            if ("--target".equals(previousArg)) return MongoBanAPI.EMPTY_LIST;
             if ("--type".equals(previousArg)) {
                 return MongoBanAPI.TIME_SUGGEST.stream()
                         .filter(time -> time.startsWith(currentArg))

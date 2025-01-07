@@ -1,7 +1,16 @@
+# MongoBan language file
+# @locale US
+# @date 2025/01/07
+# @author 404Setup
 kick:
   default: "Disconnecting..."
+  message: "<red>Being kicked from the server\n<green>Reason: <blue><reason>\n<green>Duration: <blue><duration>"
 ban:
+  invalid-usage: "<red>Invalid usage! Use: /<cmd> --name [playerName] --time [time] --reason [reason]"
   message: "<green>Target <blue><target> <green>has been banned.\nOperator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
   already: "<yellow>The specified target has been banned:\n<green>Target: <blue><target>\n<green>Operator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
 failed:
   private-ip: "<yellow>Selected IP Address: <blue><ip><yellow> is not a usable public address."
+  target-not-found: "<red>Target <yellow><target> <red>not found."
+  target-missing: "<red>Target flag is missing! Use --target [playerName]/[ip] to specify the target."
+  permission: "<red>Insufficient permissions to execute this command."

@@ -1,7 +1,16 @@
+# MongoBan language file
+# @locale Germany
+# @date 2025/01/07
+# @author 404Setup
 kick:
-  default: "Disconnecting..."
+  default: "Verbindung wird getrennt..."
+  message: "<red>Vom Server entfernt\n<green>Grund: <blue><reason>\n<green>Dauer: <blue><duration>"
 ban:
-  message: "<green>Target <blue><target> <green>has been banned.\nOperator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
-  already: "<yellow>The specified target has been banned:\n<green>Target: <blue><target>\n<green>Operator: <blue><operator>\n<green>Duration: <blue><duration>\n<green>Reason: <blue><reason>"
+  invalid-usage: "<red>Ungültige Nutzung! Verwenden Sie: /<cmd> --name [playerName] --time [time] --reason [reason]"
+  message: "<green>Ziel <blue><target> <green>wurde gesperrt.\nOperator: <blue><operator>\n<green>Dauer: <blue><duration>\n<green>Grund: <blue><reason>"
+  already: "<yellow>Das angegebene Ziel wurde bereits gesperrt:\n<green>Ziel: <blue><target>\n<green>Operator: <blue><operator>\n<green>Dauer: <blue><duration>\n<green>Grund: <blue><reason>"
 failed:
-  private-ip: "<yellow>Selected IP Address: <blue><ip><yellow> is not a usable public address."
+  private-ip: "<yellow>Ausgewählte IP-Adresse: <blue><ip><yellow> ist keine nutzbare öffentliche Adresse."
+  target-not-found: "<red>Ziel <yellow><target> <red>nicht gefunden."
+  target-missing: "<red>Ziel-Flag fehlt! Verwenden Sie --target [playerName]/[ip], um das Ziel anzugeben."
+  permission: "<red>Unzureichende Berechtigungen, um diesen Befehl auszuführen."
