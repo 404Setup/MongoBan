@@ -41,7 +41,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
             }
 
             if (player.isBedrockPlayer()) {
-                player.sendFormAsync(GeyserForm.getDoForm(source, (form) -> exec(source, form)));
+                player.sendFormAsync(GeyserForm.getDoForm(form -> exec(source, form)));
                 return;
             }
         }

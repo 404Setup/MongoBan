@@ -63,6 +63,17 @@ public enum MessageKey {
     }
 
     /**
+     * Retrieves a non-null value associated with the current instance, as defined in
+     * the {@code Message} class.
+     *
+     * @return the non-null value corresponding to this instance
+     * @throws NullPointerException if the retrieved value is null
+     */
+    public String getValue() {
+        return Objects.requireNonNull(Message.get(this));
+    }
+
+    /**
      * Converts the result of the {@link #format(MessageFormat...)} method into a serialized legacy string format.
      *
      * @param args an array of {@link MessageFormat} objects containing key-value pairs for placeholders

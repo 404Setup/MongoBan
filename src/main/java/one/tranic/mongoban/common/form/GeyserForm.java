@@ -16,17 +16,18 @@ import java.util.function.Consumer;
 
 public class GeyserForm {
     public static final List<String> typeList = Collections.newUnmodifiableList("Ban", "Warn");
+    public static final List<String> searchList = Collections.newUnmodifiableList("Target", "Operator");
 
     public static Form getSimpleForm(@NotNull Consumer<CustomFormResponse> resultHandler) {
         return CustomForm.builder()
                 .title("MongoBan Console")
                 .dropdown("Type", typeList)
-                .input("Player")
+                .input("Target")
                 .validResultHandler(resultHandler)
                 .build();
     }
 
-    public static <C extends SourceImpl<?, ?>> Form getDoForm(C source, Consumer<DoForm> consumer) {
+    public static <C extends SourceImpl<?, ?>> Form getDoForm(Consumer<DoForm> consumer) {
         return CustomForm.builder()
                 .title("MongoBan Console")
                 .input("Player")
@@ -50,8 +51,15 @@ public class GeyserForm {
         return getSimpleForm(response -> consumer.accept(SimpleForm.from(response)));
     }
 
-    public static <C extends SourceImpl<?, ?>> Form getSearchForm(C source, Consumer<SimpleForm> consumer) {
-        return getSimpleForm(response -> consumer.accept(SimpleForm.from(response)));
+    public static <C extends SourceImpl<?, ?>> Form getSearchForm(C source, Consumer<SearchForm> consumer) {
+        return CustomForm.builder()
+                .title("MongoBan Search")
+                .dropdown("Search Type", searchList)
+                .validResultHandler(response ->
+                        source.asPlayer().sendForm(getSimpleForm(resp ->
+                                consumer.accept(SearchForm.from(response, resp))
+                        ))
+                ).build();
     }
 
     public record DoForm(String player, int duration, String duration_unit, String reason, boolean strict) {
@@ -68,6 +76,12 @@ public class GeyserForm {
     public record SimpleForm(int type, String player) {
         public static SimpleForm from(CustomFormResponse response) {
             return new SimpleForm(response.asDropdown(0), response.asInput(1));
+        }
+    }
+
+    public record SearchForm(int searchType, int punishType, String player) {
+        public static SearchForm from(CustomFormResponse response1, CustomFormResponse response2) {
+            return new SearchForm(response1.asDropdown(0), response2.asDropdown(0), response2.asInput(1));
         }
     }
 }
