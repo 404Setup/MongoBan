@@ -4,13 +4,13 @@
 # @author 404Setup
 kick:
   default: "Verbindung wird getrennt..."
-  message: "<red>Vom Server entfernt\n<green>Grund: <blue><reason>\n<green>Dauer: <blue><duration>"
+  message: "<red>Vom Server entfernt\n<green>Grund: <reason>\n<green>Dauer: <duration>"
 ban:
-  invalid-usage: "<red>Ungültige Nutzung! Verwenden Sie: /<cmd> --name [playerName] --time [time] --reason [reason]"
-  message: "<green>Ziel <blue><target> <green>wurde gesperrt.\nOperator: <blue><operator>\n<green>Dauer: <blue><duration>\n<green>Grund: <blue><reason>"
-  already: "<yellow>Das angegebene Ziel wurde bereits gesperrt:\n<green>Ziel: <blue><target>\n<green>Operator: <blue><operator>\n<green>Dauer: <blue><duration>\n<green>Grund: <blue><reason>"
+  invalid-usage: "<red>Ungültige Nutzung! Verwenden Sie: <yellow>/<cmd><yellow> --name [playerName] --time [time] --reason [reason]"
+  message: "<green>Ziel <target> <green>wurde gesperrt.\nOperator: <operator>\n<green>Dauer: <duration>\n<green>Grund: <reason>"
+  already: "<yellow>Das angegebene Ziel wurde bereits gesperrt:\n<green>Ziel: <target>\n<green>Operator: <operator>\n<green>Dauer: <duration>\n<green>Grund: <reason>"
 failed:
-  private-ip: "<yellow>Ausgewählte IP-Adresse: <blue><ip><yellow> ist keine nutzbare öffentliche Adresse."
-  target-not-found: "<red>Ziel <yellow><target> <red>nicht gefunden."
+  private-ip: "<yellow>Ausgewählte IP-Adresse: <ip><yellow> ist keine nutzbare öffentliche Adresse."
+  target-not-found: "<red>Ziel <target> <red>nicht gefunden."
   target-missing: "<red>Ziel-Flag fehlt! Verwenden Sie --target [playerName]/[ip], um das Ziel anzugeben."
   permission: "<red>Unzureichende Berechtigungen, um diesen Befehl auszuführen."
