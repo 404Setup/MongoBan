@@ -2,15 +2,16 @@
 # @locale China
 # @date 2025/01/07
 # @author 404Setup
+name: "简体中文 (中国)"
 kick:
   default: "断开连接..."
-  message: "<red>您已被踢出服务器\n<green>原因: <blue><reason>\n<green>持续时间: <blue><duration>"
+  message: "<red>您已被踢出服务器\n<green>原因: <reason>\n<green>持续时间: <duration>"
 ban:
-  invalid-usage: "<red>用法错误！正确用法: /<cmd> --name [玩家名] --time [时间] --reason [原因]"
-  message: "<green>目标 <blue><target> <green>已被封禁。\n操作者: <blue><operator>\n<green>持续时间: <blue><duration>\n<green>原因: <blue><reason>"
-  already: "<yellow>指定的目标已被封禁:\n<green>目标: <blue><target>\n<green>操作者: <blue><operator>\n<green>持续时间: <blue><duration>\n<green>原因: <blue><reason>"
+  invalid-usage: "<red>用法错误！正确用法: <yellow>/<cmd><yellow> --name [玩家名] --time [时间] --reason [原因]"
+  message: "<green>目标 <target> <green>已被封禁。\n操作者: <operator>\n<green>持续时间: <duration>\n<green>原因: <reason>"
+  already: "<yellow>指定的目标已被封禁过了:\n<green>目标: <target>\n<green>操作者: <operator>\n<green>持续时间: <duration>\n<green>原因: <reason>"
 failed:
-  private-ip: "<yellow>选定的 IP 地址: <blue><ip><yellow> 不是一个可用的公网地址。"
-  target-not-found: "<red>未找到目标 <yellow><target><red>。"
+  private-ip: "<yellow>选定的 IP 地址: <ip><yellow> 不是一个可用的公网地址。"
+  target-not-found: "<red>未找到目标 <target><red>。"
   target-missing: "<red>缺少目标标志！使用 --target [玩家名]/[IP] 来指定目标。"
   permission: "<red>没有足够的权限执行此命令。"

@@ -2,6 +2,7 @@
 # @locale US
 # @date 2025/01/07
 # @author 404Setup
+name: "English (US)"
 kick:
   default: "Disconnecting..."
   message: "<red>Being kicked from the server\n<green>Reason: <reason>\n<green>Duration: <duration>"

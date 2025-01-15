@@ -2,6 +2,7 @@
 # @locale Germany
 # @date 2025/01/07
 # @author 404Setup
+name: "Deutsch"
 kick:
   default: "Verbindung wird getrennt..."
   message: "<red>Vom Server entfernt\n<green>Grund: <reason>\n<green>Dauer: <duration>"

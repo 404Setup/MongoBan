@@ -25,6 +25,9 @@ import java.util.Map;
 public class Message {
     private static final Map<MessageKey, String> messages = Collections.newHashMap();
     private static final List<Locale> supportedLocales = Collections.newArrayList();
+    
+    public static final Locale Locale_China_Yue = Locale.of("zh", "Yue"); // test
+    public static final Locale Locale_China_Nan = Locale.of("zh", "Nan"); // test
 
     static {
         supportedLocales.add(Locale.US);
@@ -33,6 +36,8 @@ public class Message {
         supportedLocales.add(Locale.JAPAN);
         supportedLocales.add(Locale.SIMPLIFIED_CHINESE);
         supportedLocales.add(Locale.TRADITIONAL_CHINESE);
+        supportedLocales.add(Locale_China_Yue);
+        supportedLocales.add(Locale_China_Nan);
     }
 
     public static boolean isSupportedLocale(Locale locale) {

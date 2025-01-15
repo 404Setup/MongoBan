@@ -2,15 +2,16 @@
 # @locale Japan
 # @date 2025/01/07
 # @author 404Setup
+name: "日本語"
 kick:
   default: "切断しています..."
-  message: "<red>サーバーから切断されます\n<green>理由: <blue><reason>\n<green>期間: <blue><duration>"
+  message: "<red>サーバーから切断されます\n<green>理由: <reason>\n<green>期間: <duration>"
 ban:
-  invalid-usage: "<red>無効な使用法です！ 使用方法: /<cmd> --name [プレイヤー名] --time [時間] --reason [理由]"
-  message: "<green>ターゲット <blue><target> <green>が禁止されました。\nオペレーター: <blue><operator>\n<green>期間: <blue><duration>\n<green>理由: <blue><reason>"
-  already: "<yellow>指定されたターゲットはすでに禁止されています:\n<green>ターゲット: <blue><target>\n<green>オペレーター: <blue><operator>\n<green>期間: <blue><duration>\n<green>理由: <blue><reason>"
+  invalid-usage: "<red>無効な使用法です！ 使用方法: <yellow>/<cmd><yellow> --name [プレイヤー名] --time [時間] --reason [理由]"
+  message: "<green>ターゲット <target> <green>が禁止されました。\nオペレーター: <operator>\n<green>期間: <duration>\n<green>理由: <reason>"
+  already: "<yellow>指定されたターゲットはすでに禁止されています:\n<green>ターゲット: <target>\n<green>オペレーター: <operator>\n<green>期間: <duration>\n<green>理由: <reason>"
 failed:
-  private-ip: "<yellow>選択されたIPアドレス: <blue><ip><yellow> は使用可能なパブリックアドレスではありません。"
-  target-not-found: "<red>ターゲット <yellow><target> <red>が見つかりません。"
+  private-ip: "<yellow>選択されたIPアドレス: <ip><yellow> は使用可能なパブリックアドレスではありません。"
+  target-not-found: "<red>ターゲット <target> <red>が見つかりません。"
   target-missing: "<red>ターゲットフラグがありません！ --target [プレイヤー名]/[IP] を使用してターゲットを指定してください。"
   permission: "<red>このコマンドを実行する権限がありません。"

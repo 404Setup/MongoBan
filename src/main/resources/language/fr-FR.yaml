@@ -2,15 +2,16 @@
 # @locale France
 # @date 2025/01/07
 # @author 404Setup
+name: "Français"
 kick:
   default: "Déconnexion..."
-  message: "<red>Vous êtes exclu du serveur\n<green>Raison : <blue><reason>\n<green>Durée : <blue><duration>"
+  message: "<red>Vous êtes exclu du serveur\n<green>Raison : <reason>\n<green>Durée : <duration>"
 ban:
-  invalid-usage: "<red>Utilisation invalide ! Utilisez : /<cmd> --name [playerName] --time [time] --reason [reason]"
-  message: "<green>Cible <blue><target> <green>a été bannie.\nOpérateur : <blue><operator>\n<green>Durée : <blue><duration>\n<green>Raison : <blue><reason>"
-  already: "<yellow>La cible spécifiée a déjà été bannie :\n<green>Cible : <blue><target>\n<green>Opérateur : <blue><operator>\n<green>Durée : <blue><duration>\n<green>Raison : <blue><reason>"
+  invalid-usage: "<red>Utilisation invalide ! Utilisez : <yellow>/<cmd><yellow> --name [playerName] --time [time] --reason [reason]"
+  message: "<green>Cible <target> <green>a été bannie.\nOpérateur : <operator>\n<green>Durée : <duration>\n<green>Raison : <reason>"
+  already: "<yellow>La cible spécifiée a déjà été bannie :\n<green>Cible : <target>\n<green>Opérateur : <operator>\n<green>Durée : <duration>\n<green>Raison : <reason>"
 failed:
-  private-ip: "<yellow>Adresse IP sélectionnée : <blue><ip><yellow> n'est pas une adresse publique utilisable."
-  target-not-found: "<red>Cible <yellow><target> <red>introuvable."
+  private-ip: "<yellow>Adresse IP sélectionnée : <ip><yellow> n'est pas une adresse publique utilisable."
+  target-not-found: "<red>Cible <target> <red>introuvable."
   target-missing: "<red>Le paramètre cible est manquant ! Utilisez --target [playerName]/[ip] pour spécifier la cible."
   permission: "<red>Permissions insuffisantes pour exécuter cette commande."

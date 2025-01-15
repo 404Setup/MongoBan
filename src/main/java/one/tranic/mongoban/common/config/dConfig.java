@@ -23,7 +23,7 @@ public class dConfig {
 
         String lang = yaml.string("language");
         Locale language;
-        if (lang == null || lang.isBlank() || lang.equals("auto")) {
+        if (lang == null || lang.isBlank()) {
             language = Locale.getDefault();
             if (!Message.isSupportedLocale(language)) language = Locale.US;
         } else {
@@ -63,7 +63,7 @@ public class dConfig {
 
     public void create() {
         YamlMapping yaml = Yaml.createYamlMappingBuilder()
-                .add("language", "auto")
+                .add("language", "en-US")
                 .add("cache", 0)
                 .add("database",
                         Yaml.createYamlMappingBuilder()
