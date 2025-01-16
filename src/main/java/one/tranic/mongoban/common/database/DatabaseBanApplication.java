@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class DatabaseBanApplication {
@@ -74,6 +75,7 @@ public class DatabaseBanApplication {
                 if (banDoc != null) {
                     PlayerBanInfo info = new PlayerBanInfo(
                             uuid,
+                            banDoc.getString("name"),
                             banDoc.get("operator", Operator.class),
                             banDoc.getString("duration"),
                             banDoc.getString("reason")
@@ -85,28 +87,54 @@ public class DatabaseBanApplication {
             });
         }
 
+        public Actions<PlayerBanInfo> find(@NotNull String name) {
+            return new Actions<>(() -> {
+                Document query = new Document("name", name);
+                Document banDoc = application.database.queryOne(application.collection, query);
+                if (banDoc != null) {
+                    PlayerBanInfo info = new PlayerBanInfo(
+                            banDoc.get("id", UUID.class),
+                            name,
+                            banDoc.get("operator", Operator.class),
+                            banDoc.getString("duration"),
+                            banDoc.getString("reason")
+                    );
+                    if (info.expired()) remove(name).async();
+                    else return info;
+                }
+                return null;
+            });
+        }
+
         /**
          * Adds a player's ban information to the database.
          *
          * @param uuid     the unique identifier of the player to be banned
+         * @param name     the player name
          * @param operator the operator performing this action
          * @param duration the duration of the ban
          * @param ip       the IP address associated with the player, or null if not available
          * @param reason   the reason for the ban, or null to use the default "<Banned by the server>" message
          * @return an {@code Actions<Void>} instance representing the result of the database update operation
          */
-        public Actions<Void> add(UUID uuid, Operator operator, String duration, @Nullable String ip, @Nullable String reason) {
+        public Actions<PlayerBanInfo> add(@Nullable UUID uuid, @NotNull String name, Operator operator, String duration, @Nullable String ip, @Nullable String reason) {
             return new Actions<>(() -> {
-                Document query = new Document("id", uuid);
-                Document updateDoc = new Document()
-                        .append("operator", operator)
-                        .append("duration", duration)
-                        .append("ip", ip)
-                        .append("reason", reason != null ? reason : "<Banned by the server>");
+                Document query;
+                if (uuid == null) {
+                    query = new Document("name", uuid);
+                } else {
+                    query = new Document("id", uuid);
+                }
+                Map<String, Object> updateMap = Collections.newHashMap();
+                if (uuid != null) updateMap.put("name", name);
+                updateMap.put("operator", operator);
+                updateMap.put("duration", duration);
+                if (ip != null) updateMap.put("ip", ip);
+                updateMap.put("reason", reason != null ? reason : "<Banned by the server>");
 
-                application.database.update(application.collection, query, updateDoc);
+                application.database.update(application.collection, query, new Document(updateMap));
 
-                return null;
+                return new PlayerBanInfo(uuid, name, operator, duration, reason);
             });
         }
 
@@ -177,6 +205,15 @@ public class DatabaseBanApplication {
                 return null;
             });
         }
+
+        public Actions<@Nullable PlayerBanInfo> removeWithName(@NotNull String name) {
+            return new Actions<>(() -> {
+                PlayerBanInfo info = find(name).sync();
+                if (info == null) return null;
+                application.database.delete(application.collection, "name", name);
+                return info;
+            });
+        }
     }
 
     public static class ip {
@@ -196,10 +233,10 @@ public class DatabaseBanApplication {
          * @param operator the operator responsible for issuing the ban
          * @param duration the duration of the ban (e.g., a timestamp or duration string)
          * @param reason   an optional reason for the ban; defaults to "Banned by the server" if null
-         * @return an {@code Actions<List<PlayerInfo>>} containing a list of {@code PlayerInfo}
+         * @return an {@code Actions<List<PlayerBanInfo>>} containing a list of {@code PlayerInfo}
          * representing players associated with the banned IP address
          */
-        public Actions<List<PlayerInfo>> add(String ip, Operator operator, String duration, @Nullable String reason) {
+        public Actions<List<PlayerBanInfo>> add(String ip, Operator operator, String duration, @Nullable String reason) {
             return new Actions<>(() -> {
                 Document query = new Document("ip", ip);
                 Document updateDoc = new Document()
@@ -210,10 +247,13 @@ public class DatabaseBanApplication {
                 application.database.update(application.collection, query, updateDoc);
 
                 List<PlayerInfo> playerList = MongoDataAPI.getDatabase().player().finds(ip).sync();
-                if (!playerList.isEmpty()) for (PlayerInfo player : playerList)
-                    application.player.add(player.uuid(), operator, duration, ip, reason).sync();
+                List<PlayerBanInfo> banList = Collections.newArrayList(playerList.size());
+                if (!playerList.isEmpty()) for (PlayerInfo player : playerList) {
+                    application.player.add(player.uuid(), player.name(), operator, duration, ip, reason).sync();
+                    banList.add(new PlayerBanInfo(player.uuid(), player.name(), operator, duration, reason));
+                }
 
-                return playerList;
+                return banList;
             });
         }
 
@@ -227,10 +267,10 @@ public class DatabaseBanApplication {
          * @param operator the operator issuing the ban
          * @param duration the duration of the ban
          * @param reason   an optional reason for the ban; if null, a default reason will be used
-         * @return an {@code Actions<List<PlayerInfo>>} object
-         * containing a list of {@code PlayerInfo} for players associated with the specified IP address
+         * @return an {@code Actions<List<PlayerBanInfo>>} object
+         * containing a list of {@code PlayerBanInfo} for players associated with the specified IP address
          */
-        public Actions<List<PlayerInfo>> add(InetAddress ip, Operator operator, String duration, @Nullable String reason) {
+        public Actions<List<PlayerBanInfo>> add(InetAddress ip, Operator operator, String duration, @Nullable String reason) {
             return add(ip.getHostAddress(), operator, duration, reason);
         }
 
@@ -323,6 +363,7 @@ public class DatabaseBanApplication {
                 for (Document playerDoc : playerDocs) {
                     PlayerBanInfo info = new PlayerBanInfo(
                             playerDoc.get("uuid", UUID.class),
+                            playerDoc.getString("name"),
                             playerDoc.get("operator", Operator.class),
                             playerDoc.getString("duration"),
                             playerDoc.getString("reason")

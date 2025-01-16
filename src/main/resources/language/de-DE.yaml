@@ -4,12 +4,14 @@
 # @author 404Setup
 name: "Deutsch"
 kick:
-  default: "Verbindung wird getrennt..."
+  default: "Verbindung wird getrennt"
   message: "<red>Vom Server entfernt\n<green>Grund: <reason>\n<green>Dauer: <duration>"
 ban:
   invalid-usage: "<red>Ungültige Nutzung! Verwenden Sie: <yellow>/<cmd><yellow> --name [playerName] --time [time] --reason [reason]"
   message: "<green>Ziel <target> <green>wurde gesperrt.\nOperator: <operator>\n<green>Dauer: <duration>\n<green>Grund: <reason>"
   already: "<yellow>Das angegebene Ziel wurde bereits gesperrt:\n<green>Ziel: <target>\n<green>Operator: <operator>\n<green>Dauer: <duration>\n<green>Grund: <reason>"
+action:
+  message: "<green>Ziel <target> <green> wurde mit der Aktion <action> <green> abgeschlossen"
 failed:
   private-ip: "<yellow>Ausgewählte IP-Adresse: <ip><yellow> ist keine nutzbare öffentliche Adresse."
   target-not-found: "<red>Ziel <target> <red>nicht gefunden."

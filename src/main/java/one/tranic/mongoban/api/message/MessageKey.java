@@ -20,6 +20,7 @@ public enum MessageKey {
     NAME("name"),
     DEFAULT_KICK("kick.default"), KICK_MESSAGE("kick.message"),
     BAN_INVALID_USAGE("ban.invalid-usage"), BAN_MESSAGE("ban.message"), ALREADY_BANNED("ban.already"),
+    ACTION_MESSGAE("action.message"),
     PRIVATE_IP("failed.private-ip"), TARGET_NOT_FOUND("failed.target-not-found"), TARGET_MISSIONG("failed.target-missing"), PERMISSION_DENIED("failed.permission");
 
     private final String key;

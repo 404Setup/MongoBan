@@ -308,16 +308,40 @@ public class Collections {
         return fastutil ? new it.unimi.dsi.fastutil.objects.ObjectArrayList<>() : new ArrayList<>();
     }
 
+    /**
+     * Creates a new unmodifiable list. The implementation used for the unmodifiable list
+     * depends on whether the `fastutil` flag is enabled. If `fastutil` is true, it uses
+     * the `ObjectList.of()` from the FastUtil library. Otherwise, it uses
+     * `Collections.unmodifiableList` wrapping an empty `ArrayList`.
+     *
+     * @param <T> the type of elements in the list
+     * @return a new unmodifiable list instance
+     */
     public static <T> List<T> newUnmodifiableList() {
         return fastutil ? it.unimi.dsi.fastutil.objects.ObjectList.of() : java.util.Collections.unmodifiableList(new ArrayList<>());
     }
 
+    /**
+     * Creates a new unmodifiable list from the provided list. The method ensures
+     * that the returned list is immutable and changes to the original list will
+     * not reflect in the new unmodifiable list.
+     *
+     * @param list the list from which the unmodifiable list is to be created; must not be null
+     * @return an unmodifiable list containing the same elements as the provided list
+     */
     public static <T> List<T> newUnmodifiableList(@NotNull List<T> list) {
         return fastutil
                 ? it.unimi.dsi.fastutil.objects.ObjectList.of((T[]) list.toArray())
                 : java.util.Collections.unmodifiableList(list);
     }
 
+    /**
+     * Creates a new unmodifiable list containing the specified elements.
+     *
+     * @param <T> the type of elements in the list
+     * @param elements the elements to include in the unmodifiable list; must not be null
+     * @return an unmodifiable list containing the provided elements
+     */
     @SafeVarargs
     public static <T> List<T> newUnmodifiableList(@NotNull T... elements) {
         if (fastutil) {

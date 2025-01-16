@@ -1,6 +1,8 @@
 package one.tranic.mongoban.api.data;
 
 import one.tranic.mongoban.api.parse.time.TimeParser;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -12,11 +14,14 @@ import java.util.UUID;
  * Instances of this record are immutable, ensuring consistent handling of ban-related data.
  *
  * @param uuid     The unique identifier of the banned player.
+ * @param name     The player name
  * @param operator The operator responsible for issuing the ban.
  * @param duration The duration of the ban, specified as a string.
  * @param reason   The reason for the ban.
  */
-public record PlayerBanInfo(UUID uuid, Operator operator, String duration, String reason) {
+public record PlayerBanInfo(@Nullable UUID uuid, @NotNull String name, @NotNull Operator operator,
+                            @NotNull String duration,
+                            @NotNull String reason) {
     public boolean expired() {
         if (duration == null || duration.isBlank()) return true;
         if (duration.equals("forever")) return false;

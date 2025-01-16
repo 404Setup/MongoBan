@@ -21,6 +21,7 @@ import one.tranic.mongoban.common.form.GeyserForm;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
+import java.util.Objects;
 import java.util.UUID;
 
 // Todo - Unfinished
@@ -69,7 +70,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
             reason = args.reason() == null || args.reason().isBlank() ? "<Banned by ServerAdmin>" : args.reason();
 
             if (args.duration() < 1) time = "forever";
-            else time = args.duration_unit() == "forever" ?
+            else time = Objects.equals(args.duration_unit(), "forever") ?
                     "forever" : args.duration() + args.duration_unit();
 
             strict = args.strict();
@@ -120,23 +121,28 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
             });
         } catch (Exception ignored) {
             MongoPlayer<?> targetPlayer = Player.getPlayer(target);
+            String name;
             String userIP;
             UUID uuid;
 
             if (targetPlayer == null) {
                 PlayerInfo player = MongoDataAPI.getDatabase().player().find(target).sync();
-                if (player == null) {
-                    Component msg = MessageKey.TARGET_NOT_FOUND.format(
-                            new MessageFormat("target", Component.text(target, NamedTextColor.YELLOW))
-                    );
-                    sendResult(source, msg, false);
-                    return;
+                if (player != null) {
+                    userIP = player.ip().getLast();
+                    uuid = player.uuid();
+                    name = player.name();
+                } else {
+                    // 1. No online players available
+                    // 2. The player was not found in the database
+                    // Then pre-populate the ID first, and then complete the ban data when it is added.
+                    uuid = null;
+                    userIP = null;
+                    name = target;
                 }
-                userIP = player.ip().getLast();
-                uuid = player.uuid();
             } else {
                 userIP = targetPlayer.getConnectHost();
                 uuid = targetPlayer.getUniqueId();
+                name = targetPlayer.getUsername();
             }
 
             PlayerBanInfo pBanInfo = MongoDataAPI.getDatabase().ban().player().find(uuid).sync();
@@ -158,19 +164,19 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                     new MessageFormat("reason", Component.text(reason, NamedTextColor.BLUE))
             );
 
-            if (strict) {
+            if (strict && userIP != null) {
                 MongoDataAPI.getDatabase().ban().ip().add(userIP, source.getOperator(), time, reason)
                         .async()
                         .thenAcceptAsync((v) -> {
                             sendResult(source, msg);
 
-                            if (!v.isEmpty()) for (PlayerInfo player : v) {
+                            if (!v.isEmpty()) for (PlayerBanInfo player : v) {
                                 MongoPlayer<?> p = Player.getPlayer(player.uuid());
                                 if (p != null) p.kick(msg);
                             }
                         }, MongoBanAPI.executor);
             } else {
-                MongoDataAPI.getDatabase().ban().player().add(uuid, source.getOperator(), time, null, reason)
+                MongoDataAPI.getDatabase().ban().player().add(uuid, name, source.getOperator(), time, null, reason)
                         .async()
                         .thenAcceptAsync((v) -> {
                             sendResult(source, msg);

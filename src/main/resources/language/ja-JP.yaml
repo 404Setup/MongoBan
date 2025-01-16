@@ -4,12 +4,14 @@
 # @author 404Setup
 name: "日本語"
 kick:
-  default: "切断しています..."
+  default: "接続を切断中"
   message: "<red>サーバーから切断されます\n<green>理由: <reason>\n<green>期間: <duration>"
 ban:
   invalid-usage: "<red>無効な使用法です！ 使用方法: <yellow>/<cmd><yellow> --name [プレイヤー名] --time [時間] --reason [理由]"
   message: "<green>ターゲット <target> <green>が禁止されました。\nオペレーター: <operator>\n<green>期間: <duration>\n<green>理由: <reason>"
   already: "<yellow>指定されたターゲットはすでに禁止されています:\n<green>ターゲット: <target>\n<green>オペレーター: <operator>\n<green>期間: <duration>\n<green>理由: <reason>"
+action:
+  message: "<green>ターゲット <target> <green> の <action> <green> アクションが完了しました"
 failed:
   private-ip: "<yellow>選択されたIPアドレス: <ip><yellow> は使用可能なパブリックアドレスではありません。"
   target-not-found: "<red>ターゲット <target> <red>が見つかりません。"

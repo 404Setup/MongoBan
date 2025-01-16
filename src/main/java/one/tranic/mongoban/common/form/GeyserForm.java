@@ -3,8 +3,10 @@ package one.tranic.mongoban.common.form;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.MongoBanAPI;
+import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.common.Collections;
+import org.geysermc.cumulus.component.DropdownComponent;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.cumulus.form.ModalForm;
@@ -21,7 +23,6 @@ public class GeyserForm {
     public static Form getSimpleForm(@NotNull Consumer<CustomFormResponse> resultHandler) {
         return CustomForm.builder()
                 .title("MongoBan Console")
-                .dropdown("Type", typeList)
                 .input("Target")
                 .validResultHandler(resultHandler)
                 .build();
@@ -47,7 +48,7 @@ public class GeyserForm {
         return getMessageForm(LegacyComponentSerializer.legacySection().serialize(message));
     }
 
-    public static <C extends SourceImpl<?, ?>> Form getUndoForm(C source, Consumer<SimpleForm> consumer) {
+    public static <C extends SourceImpl<?, ?>> Form getUndoForm(Consumer<SimpleForm> consumer) {
         return getSimpleForm(response -> consumer.accept(SimpleForm.from(response)));
     }
 
@@ -73,9 +74,9 @@ public class GeyserForm {
         }
     }
 
-    public record SimpleForm(int type, String player) {
+    public record SimpleForm(String player) {
         public static SimpleForm from(CustomFormResponse response) {
-            return new SimpleForm(response.asDropdown(0), response.asInput(1));
+            return new SimpleForm(response.asInput(0));
         }
     }
 

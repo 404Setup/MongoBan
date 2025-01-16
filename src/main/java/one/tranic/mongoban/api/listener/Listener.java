@@ -3,9 +3,9 @@ package one.tranic.mongoban.api.listener;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
-import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
+import one.tranic.mongoban.api.message.Message;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -66,22 +66,15 @@ public abstract class Listener<T> {
      * @param ip       The IP address of the player attempting to log in.
      */
     public void doIt(T event, String username, UUID uuid, InetAddress ip) {
-        IPBanInfo result = MongoDataAPI.getDatabase().ban().ip().find(ip.getHostAddress()).sync();
+        var db = MongoDataAPI.getDatabase().ban();
+        var addr = ip.getHostAddress();
+
+        IPBanInfo result = db.ip().find(addr).sync();
         if (result != null) {
-            MongoDataAPI.getDatabase().ban()
-                    .player().find(uuid)
-                    .async()
-                    .thenAcceptAsync((p) -> {
-                        if (p != null) return;
-                        MongoDataAPI.getDatabase().ban()
-                                .player()
-                                .add(uuid, MongoBanAPI.console, result.duration(), ip.getHostAddress(), result.reason())
-                                .sync();
-                    }, MongoBanAPI.executor);
-            disallow(event, Message.kickMessage(result));
+            handleIPBan(event, uuid, result, addr);
             return;
         } else {
-            PlayerBanInfo playerResult = MongoDataAPI.getDatabase().ban().player()
+            PlayerBanInfo playerResult = db.player()
                     .find(uuid)
                     .sync();
             if (playerResult != null) {
@@ -91,5 +84,31 @@ public abstract class Listener<T> {
         }
 
         MongoDataAPI.getDatabase().player().add(username, uuid, ip.getHostAddress());
+    }
+
+    /**
+     * Handles the process of applying an IP-based ban for a user during pre-login activities.
+     * <p>
+     * This method verifies the player's UUID in the database and, if absent, bans the player
+     * by adding their information with the provided IP ban details.
+     *
+     * @param event     The event object representing the connection or login request.
+     * @param uuid      The universally unique identifier (UUID) of the player to check or ban.
+     * @param ipBanInfo An object containing details about the IP ban, such as duration and reason.
+     * @param ipAddress The IP address of the player potentially being banned.
+     */
+    private void handleIPBan(T event, UUID uuid, IPBanInfo ipBanInfo, String ipAddress) {
+        MongoDataAPI.getDatabase().ban()
+                .player().find(uuid).async()
+                .thenAcceptAsync(playerInfo -> {
+                    if (playerInfo == null) {
+                        MongoDataAPI.getDatabase().ban()
+                                .player()
+                                .add(uuid, MongoBanAPI.console, ipBanInfo.duration(), ipAddress, ipBanInfo.reason())
+                                .sync();
+                    }
+                }, MongoBanAPI.executor);
+
+        disallow(event, Message.kickMessage(ipBanInfo));
     }
 }

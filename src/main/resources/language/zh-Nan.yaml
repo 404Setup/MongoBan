@@ -2,14 +2,16 @@
 # @locale China
 # @date 2025/01/15
 # @author 404Setup
-name: "閩南語 (中国)"
+name: "閩南語 (中國)"
 kick:
-  default: "断开连接..."
+  default: "正佇斷開連線"
   message: "<red>汝已经予踢出服务器喔！\n<green>原因: <reason>\n<green>持续时间: <duration>"
 ban:
   invalid-usage: "<red>用法有问题咧！正确用法：<yellow>/<cmd><yellow> --name [玩家名] --time [时间] --reason [原因]"
   message: "<green>目标 <target> <green>已经予封禁咧。\n操作者: <operator>\n<green>持续时间: <duration>\n<green>原因: <reason>"
   already: "<yellow>这个目标早就已经予封禁过咧：\n<green>目标: <target>\n<green>操作者: <operator>\n<green>持续时间: <duration>\n<green>原因: <reason>"
+action:
+  message: "<green>已经完成目標 <target> <green>的 <action> <green>動作"
 failed:
   private-ip: "<yellow>选的 IP 地址：<ip><yellow> 不是一个有用的公网地址咧。"
   target-not-found: "<red>揣无目标 <target><red> 喔。"

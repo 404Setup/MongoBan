@@ -4,12 +4,14 @@
 # @author 404Setup
 name: "Français"
 kick:
-  default: "Déconnexion..."
+  default: "Déconnexion en cours"
   message: "<red>Vous êtes exclu du serveur\n<green>Raison : <reason>\n<green>Durée : <duration>"
 ban:
   invalid-usage: "<red>Utilisation invalide ! Utilisez : <yellow>/<cmd><yellow> --name [playerName] --time [time] --reason [reason]"
   message: "<green>Cible <target> <green>a été bannie.\nOpérateur : <operator>\n<green>Durée : <duration>\n<green>Raison : <reason>"
   already: "<yellow>La cible spécifiée a déjà été bannie :\n<green>Cible : <target>\n<green>Opérateur : <operator>\n<green>Durée : <duration>\n<green>Raison : <reason>"
+action:
+  message: "<green>L'action <action> <green> pour la cible <target> <green> a été terminée"
 failed:
   private-ip: "<yellow>Adresse IP sélectionnée : <ip><yellow> n'est pas une adresse publique utilisable."
   target-not-found: "<red>Cible <target> <red>introuvable."

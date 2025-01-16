@@ -4,12 +4,14 @@
 # @author 404Setup
 name: "English (US)"
 kick:
-  default: "Disconnecting..."
+  default: "Disconnecting"
   message: "<red>Being kicked from the server\n<green>Reason: <reason>\n<green>Duration: <duration>"
 ban:
   invalid-usage: "<red>Invalid usage! Use: <yellow>/<cmd><yellow> --name [playerName] --time [time] --reason [reason]"
   message: "<green>Target <target> <green>has been banned.\nOperator: <operator>\n<green>Duration: <duration>\n<green>Reason: <reason>"
   already: "<yellow>The specified target has been banned:\n<green>Target: <target>\n<green>Operator: <operator>\n<green>Duration: <duration>\n<green>Reason: <reason>"
+action:
+  message: "<green>Action <action> <green> for target <target> <green> has been completed"
 failed:
   private-ip: "<yellow>Selected IP Address: <ip><yellow> is not a usable public address."
   target-not-found: "<red>Target <target><red> not found."
