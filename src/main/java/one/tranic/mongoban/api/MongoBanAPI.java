@@ -30,7 +30,7 @@ public class MongoBanAPI {
     /**
      * A shared executor for handling asynchronous tasks with flexible scaling capabilities.
      */
-    public final static Executor executor = new ThreadPoolExecutor(0, 12,
+    public final static Executor executor = new ThreadPoolExecutor(0, 8,
             45L, TimeUnit.SECONDS,
             new SynchronousQueue<>(),
             Thread.ofVirtual().factory());
