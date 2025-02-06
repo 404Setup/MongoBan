@@ -1,6 +1,7 @@
 package one.tranic.mongoban.api.data;
 
-import one.tranic.mongoban.api.parse.time.TimeParser;
+import one.tranic.t.base.command.Operator;
+import one.tranic.t.base.parse.time.TimeParser;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

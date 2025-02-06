@@ -5,13 +5,15 @@ import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.command.source.BungeeSource;
 import one.tranic.mongoban.api.command.source.PaperSource;
-import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.api.command.wrap.BungeeWrap;
 import one.tranic.mongoban.api.command.wrap.PaperWrap;
 import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.api.parse.player.PlayerParser;
 import one.tranic.mongoban.common.form.GeyserForm;
+import one.tranic.t.base.TBase;
+import one.tranic.t.base.command.simple.SimpleCommand;
+import one.tranic.t.base.command.source.CommandSource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -22,19 +24,9 @@ import java.util.List;
  * This class provides methods to manage command properties such as name, description, usage,
  * and permissions, as well as utilities to handle platform-specific command registration and unwrapping.
  *
- * @param <C> the type of the command source, extending from {@link SourceImpl}
+ * @param <C> the type of the command source, extending from {@link CommandSource}
  */
-public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl<C> {
-    private String name;
-    private String description;
-    private String usage;
-    private String permission;
-
-    @Override
-    public boolean hasPermission(C source) {
-        return source.hasPermission(getPermission());
-    }
-
+public abstract class Command<C extends CommandSource<?, ?>> extends SimpleCommand<C> {
     @Override
     public List<String> suggest(C source) {
         if (!hasPermission(source)) return MongoBanAPI.EMPTY_LIST;
@@ -73,15 +65,6 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
         return MongoBanAPI.EMPTY_LIST;
     }
 
-    /**
-     * Sends a result message to a specified source.
-     *
-     * @param source the command source who will receive the message
-     * @param msg    the message to be sent to the source
-     */
-    public void sendResult(C source, Component msg) {
-        sendResult(source, msg, true);
-    }
 
     /**
      * Sends a message result to a given source, taking into account whether the source is
@@ -91,20 +74,11 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
      * @param msg         the message to be sent, represented as a {@link Component}
      * @param withConsole if true, the message will also be sent to the console
      */
+    @Override
     public void sendResult(C source, Component msg, boolean withConsole) {
         if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
         else if (source.isPlayer()) source.sendMessage(msg);
-        if (withConsole) MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
-    }
-
-    /**
-     * Sends a message result to a specified source.
-     *
-     * @param source the source (e.g., player or console) to which the result will be sent
-     * @param msg    the message to be sent to the source
-     */
-    public void sendResult(C source, String msg) {
-        sendResult(source, msg, true);
+        if (withConsole) TBase.CONSOLE_SOURCE.sendMessage(msg);
     }
 
     /**
@@ -114,94 +88,11 @@ public abstract class Command<C extends SourceImpl<?, ?>> implements CommandImpl
      * @param msg         the message to be sent
      * @param withConsole whether the message should also be sent to the console
      */
+    @Override
     public void sendResult(C source, String msg, boolean withConsole) {
         if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
         else if (source.isPlayer()) source.sendMessage(msg);
-        if (withConsole) MongoBanAPI.CONSOLE_SOURCE.sendMessage(msg);
-    }
-
-    /**
-     * Retrieves the name of the command.
-     *
-     * @return the name of the command
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of the command, prefixing it with platform-specific identifiers.
-     *
-     * @param name the base name to set for this command
-     */
-    public void setName(String name) {
-        if (Platform.get() == Platform.BungeeCord) {
-            this.name = "b" + name;
-        } else if (Platform.get() == Platform.Velocity) {
-            this.name = "v" + name;
-        } else {
-            this.name = name;
-        }
-    }
-
-    /**
-     * Retrieves the description of the command.
-     *
-     * @return the description text for this command
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the description for this command.
-     *
-     * @param description the description to set for this command
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Retrieves the usage string for the command.
-     *
-     * @return the usage string for the command
-     */
-    public String getUsage() {
-        return usage;
-    }
-
-    /**
-     * Sets the usage description for this command.
-     *
-     * @param usage the usage description to set for this command
-     */
-    public void setUsage(String usage) {
-        this.usage = usage;
-    }
-
-    /**
-     * Retrieves the permission required to execute this command.
-     *
-     * @return the permission string associated with this command
-     */
-    public String getPermission() {
-        return permission;
-    }
-
-    /**
-     * Sets the permission for the command with platform-specific modifications.
-     *
-     * @param permission the base permission string to set for this command
-     */
-    public void setPermission(String permission) {
-        if (Platform.get() == Platform.BungeeCord) {
-            this.permission = permission.replaceFirst("\\.([^.]+)$", ".b$1");
-        } else if (Platform.get() == Platform.Velocity) {
-            this.permission = permission.replaceFirst("\\.([^.]+)$", ".v$1");
-        } else {
-            this.permission = permission;
-        }
+        if (withConsole) TBase.CONSOLE_SOURCE.sendMessage(msg);
     }
 
     /**

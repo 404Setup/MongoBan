@@ -2,11 +2,11 @@ package one.tranic.mongoban.common.database;
 
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
-import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
-import one.tranic.mongoban.api.task.Actions;
-import one.tranic.mongoban.common.Collections;
+import one.tranic.t.base.command.Operator;
+import one.tranic.t.base.task.Actions;
+import one.tranic.t.util.Collections;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

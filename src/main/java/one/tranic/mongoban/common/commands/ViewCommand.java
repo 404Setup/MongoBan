@@ -2,15 +2,14 @@ package one.tranic.mongoban.common.commands;
 
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.command.Command;
-import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.message.MessageKey;
-import one.tranic.mongoban.api.player.MongoPlayer;
-import one.tranic.mongoban.common.Collections;
+import one.tranic.t.base.command.source.CommandSource;
+import one.tranic.t.util.Collections;
 
 import java.util.List;
 
 // Todo
-public class ViewCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+public class ViewCommand<C extends CommandSource<?, ?>> extends Command<C> {
 
     public ViewCommand() {
         setName("view");
@@ -19,7 +18,7 @@ public class ViewCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
     @Override
     public void execute(C source) {
-        MongoPlayer<?> player = source.asPlayer();
+        var player = source.asPlayer();
 
         if (player != null) {
             if (!hasPermission(source)) {

@@ -4,18 +4,18 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.VelocityPlayer;
+import one.tranic.t.base.TBase;
+import one.tranic.t.base.command.Operator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
 /**
- * Implementation of the SourceImpl interface for the VelocityProxy platform.
+ * Implementation of the CommandSource interface for the VelocityProxy platform.
  */
-public class VelocitySource implements SourceImpl<CommandSource, Player> {
+public class VelocitySource implements one.tranic.t.base.command.source.CommandSource<CommandSource, Player> {
     private final SimpleCommand.Invocation invocation;
     private final CommandSource commandSource;
     private final VelocityPlayer player;
@@ -36,7 +36,7 @@ public class VelocitySource implements SourceImpl<CommandSource, Player> {
     public Operator getOperator() {
         if (player != null)
             return new Operator(player.getUsername(), player.getUniqueId());
-        return MongoBanAPI.console;
+        return TBase.console();
     }
 
     @Override

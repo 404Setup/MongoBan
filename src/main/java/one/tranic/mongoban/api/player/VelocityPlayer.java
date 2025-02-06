@@ -4,13 +4,15 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.Player;
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.velocity.MongoBan;
+import one.tranic.t.base.player.BedrockPlayer;
+import one.tranic.t.base.player.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 import java.util.UUID;
 
-public class VelocityPlayer implements MongoPlayer<Player> {
+public class VelocityPlayer implements one.tranic.t.base.player.Player<Player> {
     private final Player player;
 
     public VelocityPlayer(CommandSource commandSource) {
@@ -79,7 +81,7 @@ public class VelocityPlayer implements MongoPlayer<Player> {
     }
 
     @Override
-    public @Nullable MongoLocation getLocation() {
+    public @Nullable Location getLocation() {
         return null;
     }
 

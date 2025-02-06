@@ -31,6 +31,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bungeecord:4.3.4")
     compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
+    implementation("one.tranic:t-base:1.1.0")
     implementation("one.tranic:irs:1.3.3.2")
 
     compileOnly("org.geysermc.geyser:api:2.4.2-SNAPSHOT")
@@ -51,6 +52,7 @@ val libPackage = "one.tranic.mongoban.libs"
 tasks.shadowJar {
     exclude("org/bson/codecs/pojo/**")
 
+    relocate("one.tranic.t", "${libPackage}.tlib")
     relocate("one.tranic.irs", "${libPackage}.irs")
     relocate("com.mongodb", "${libPackage}.mongodb")
     relocate("redis.clients.jedis", "${libPackage}.jedis")

@@ -10,9 +10,9 @@ import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
-import one.tranic.mongoban.api.exception.ParseException;
 import one.tranic.mongoban.api.parse.player.PlayerParser;
-import one.tranic.mongoban.api.parse.time.TimeParser;
+import one.tranic.t.base.exception.ParseException;
+import one.tranic.t.base.parse.time.TimeParser;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

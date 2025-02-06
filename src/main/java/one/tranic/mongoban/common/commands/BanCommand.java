@@ -6,18 +6,17 @@ import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.args.BanArgs;
-import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
-import one.tranic.mongoban.api.exception.UnsupportedTypeException;
-import one.tranic.mongoban.api.message.MessageFormat;
 import one.tranic.mongoban.api.message.MessageKey;
-import one.tranic.mongoban.api.parse.network.NetworkParser;
-import one.tranic.mongoban.api.parse.time.TimeParser;
-import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
+import one.tranic.t.base.command.source.CommandSource;
+import one.tranic.t.base.exception.UnsupportedTypeException;
+import one.tranic.t.base.message.MessageFormat;
+import one.tranic.t.base.parse.network.NetworkParser;
+import one.tranic.t.base.parse.time.TimeParser;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -25,7 +24,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 // Todo - Unfinished
-public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+public class BanCommand<C extends CommandSource<?, ?>> extends Command<C> {
     public BanCommand() {
         this.setName("ban");
         this.setPermission("mongoban.command.ban");
@@ -33,7 +32,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
     @Override
     public void execute(C source) {
-        MongoPlayer<?> player = source.asPlayer();
+        var player = source.asPlayer();
 
         if (player != null) {
             if (!hasPermission(source)) {
@@ -120,7 +119,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                 sendResult(source, msg);
             });
         } catch (Exception ignored) {
-            MongoPlayer<?> targetPlayer = Player.getPlayer(target);
+            var targetPlayer = Player.getPlayer(target);
             String name;
             String userIP;
             UUID uuid;
@@ -171,7 +170,7 @@ public class BanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
                             sendResult(source, msg);
 
                             if (!v.isEmpty()) for (PlayerBanInfo player : v) {
-                                MongoPlayer<?> p = Player.getPlayer(player.uuid());
+                                var p = Player.getPlayer(player.uuid());
                                 if (p != null) p.kick(msg);
                             }
                         }, MongoBanAPI.executor);

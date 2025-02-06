@@ -6,14 +6,13 @@ import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.args.UnBanArgs;
-import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.data.PlayerInfo;
-import one.tranic.mongoban.api.exception.UnsupportedTypeException;
-import one.tranic.mongoban.api.message.MessageFormat;
 import one.tranic.mongoban.api.message.MessageKey;
-import one.tranic.mongoban.api.parse.network.NetworkParser;
-import one.tranic.mongoban.api.player.MongoPlayer;
 import one.tranic.mongoban.common.form.GeyserForm;
+import one.tranic.t.base.command.source.CommandSource;
+import one.tranic.t.base.exception.UnsupportedTypeException;
+import one.tranic.t.base.message.MessageFormat;
+import one.tranic.t.base.parse.network.NetworkParser;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 // Todo
-public class UnBanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+public class UnBanCommand<C extends CommandSource<?, ?>> extends Command<C> {
     public UnBanCommand() {
         setName("unban");
         setPermission("mongoban.command.unban");
@@ -29,7 +28,7 @@ public class UnBanCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
     @Override
     public void execute(C source) {
-        MongoPlayer<?> player = source.asPlayer();
+        var player = source.asPlayer();
 
         if (player != null) {
             if (!hasPermission(source)) {

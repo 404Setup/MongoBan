@@ -1,4 +1,6 @@
 # MongoBan SimpleCommand
+SimpleCommand component package has been moved to [TLIB](https://github.com/404Setup/t-base).
+
 SimpleCommand API allows developers to provide command services to multiple platforms 
 at the same time through the same set of code (or fine-tuning).
 

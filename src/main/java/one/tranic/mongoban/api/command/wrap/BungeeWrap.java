@@ -2,8 +2,8 @@ package one.tranic.mongoban.api.command.wrap;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.TabExecutor;
-import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.source.BungeeSource;
+import one.tranic.t.base.command.simple.SimpleCommand;
 
 /**
  * The BungeeWrap class acts as an adapter to integrate a generic Command tailored for BungeeSource
@@ -20,7 +20,7 @@ import one.tranic.mongoban.api.command.source.BungeeSource;
  */
 @Deprecated
 public class BungeeWrap extends net.md_5.bungee.api.plugin.Command implements TabExecutor {
-    private final Command<BungeeSource> command;
+    private final SimpleCommand<BungeeSource> command;
 
     /**
      * @deprecated BungeeCord is considered outdated. It is recommended to use more modern proxies such as Velocity.
@@ -28,7 +28,7 @@ public class BungeeWrap extends net.md_5.bungee.api.plugin.Command implements Ta
      * Developing plugins on modern platforms like Paper and Velocity is easier and provides better support and features.
      */
     @Deprecated
-    public BungeeWrap(Command<BungeeSource> command) {
+    public BungeeWrap(SimpleCommand<BungeeSource> command) {
         super(command.getName(), command.getPermission());
         this.command = command;
     }

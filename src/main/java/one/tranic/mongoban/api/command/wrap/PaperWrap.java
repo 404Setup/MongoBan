@@ -1,25 +1,26 @@
 package one.tranic.mongoban.api.command.wrap;
 
 import one.tranic.mongoban.api.command.source.PaperSource;
+import one.tranic.t.base.command.simple.SimpleCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A wrapper class that adapts a {@link one.tranic.mongoban.api.command.Command}
+ * A wrapper class that adapts a {@link SimpleCommand}
  * for use in the Bukkit/Paper command system.
  * <p>
  * This class integrates commands defined in the
- * {@link one.tranic.mongoban.api.command.Command} structure, making them function
+ * {@link SimpleCommand} structure, making them function
  * within the Paper platform by implementing the {@link Command} interface.
  * <p>
  * The class uses a {@link PaperSource} to represent and execute commands with the
  * associated {@link CommandSender}.
  */
 public class PaperWrap extends Command {
-    private final one.tranic.mongoban.api.command.Command<PaperSource> command;
+    private final SimpleCommand<PaperSource> command;
 
-    public PaperWrap(one.tranic.mongoban.api.command.Command<PaperSource> command) {
+    public PaperWrap(SimpleCommand<PaperSource> command) {
         super(command.getName());
         if (command.getPermission() != null) setPermission(command.getPermission());
         if (command.getDescription() != null) setDescription(command.getDescription());

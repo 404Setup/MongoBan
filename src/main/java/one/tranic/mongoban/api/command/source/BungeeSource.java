@@ -3,10 +3,11 @@ package one.tranic.mongoban.api.command.source;
 import net.kyori.adventure.text.Component;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.message.Message;
-import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.BungeePlayer;
+import one.tranic.t.base.TBase;
+import one.tranic.t.base.command.Operator;
+import one.tranic.t.base.command.source.CommandSource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +21,7 @@ import java.util.Locale;
  * Developing plugins on modern platforms like Paper and Velocity is easier and provides better support and features.
  */
 @Deprecated
-public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
+public class BungeeSource implements CommandSource<CommandSender, ProxiedPlayer> {
     private final CommandSender commandSender;
     private final String[] args;
     private final BungeePlayer player;
@@ -43,7 +44,7 @@ public class BungeeSource implements SourceImpl<CommandSender, ProxiedPlayer> {
     public Operator getOperator() {
         if (player != null)
             return new Operator(player.getUsername(), player.getUniqueId());
-        return MongoBanAPI.console;
+        return TBase.console();
     }
 
     @Override

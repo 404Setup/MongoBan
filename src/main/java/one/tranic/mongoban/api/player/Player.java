@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.UUID;
 
 public class Player {
-    public static @Nullable MongoPlayer<?> getPlayer(String name) {
+    public static @Nullable one.tranic.t.base.player.Player<?> getPlayer(String name) {
         if (Platform.get() == Platform.Velocity) {
             return VelocityPlayer.createPlayer(name);
         }
@@ -16,7 +16,7 @@ public class Player {
         return PaperPlayer.createPlayer(name);
     }
 
-    public static @Nullable MongoPlayer<?> getPlayer(UUID uuid) {
+    public static @Nullable one.tranic.t.base.player.Player<?> getPlayer(UUID uuid) {
         if (Platform.get() == Platform.Velocity) {
             return VelocityPlayer.createPlayer(uuid);
         }

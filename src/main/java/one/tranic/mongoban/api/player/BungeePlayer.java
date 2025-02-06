@@ -5,6 +5,8 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import one.tranic.mongoban.api.message.Message;
+import one.tranic.t.base.player.BedrockPlayer;
+import one.tranic.t.base.player.Location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +14,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 @Deprecated
-public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
+public class BungeePlayer implements one.tranic.t.base.player.Player<ProxiedPlayer> {
     private final ProxiedPlayer player;
 
     public BungeePlayer(ProxiedPlayer player) {
@@ -82,7 +84,7 @@ public class BungeePlayer implements MongoPlayer<ProxiedPlayer> {
     }
 
     @Override
-    public @Nullable MongoLocation getLocation() {
+    public @Nullable Location getLocation() {
         return null;
     }
 

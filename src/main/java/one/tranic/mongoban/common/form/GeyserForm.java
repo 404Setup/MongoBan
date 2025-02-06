@@ -3,10 +3,8 @@ package one.tranic.mongoban.common.form;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.MongoDataAPI;
-import one.tranic.mongoban.api.command.source.SourceImpl;
-import one.tranic.mongoban.common.Collections;
-import org.geysermc.cumulus.component.DropdownComponent;
+import one.tranic.t.base.command.source.CommandSource;
+import one.tranic.t.util.Collections;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.cumulus.form.ModalForm;
@@ -28,7 +26,7 @@ public class GeyserForm {
                 .build();
     }
 
-    public static <C extends SourceImpl<?, ?>> Form getDoForm(Consumer<DoForm> consumer) {
+    public static <C extends CommandSource<?, ?>> Form getDoForm(Consumer<DoForm> consumer) {
         return CustomForm.builder()
                 .title("MongoBan Console")
                 .input("Player")
@@ -48,11 +46,11 @@ public class GeyserForm {
         return getMessageForm(LegacyComponentSerializer.legacySection().serialize(message));
     }
 
-    public static <C extends SourceImpl<?, ?>> Form getUndoForm(Consumer<SimpleForm> consumer) {
+    public static <C extends CommandSource<?, ?>> Form getUndoForm(Consumer<SimpleForm> consumer) {
         return getSimpleForm(response -> consumer.accept(SimpleForm.from(response)));
     }
 
-    public static <C extends SourceImpl<?, ?>> Form getSearchForm(C source, Consumer<SearchForm> consumer) {
+    public static <C extends CommandSource<?, ?>> Form getSearchForm(C source, Consumer<SearchForm> consumer) {
         return CustomForm.builder()
                 .title("MongoBan Search")
                 .dropdown("Search Type", searchList)

@@ -6,6 +6,7 @@ import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.message.Message;
+import one.tranic.t.base.TBase;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -71,7 +72,7 @@ public abstract class Listener<T> {
 
         IPBanInfo result = db.ip().find(addr).sync();
         if (result != null) {
-            handleIPBan(event, uuid, result, addr);
+            handleIPBan(event, uuid, username, result, addr);
             return;
         } else {
             PlayerBanInfo playerResult = db.player()
@@ -94,17 +95,18 @@ public abstract class Listener<T> {
      *
      * @param event     The event object representing the connection or login request.
      * @param uuid      The universally unique identifier (UUID) of the player to check or ban.
+     * @param name      Player Name
      * @param ipBanInfo An object containing details about the IP ban, such as duration and reason.
      * @param ipAddress The IP address of the player potentially being banned.
      */
-    private void handleIPBan(T event, UUID uuid, IPBanInfo ipBanInfo, String ipAddress) {
+    private void handleIPBan(T event, UUID uuid, String name, IPBanInfo ipBanInfo, String ipAddress) {
         MongoDataAPI.getDatabase().ban()
                 .player().find(uuid).async()
                 .thenAcceptAsync(playerInfo -> {
                     if (playerInfo == null) {
                         MongoDataAPI.getDatabase().ban()
                                 .player()
-                                .add(uuid, MongoBanAPI.console, ipBanInfo.duration(), ipAddress, ipBanInfo.reason())
+                                .add(uuid, name, TBase.console(), ipBanInfo.duration(), ipAddress, ipBanInfo.reason())
                                 .sync();
                     }
                 }, MongoBanAPI.executor);

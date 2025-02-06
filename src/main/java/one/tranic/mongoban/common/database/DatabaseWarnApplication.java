@@ -1,10 +1,10 @@
 package one.tranic.mongoban.common.database;
 
-import one.tranic.mongoban.api.task.Actions;
-import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.data.PlayerWarnInfo;
-import one.tranic.mongoban.common.Collections;
-import one.tranic.mongoban.common.Rand;
+import one.tranic.t.base.command.Operator;
+import one.tranic.t.base.task.Actions;
+import one.tranic.t.util.Collections;
+import one.tranic.t.util.Rand;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ public class DatabaseWarnApplication {
      */
     public Actions<Void> add(@NotNull UUID playerId, @NotNull Operator operator, @Nullable String duration, @Nullable String reason) {
         return new Actions<>(() -> {
-            String warnId = Rand.generateRandomWarnId(21);
+            String warnId = Rand.generateRandomId(21);
             Document warnDoc = new Document("id", warnId)
                     .append("playerId", playerId)
                     .append("operator", operator)

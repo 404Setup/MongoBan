@@ -1,14 +1,13 @@
 package one.tranic.mongoban.common.commands;
 
 import one.tranic.mongoban.api.command.Command;
-import one.tranic.mongoban.api.command.source.SourceImpl;
 import one.tranic.mongoban.api.message.MessageKey;
-import one.tranic.mongoban.api.player.MongoPlayer;
+import one.tranic.t.base.command.source.CommandSource;
 
 import java.util.List;
 
 // Todo
-public class UnWarnCommand<C extends SourceImpl<?, ?>> extends Command<C> {
+public class UnWarnCommand<C extends CommandSource<?, ?>> extends Command<C> {
 
     public UnWarnCommand() {
         setName("unwarn");
@@ -17,7 +16,7 @@ public class UnWarnCommand<C extends SourceImpl<?, ?>> extends Command<C> {
 
     @Override
     public void execute(C source) {
-        MongoPlayer<?> player = source.asPlayer();
+        var player = source.asPlayer();
 
         if (player != null) {
             if (!hasPermission(source)) {

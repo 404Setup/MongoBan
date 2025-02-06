@@ -3,8 +3,9 @@ package one.tranic.mongoban.api.player;
 import net.kyori.adventure.text.Component;
 import one.tranic.irs.PluginSchedulerBuilder;
 import one.tranic.mongoban.api.Platform;
+import one.tranic.t.base.player.BedrockPlayer;
+import one.tranic.t.base.player.Location;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.UUID;
 
-public class PaperPlayer implements MongoPlayer<Player> {
+public class PaperPlayer implements one.tranic.t.base.player.Player<Player> {
     private final Player player;
 
     public PaperPlayer(Player player) {
@@ -84,9 +85,9 @@ public class PaperPlayer implements MongoPlayer<Player> {
     }
 
     @Override
-    public @Nullable MongoLocation getLocation() {
-        @NotNull Location l = player.getLocation();
-        return new MongoLocation(l.getWorld().getName(), l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+    public @Nullable Location getLocation() {
+        @NotNull var l = player.getLocation();
+        return new Location(l.getWorld().getName(), l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
     }
 
     @Override

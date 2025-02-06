@@ -1,9 +1,10 @@
 package one.tranic.mongoban.api.command.source;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.data.Operator;
 import one.tranic.mongoban.api.player.PaperPlayer;
+import one.tranic.t.base.TBase;
+import one.tranic.t.base.command.Operator;
+import one.tranic.t.base.command.source.CommandSource;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -12,12 +13,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Locale;
 
 /**
- * Implementation of the SourceImpl interface for the Bukkit/Spigot Paper platform.
+ * Implementation of the CommandSource interface for the Bukkit/Spigot Paper platform.
  * <p>
  * It defines methods to handle actions such as sending messages or kicking
  * players and retrieves information about the source.
  */
-public class PaperSource implements SourceImpl<CommandSender, Player> {
+public class PaperSource implements CommandSource<CommandSender, Player> {
     private final CommandSender commandSender;
     private final String[] args;
     private final PaperPlayer player;
@@ -32,7 +33,7 @@ public class PaperSource implements SourceImpl<CommandSender, Player> {
     public Operator getOperator() {
         if (player != null)
             return new Operator(player.getUsername(), player.getUniqueId());
-        return MongoBanAPI.console;
+        return TBase.console();
     }
 
     @Override
