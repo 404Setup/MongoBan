@@ -60,7 +60,7 @@ public class VelocitySource implements one.tranic.t.base.command.source.CommandS
     }
 
     @Override
-    public @Nullable Locale locale() {
+    public @Nullable Locale getLocale() {
         return player != null ? player.getLocale()
                 : Locale.getDefault();
     }

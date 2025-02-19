@@ -63,24 +63,24 @@ public class PaperPlayer implements one.tranic.t.base.player.Player<Player> {
     }
 
     @Override
-    public String getUsername() {
+    public @NotNull String getUsername() {
         return player.getName();
     }
 
     @Override
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return player.getUniqueId();
     }
 
     @Override
-    public String getConnectHost() {
+    public @Nullable String getConnectedHost() {
         @Nullable InetSocketAddress addr = player.getAddress();
         if (addr == null) return null;
         return addr.getAddress().getHostAddress();
     }
 
     @Override
-    public Locale getLocale() {
+    public @NotNull Locale getLocale() {
         return player.locale();
     }
 
@@ -139,7 +139,7 @@ public class PaperPlayer implements one.tranic.t.base.player.Player<Player> {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull String message) {
         player.sendMessage(message);
     }
 

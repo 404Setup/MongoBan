@@ -2,7 +2,6 @@ package one.tranic.mongoban.common.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.args.BanArgs;
@@ -12,6 +11,7 @@ import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.message.MessageKey;
 import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
+import one.tranic.t.base.TBase;
 import one.tranic.t.base.command.source.CommandSource;
 import one.tranic.t.base.exception.UnsupportedTypeException;
 import one.tranic.t.base.message.MessageFormat;
@@ -55,7 +55,7 @@ public class BanCommand<C extends CommandSource<?, ?>> extends Command<C> {
             return;
         }
 
-        MongoBanAPI.runAsync(() -> exec(source, args));
+        TBase.runAsync(() -> exec(source, args));
     }
 
     private void exec(C source, Object arg) {
@@ -139,7 +139,7 @@ public class BanCommand<C extends CommandSource<?, ?>> extends Command<C> {
                     name = target;
                 }
             } else {
-                userIP = targetPlayer.getConnectHost();
+                userIP = targetPlayer.getConnectedHost();
                 uuid = targetPlayer.getUniqueId();
                 name = targetPlayer.getUsername();
             }
@@ -173,7 +173,7 @@ public class BanCommand<C extends CommandSource<?, ?>> extends Command<C> {
                                 var p = Player.getPlayer(player.uuid());
                                 if (p != null) p.kick(msg);
                             }
-                        }, MongoBanAPI.executor);
+                        }, TBase.executor);
             } else {
                 MongoDataAPI.getDatabase().ban().player().add(uuid, name, source.getOperator(), time, null, reason)
                         .async()

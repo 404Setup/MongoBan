@@ -64,22 +64,22 @@ public class BungeePlayer implements one.tranic.t.base.player.Player<ProxiedPlay
     }
 
     @Override
-    public String getUsername() {
+    public @NotNull String getUsername() {
         return player.getName();
     }
 
     @Override
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return player.getUniqueId();
     }
 
     @Override
-    public String getConnectHost() {
+    public @NotNull String getConnectedHost() {
         return player.getAddress().getAddress().getHostAddress();
     }
 
     @Override
-    public Locale getLocale() {
+    public @NotNull Locale getLocale() {
         return player.getLocale();
     }
 
@@ -132,7 +132,7 @@ public class BungeePlayer implements one.tranic.t.base.player.Player<ProxiedPlay
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull String message) {
         player.sendMessage(Message.toBaseComponent(message));
     }
 

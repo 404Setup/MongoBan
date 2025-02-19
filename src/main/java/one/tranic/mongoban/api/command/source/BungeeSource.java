@@ -68,7 +68,7 @@ public class BungeeSource implements CommandSource<CommandSender, ProxiedPlayer>
     }
 
     @Override
-    public @Nullable Locale locale() {
+    public @Nullable Locale getLocale() {
         return player != null ? player.getLocale() : Locale.getDefault();
     }
 

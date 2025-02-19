@@ -57,7 +57,7 @@ public class PaperSource implements CommandSource<CommandSender, Player> {
     }
 
     @Override
-    public @Nullable Locale locale() {
+    public @Nullable Locale getLocale() {
         return player != null ? player.getLocale() : Locale.getDefault();
     }
 

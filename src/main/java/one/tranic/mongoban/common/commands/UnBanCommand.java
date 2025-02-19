@@ -2,13 +2,13 @@ package one.tranic.mongoban.common.commands;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.command.args.UnBanArgs;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.message.MessageKey;
 import one.tranic.mongoban.common.form.GeyserForm;
+import one.tranic.t.base.TBase;
 import one.tranic.t.base.command.source.CommandSource;
 import one.tranic.t.base.exception.UnsupportedTypeException;
 import one.tranic.t.base.message.MessageFormat;
@@ -51,7 +51,7 @@ public class UnBanCommand<C extends CommandSource<?, ?>> extends Command<C> {
             return;
         }
 
-        MongoBanAPI.runAsync(() -> exec(source, args));
+        TBase.runAsync(() -> exec(source, args));
     }
 
     private void exec(C source, Object arg) {
@@ -108,7 +108,7 @@ public class UnBanCommand<C extends CommandSource<?, ?>> extends Command<C> {
                     );
                 }
                 sendResult(source, msg);
-            }, MongoBanAPI.executor);
+            }, TBase.executor);
         }
     }
 

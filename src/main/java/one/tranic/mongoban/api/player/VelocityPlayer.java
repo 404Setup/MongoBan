@@ -61,23 +61,24 @@ public class VelocityPlayer implements one.tranic.t.base.player.Player<Player> {
     }
 
     @Override
-    public String getUsername() {
+    public @NotNull String getUsername() {
         return player.getUsername();
     }
 
     @Override
-    public UUID getUniqueId() {
+    public @NotNull UUID getUniqueId() {
         return player.getUniqueId();
     }
 
     @Override
-    public String getConnectHost() {
+    public @NotNull String getConnectedHost() {
         return player.getRemoteAddress().getAddress().getHostAddress();
     }
 
     @Override
-    public Locale getLocale() {
-        return player.getEffectiveLocale();
+    public @NotNull Locale getLocale() {
+        var locale = player.getEffectiveLocale();
+        return locale != null ? locale : Locale.getDefault();
     }
 
     @Override
@@ -129,7 +130,7 @@ public class VelocityPlayer implements one.tranic.t.base.player.Player<Player> {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull String message) {
         player.sendMessage(Component.text(message));
     }
 

@@ -18,14 +18,6 @@ public class MongoBanAPI {
     public final static List<String> TIME_SUGGEST = Collections.newUnmodifiableList("s", "m", "h", "d", "mo", "y", "forever");
 
     /**
-     * A shared executor for handling asynchronous tasks with flexible scaling capabilities.
-     */
-    public final static Executor executor = new ThreadPoolExecutor(0, 8,
-            45L, TimeUnit.SECONDS,
-            new SynchronousQueue<>(),
-            Thread.ofVirtual().factory());
-
-    /**
      * A static instance of {@link JsonParser} that provides JSON parsing and serialization functionalities.
      */
     public final static JsonParser jsonParser = new GsonParser();
@@ -43,27 +35,4 @@ public class MongoBanAPI {
                 org.bukkit.Bukkit.getConsoleSender(), null
         );
     }*/
-
-    /**
-     * Executes the given {@code Runnable} asynchronously using a pre-configured executor.
-     *
-     * @param runnable the {@code Runnable} task to be executed asynchronously
-     * @return a {@code CompletableFuture<Void>} that completes once the specified task has been executed
-     */
-    public static CompletableFuture<Void> runAsync(Runnable runnable) {
-        return CompletableFuture.runAsync(runnable, executor);
-    }
-
-    /**
-     * Executes the given supplier asynchronously using a pre-configured executor.
-     * <p>
-     * This method is intended for running tasks that return a result in an asynchronous manner.
-     *
-     * @param <T>      the type of the result produced by the supplier
-     * @param supplier the {@code Supplier} task to be executed asynchronously
-     * @return a {@code CompletableFuture<T>} that completes with the result of the supplier execution
-     */
-    public static <T> CompletableFuture<T> runAsync(Supplier<T> supplier) {
-        return CompletableFuture.supplyAsync(supplier, executor);
-    }
 }

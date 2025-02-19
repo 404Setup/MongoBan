@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "one.tranic"
-version = "25.01.0"
+version = "25.02.0"
 
 repositories {
     maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
@@ -17,7 +17,7 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://jitpack.io")
-    maven("https://repo.opencollab.dev/main/")
+    maven("https://mirror.zxda.top/opencollab")
 }
 
 dependencies {
@@ -31,7 +31,7 @@ dependencies {
     compileOnly("net.kyori:adventure-platform-bungeecord:4.3.4")
     compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
 
-    implementation("one.tranic:t-base:1.1.0")
+    implementation("one.tranic:t-base:1.2.5")
     implementation("one.tranic:irs:1.3.3.2")
 
     compileOnly("org.geysermc.geyser:api:2.4.2-SNAPSHOT")

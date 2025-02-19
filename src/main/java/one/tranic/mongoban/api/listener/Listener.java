@@ -1,7 +1,6 @@
 package one.tranic.mongoban.api.listener;
 
 import net.kyori.adventure.text.Component;
-import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
@@ -109,7 +108,7 @@ public abstract class Listener<T> {
                                 .add(uuid, name, TBase.console(), ipBanInfo.duration(), ipAddress, ipBanInfo.reason())
                                 .sync();
                     }
-                }, MongoBanAPI.executor);
+                }, TBase.executor);
 
         disallow(event, Message.kickMessage(ipBanInfo));
     }
