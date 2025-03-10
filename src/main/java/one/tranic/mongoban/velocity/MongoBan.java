@@ -52,14 +52,22 @@ public class MongoBan {
         NewConfig.loadConfig(dataDirectory);
         Message.reloadMessages();
 
-        MongoDataAPI.reconnect();
+        try {
+            MongoDataAPI.reconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         createCommands();
     }
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
-        MongoDataAPI.close();
+        try {
+            MongoDataAPI.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void createCommands() {

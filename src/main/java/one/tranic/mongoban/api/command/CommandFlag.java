@@ -1,7 +1,6 @@
 package one.tranic.mongoban.api.command;
 
-
-import one.tranic.t.util.Collections;
+import one.tranic.t.utils.Collections;
 
 import java.util.List;
 

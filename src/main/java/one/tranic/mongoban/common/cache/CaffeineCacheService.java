@@ -2,7 +2,8 @@ package one.tranic.mongoban.common.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import one.tranic.mongoban.api.cache.CacheService;
+import one.tranic.t.base.cache.CacheService;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -24,27 +25,45 @@ public class CaffeineCacheService implements CacheService {
     }
 
     @Override
-    public <T> Optional<T> get(String key, Class<T> type) {
-        return (Optional<T>) Optional.ofNullable(objectCache.getIfPresent(key));
+    public <T> @NotNull Optional<T> get(@NotNull String key, @NotNull Class<T> type) {
+        return Optional.ofNullable((T) objectCache.getIfPresent(key));
     }
 
     @Override
-    public void put(String key, Object value, long ttl) {
+    public @NotNull String get(@NotNull String key) {
+        Object value = objectCache.getIfPresent(key);
+        if (value == null) return "";
+        if (value instanceof String) return (String) value;
+        return value.toString();
+    }
+
+    @Override
+    public void put(@NotNull String key, @NotNull Object value, long ttl) {
         if (get(key, value.getClass()).isPresent())
             invalidate(key);
-        objectCache.put(key, value);
+        if (ttl > 0) {
+            objectCache.policy().expireVariably().ifPresent(
+                    policy -> policy.put(key, value, Duration.ofSeconds(ttl))
+            );
+        } else {
+            objectCache.put(key, value);
+        }
     }
 
     @Override
-    public void invalidate(String key) {
+    public void invalidate(@NotNull String key) {
         objectCache.invalidate(key);
     }
 
     @Override
-    public void close() {
-        this.objectCache.invalidateAll();
-        executor.shutdown();
+    public void invalidateAll() {
+        objectCache.invalidateAll();
+    }
 
-        this.objectCache = null;
+    @Override
+    public void close() {
+        if (executor.isShutdown()) return;
+        invalidateAll();
+        executor.shutdown();
     }
 }

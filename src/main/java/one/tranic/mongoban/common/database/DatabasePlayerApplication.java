@@ -3,7 +3,7 @@ package one.tranic.mongoban.common.database;
 import com.mongodb.client.model.Filters;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.t.base.task.Actions;
-import one.tranic.t.util.Collections;
+import one.tranic.t.utils.Collections;
 import org.bson.Document;
 
 import java.util.List;

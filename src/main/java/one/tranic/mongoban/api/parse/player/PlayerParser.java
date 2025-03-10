@@ -1,7 +1,7 @@
 package one.tranic.mongoban.api.parse.player;
 
-import one.tranic.mongoban.api.Platform;
-import one.tranic.t.util.Collections;
+import one.tranic.t.utils.Collections;
+import one.tranic.t.utils.Platform;
 import org.jetbrains.annotations.Range;
 
 import java.util.List;

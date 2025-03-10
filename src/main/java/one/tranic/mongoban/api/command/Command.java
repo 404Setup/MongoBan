@@ -2,21 +2,21 @@ package one.tranic.mongoban.api.command;
 
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.command.source.BungeeSource;
-import one.tranic.mongoban.api.command.source.PaperSource;
-import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.api.command.wrap.BungeeWrap;
-import one.tranic.mongoban.api.command.wrap.PaperWrap;
-import one.tranic.mongoban.api.command.wrap.VelocityWrap;
 import one.tranic.mongoban.api.parse.player.PlayerParser;
 import one.tranic.mongoban.common.form.GeyserForm;
 import one.tranic.t.base.TBase;
 import one.tranic.t.base.command.simple.SimpleCommand;
 import one.tranic.t.base.command.source.CommandSource;
+import one.tranic.t.bukkit.command.source.BukkitSource;
+import one.tranic.t.utils.Platform;
+import one.tranic.t.velocity.command.source.VelocitySource;
+import one.tranic.t.velocity.command.warp.VelocityWrap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Abstract base class representing a command in a multi-platform environment.
@@ -27,42 +27,39 @@ import java.util.List;
  * @param <C> the type of the command source, extending from {@link CommandSource}
  */
 public abstract class Command<C extends CommandSource<?, ?>> extends SimpleCommand<C> {
+    private final Map<String, List<String>> suggestionMap = Map.of(
+            "--target", PlayerParser.parse(30),
+            "--duration", MongoBanAPI.TIME_SUGGEST,
+            "--reason", MongoBanAPI.REASON_SUGGEST
+    );
+
     @Override
     public List<String> suggest(C source) {
         if (!hasPermission(source)) return MongoBanAPI.EMPTY_LIST;
 
         String[] args = source.getArgs();
         int size = source.argSize();
-        if (size == 1) {
-            return MongoBanAPI.FLAG_LIST.stream()
-                    .filter(flag -> flag.startsWith(args[0]))
-                    .toList();
-        }
+        if (size == 1)
+            return filterSuggestions(MongoBanAPI.FLAG_LIST, args[0]);
         if (size > 1) {
             String previousArg = args[size - 2];
             String currentArg = args[size - 1];
-            if ("--target".equals(previousArg)) {
-                return PlayerParser.parse(30).stream()
-                        .filter(player -> player.startsWith(currentArg))
-                        .toList();
+
+            if (suggestionMap.containsKey(previousArg)) {
+                return filterSuggestions(suggestionMap.get(previousArg), currentArg);
             }
-            if ("--duration".equals(previousArg)) {
-                return MongoBanAPI.TIME_SUGGEST.stream()
-                        .filter(time -> time.startsWith(currentArg))
-                        .toList();
-            }
-            if ("--reason".equals(previousArg)) {
-                return MongoBanAPI.REASON_SUGGEST.stream()
-                        .filter(reason -> reason.startsWith(currentArg))
-                        .toList();
-            }
+
             if (MongoBanAPI.FLAG_LIST.contains(previousArg)) {
-                return MongoBanAPI.FLAG_LIST.stream()
-                        .filter(flag -> flag.startsWith(currentArg))
-                        .toList();
+                return filterSuggestions(MongoBanAPI.FLAG_LIST, currentArg);
             }
         }
         return MongoBanAPI.EMPTY_LIST;
+    }
+
+    private List<String> filterSuggestions(List<String> suggestions, String prefix) {
+        return suggestions.stream()
+                .filter(suggestion -> suggestion.startsWith(prefix))
+                .toList();
     }
 
 
@@ -78,7 +75,7 @@ public abstract class Command<C extends CommandSource<?, ?>> extends SimpleComma
     public void sendResult(C source, Component msg, boolean withConsole) {
         if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
         else if (source.isPlayer()) source.sendMessage(msg);
-        if (withConsole) TBase.CONSOLE_SOURCE.sendMessage(msg);
+        if (withConsole) TBase.getConsoleSource().sendMessage(msg);
     }
 
     /**
@@ -92,7 +89,7 @@ public abstract class Command<C extends CommandSource<?, ?>> extends SimpleComma
     public void sendResult(C source, String msg, boolean withConsole) {
         if (source.isBedrockPlayer()) source.asPlayer().sendFormAsync(GeyserForm.getMessageForm(msg));
         else if (source.isPlayer()) source.sendMessage(msg);
-        if (withConsole) TBase.CONSOLE_SOURCE.sendMessage(msg);
+        if (withConsole) TBase.getConsoleSource().sendMessage(msg);
     }
 
     /**
@@ -103,7 +100,7 @@ public abstract class Command<C extends CommandSource<?, ?>> extends SimpleComma
      * for Bukkit-based platforms, or null if the platform is not compatible.
      */
     public @Nullable org.bukkit.command.Command unwrapBukkit() {
-        if (Platform.isBukkit()) return new PaperWrap((Command<PaperSource>) this);
+        if (Platform.isBukkit()) return new one.tranic.t.bukkit.command.warp.BukkitWrap((Command<BukkitSource>) this);
         return null;
     }
 

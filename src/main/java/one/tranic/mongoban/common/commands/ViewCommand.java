@@ -4,7 +4,7 @@ import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.mongoban.api.command.Command;
 import one.tranic.mongoban.api.message.MessageKey;
 import one.tranic.t.base.command.source.CommandSource;
-import one.tranic.t.util.Collections;
+import one.tranic.t.utils.Collections;
 
 import java.util.List;
 

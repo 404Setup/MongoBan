@@ -2,9 +2,9 @@ package one.tranic.mongoban.bukkit;
 
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.message.Message;
-import one.tranic.mongoban.api.command.source.PaperSource;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;
+import one.tranic.t.paper.command.source.PaperSource;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.SimpleCommandMap;
@@ -27,7 +27,11 @@ public class MongoBan extends JavaPlugin {
 
         NewConfig.loadConfig(getDataFolder().toPath());
         Message.reloadMessages();
-        MongoDataAPI.reconnect();
+        try {
+            MongoDataAPI.reconnect();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             Field commandMapField = Bukkit.getPluginManager().getClass().getDeclaredField("commandMap");

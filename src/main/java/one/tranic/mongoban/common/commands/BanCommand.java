@@ -15,8 +15,8 @@ import one.tranic.t.base.TBase;
 import one.tranic.t.base.command.source.CommandSource;
 import one.tranic.t.base.exception.UnsupportedTypeException;
 import one.tranic.t.base.message.MessageFormat;
-import one.tranic.t.base.parse.network.NetworkParser;
 import one.tranic.t.base.parse.time.TimeParser;
+import one.tranic.t.network.TNetwork;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.InetAddress;
@@ -89,7 +89,7 @@ public class BanCommand<C extends CommandSource<?, ?>> extends Command<C> {
             InetAddress inip = InetAddress.getByName(target);
 
             // Check Private IP
-            if (NetworkParser.isPrivateIp(inip)) {
+            if (TNetwork.isPrivateIp(inip)) {
                 Component msg = MessageKey.PRIVATE_IP.format(
                         new MessageFormat("ip", Component.text(target, NamedTextColor.BLUE))
                 );

@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "one.tranic"
-version = "25.02.0"
+version = "25.03.0"
 
 repositories {
     maven("https://maven-central-asia.storage-download.googleapis.com/maven2/")
@@ -17,7 +17,7 @@ repositories {
     maven("https://oss.sonatype.org/content/groups/public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://jitpack.io")
-    maven("https://mirror.zxda.top/opencollab")
+    maven("https://repo.opencollab.dev/main/")
 }
 
 dependencies {
@@ -27,11 +27,21 @@ dependencies {
     compileOnly("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
     annotationProcessor("com.velocitypowered:velocity-api:3.4.0-SNAPSHOT")
 
-    compileOnly("net.kyori:adventure-api:4.18.0")
+    compileOnly("net.kyori:adventure-api:4.19.0")
     compileOnly("net.kyori:adventure-platform-bungeecord:4.3.4")
-    compileOnly("net.kyori:adventure-text-minimessage:4.18.0")
+    compileOnly("net.kyori:adventure-text-minimessage:4.19.0")
 
-    implementation("one.tranic:t-base:1.2.5")
+    implementation("one.tranic:t-base:1.2.6")
+    implementation("one.tranic:t-utils:1.2.2.1")
+    implementation("one.tranic:t-network:1.0.0")
+    implementation("one.tranic:t-bukkit:1.0.0") {
+        exclude("net.kyori", "adventure-api")
+        exclude("net.kyori", "adventure-text-minimessage")
+        exclude("net.kyori", "adventure-platform-bukkit")
+        exclude("org.spigotmc", "spigot-api")
+    }
+    implementation("one.tranic:t-paper:1.0.1")
+    implementation("one.tranic:t-velocity:1.0.0")
     implementation("one.tranic:irs:1.3.3.2")
 
     compileOnly("org.geysermc.geyser:api:2.4.2-SNAPSHOT")
@@ -39,7 +49,7 @@ dependencies {
 
     compileOnly("com.google.guava:guava:33.3.0-jre")
     compileOnly("com.github.ben-manes.caffeine:caffeine:3.1.8")
-    compileOnly("org.jetbrains:annotations:26.0.1")
+    compileOnly("org.jetbrains:annotations:26.0.2")
     //implementation("com.alibaba.fastjson2:fastjson2:2.0.53")
     implementation("dev.nipafx.args:record-args:0.9.2")
     implementation("org.mongodb:mongodb-driver-sync:5.3.0")

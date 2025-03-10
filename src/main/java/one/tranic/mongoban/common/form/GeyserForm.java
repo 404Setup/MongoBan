@@ -4,7 +4,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import one.tranic.mongoban.api.MongoBanAPI;
 import one.tranic.t.base.command.source.CommandSource;
-import one.tranic.t.util.Collections;
+import one.tranic.t.utils.Collections;
 import org.geysermc.cumulus.form.CustomForm;
 import org.geysermc.cumulus.form.Form;
 import org.geysermc.cumulus.form.ModalForm;

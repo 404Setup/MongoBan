@@ -1,7 +1,8 @@
 package one.tranic.mongoban.common.cache;
 
-import one.tranic.mongoban.api.cache.Cache;
-import one.tranic.mongoban.api.cache.CacheService;
+
+import one.tranic.t.base.cache.Cache;
+import one.tranic.t.base.cache.CacheService;
 
 public class CaffeineCache implements Cache {
     private final CaffeineCacheService service;

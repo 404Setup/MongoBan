@@ -5,15 +5,15 @@ import com.amihaiemil.eoyaml.YamlMapping;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import one.tranic.mongoban.api.Platform;
 import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.common.Data;
 import one.tranic.mongoban.common.config.NewConfig;
 import one.tranic.t.base.exception.UnsupportedTypeException;
 import one.tranic.t.base.message.MessageFormat;
-import one.tranic.t.base.parse.network.NetworkParser;
-import one.tranic.t.util.Collections;
+import one.tranic.t.base.parse.resource.ResourceParser;
+import one.tranic.t.utils.Collections;
+import one.tranic.t.utils.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,13 +71,13 @@ public class Message {
         if (!messages.isEmpty()) messages.clear();
 
         Data.logger.info("Searching for language packs: {}....", NewConfig.getConfig().language().toLanguageTag());
-        try (InputStream data = NetworkParser.resource("language/" + NewConfig.getConfig().language().toLanguageTag() + ".yaml")) {
+        try (InputStream data = ResourceParser.resource("language/" + NewConfig.getConfig().language().toLanguageTag() + ".yaml")) {
             getMessages(yaml(data));
         } catch (Exception ignored) {
             Data.logger.error("The language pack {} was not found or the file is damaged. Reading the default language pack: {}..."
                     , NewConfig.getConfig().language().toLanguageTag()
                     , Locale.US.toLanguageTag());
-            try (InputStream data = NetworkParser.resource("language/" + Locale.US.toLanguageTag() + ".yaml")) {
+            try (InputStream data = ResourceParser.resource("language/" + Locale.US.toLanguageTag() + ".yaml")) {
                 getMessages(yaml(data));
             } catch (IOException e) {
                 Data.logger.error("Failed to read the default language pack: {}", e.getMessage());

@@ -6,7 +6,7 @@ import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.t.base.command.Operator;
 import one.tranic.t.base.task.Actions;
-import one.tranic.t.util.Collections;
+import one.tranic.t.utils.Collections;
 import org.bson.Document;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

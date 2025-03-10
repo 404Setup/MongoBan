@@ -1,7 +1,10 @@
 package one.tranic.mongoban.api.command.source;
 
+import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.api.player.BungeePlayer;
@@ -85,6 +88,33 @@ public class BungeeSource implements CommandSource<CommandSender, ProxiedPlayer>
     @Override
     public void sendMessage(@NotNull Component message) {
         commandSender.sendMessage(Message.toBaseComponent(message));
+    }
+
+    @Override
+    public void showBossBar(@NotNull BossBar bossBar) {
+        // Unsupported
+    }
+
+    @Override
+    public void hideBossBar(@NotNull BossBar bossBar) {
+        // Unsupported
+    }
+
+    @Override
+    public void clearBossBars() {
+        // Unsupported
+    }
+
+    @Override
+    public void showTitle(@NotNull Title title) {
+        var t = ProxyServer.getInstance().createTitle().title(one.tranic.t.base.message.Message.toBaseComponent(title.title()))
+                .subTitle(one.tranic.t.base.message.Message.toBaseComponent(title.subtitle()));
+        if (isPlayer()) player.getSourcePlayer().sendTitle(t);
+    }
+
+    @Override
+    public void clearTitle() {
+        // Unsupported
     }
 
     @Override

@@ -1,10 +1,10 @@
 package one.tranic.mongoban.api;
 
-import one.tranic.mongoban.api.cache.Cache;
 import one.tranic.mongoban.common.cache.CaffeineCache;
 import one.tranic.mongoban.common.cache.RedisCache;
 import one.tranic.mongoban.common.config.NewConfig;
 import one.tranic.mongoban.common.database.Database;
+import one.tranic.t.base.cache.Cache;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -55,7 +55,7 @@ public class MongoDataAPI {
      * @throws SecurityException        if the caller is not authorized to invoke this method
      * @throws IllegalArgumentException if the provided cache instance is null
      */
-    public synchronized static void setCache(@NotNull Cache cache) throws SecurityException, IllegalArgumentException {
+    public synchronized static void setCache(@NotNull Cache cache) throws Exception {
         if (!isCallerAllowed()) throw new SecurityException("Unauthorized access to setCache method.");
         if (MongoDataAPI.cache != null) {
             MongoDataAPI.cache.close();
@@ -68,7 +68,7 @@ public class MongoDataAPI {
      *
      * @throws SecurityException if the caller is not authorized to use this method
      */
-    public synchronized static void close() throws SecurityException {
+    public synchronized static void close() throws Exception {
         if (!isCallerAllowed()) throw new SecurityException("Unauthorized access to close method.");
         if (MongoDataAPI.database != null) {
             MongoDataAPI.database.disconnect();
@@ -101,7 +101,7 @@ public class MongoDataAPI {
      *
      * @throws SecurityException if the caller is not authorized to invoke this method.
      */
-    public synchronized static void reconnect() throws SecurityException {
+    public synchronized static void reconnect() throws Exception {
         if (!isCallerAllowed()) throw new SecurityException("Unauthorized access to reconnect method.");
 
         Cache cache = NewConfig.getConfig().cache() == 0 ? new CaffeineCache() :
