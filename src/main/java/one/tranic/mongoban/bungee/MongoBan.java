@@ -13,7 +13,11 @@ public class MongoBan extends Plugin {
     public void onEnable() {
         NewConfig.loadConfig(getDataFolder().toPath());
         Message.reloadMessages();
-        MongoDataAPI.reconnect();
+        try {
+            MongoDataAPI.reconnect();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         new BanCommand<BungeeSource>().registerWithBungee(this);
         new UnBanCommand<BungeeSource>().registerWithBungee(this);

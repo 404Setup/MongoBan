@@ -10,9 +10,10 @@ import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.message.Message;
-import one.tranic.mongoban.api.command.source.VelocitySource;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;
+import one.tranic.t.velocity.TVelocity;
+import one.tranic.t.velocity.command.source.VelocitySource;
 
 import java.nio.file.Path;
 
@@ -51,6 +52,7 @@ public class MongoBan {
     public void onProxyInitialization(ProxyInitializeEvent event) {
         NewConfig.loadConfig(dataDirectory);
         Message.reloadMessages();
+        TVelocity.init(proxy);
 
         try {
             MongoDataAPI.reconnect();
@@ -63,6 +65,7 @@ public class MongoBan {
 
     @Subscribe
     public void onProxyShutdown(ProxyShutdownEvent event) {
+        TVelocity.disable();
         try {
             MongoDataAPI.close();
         } catch (Exception e) {

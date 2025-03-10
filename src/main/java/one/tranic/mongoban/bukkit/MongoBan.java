@@ -4,6 +4,7 @@ import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.message.Message;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;
+import one.tranic.t.paper.TPaper;
 import one.tranic.t.paper.command.source.PaperSource;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -25,6 +26,7 @@ public class MongoBan extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        TPaper.init(this);
         NewConfig.loadConfig(getDataFolder().toPath());
         Message.reloadMessages();
         try {
@@ -64,5 +66,6 @@ public class MongoBan extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        TPaper.disable();
     }
 }
