@@ -5,7 +5,7 @@ plugins {
     java
     id("eclipse")
     id("org.jetbrains.gradle.plugin.idea-ext") version "1.1.9"
-    id("com.gradleup.shadow") version "9.0.0-beta4"
+    id("com.gradleup.shadow") version "9.0.0-beta10"
 }
 
 group = "one.tranic"
