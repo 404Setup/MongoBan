@@ -1,0 +1,12 @@
+name: MongoBan
+version: '${version}'
+main: one.tranic.mongoban.bungee.MongoBan
+author: "404"
+softDepends:
+  - Geyser-BungeeCord
+  - floodgate
+libraries:
+  - net.kyori:adventure-api:4.19.0
+  - net.kyori:adventure-platform-bungeecord:4.3.4
+  - net.kyori:adventure-text-minimessage:4.19.0
+  - com.github.ben-manes.caffeine:caffeine:3.1.8
