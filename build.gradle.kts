@@ -40,6 +40,11 @@ dependencies {
         exclude("net.kyori", "adventure-platform-bukkit")
         exclude("org.spigotmc", "spigot-api")
     }
+    implementation("one.tranic:t-bungee:1.0.0") {
+        exclude("net.kyori", "adventure-api")
+        exclude("net.kyori", "adventure-text-minimessage")
+        exclude("net.kyori", "adventure-platform-bungee")
+    }
     implementation("one.tranic:t-paper:1.0.1")
     implementation("one.tranic:t-velocity:1.0.0")
     implementation("one.tranic:irs:1.3.3.2")

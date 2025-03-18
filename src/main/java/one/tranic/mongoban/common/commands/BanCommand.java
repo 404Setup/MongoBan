@@ -9,13 +9,13 @@ import one.tranic.mongoban.api.data.IPBanInfo;
 import one.tranic.mongoban.api.data.PlayerBanInfo;
 import one.tranic.mongoban.api.data.PlayerInfo;
 import one.tranic.mongoban.api.message.MessageKey;
-import one.tranic.mongoban.api.player.Player;
 import one.tranic.mongoban.common.form.GeyserForm;
 import one.tranic.t.base.TBase;
 import one.tranic.t.base.command.source.CommandSource;
 import one.tranic.t.base.exception.UnsupportedTypeException;
 import one.tranic.t.base.message.MessageFormat;
 import one.tranic.t.base.parse.time.TimeParser;
+import one.tranic.t.base.player.Player;
 import one.tranic.t.network.TNetwork;
 import org.jetbrains.annotations.Nullable;
 

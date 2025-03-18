@@ -2,14 +2,15 @@ package one.tranic.mongoban.api.command;
 
 import net.kyori.adventure.text.Component;
 import one.tranic.mongoban.api.MongoBanAPI;
-import one.tranic.mongoban.api.command.source.BungeeSource;
-import one.tranic.mongoban.api.command.wrap.BungeeWrap;
 import one.tranic.mongoban.api.parse.player.PlayerParser;
 import one.tranic.mongoban.common.form.GeyserForm;
 import one.tranic.t.base.TBase;
 import one.tranic.t.base.command.simple.SimpleCommand;
 import one.tranic.t.base.command.source.CommandSource;
 import one.tranic.t.bukkit.command.source.BukkitSource;
+import one.tranic.t.bukkit.command.warp.BukkitWrap;
+import one.tranic.t.bungee.command.source.BungeeSource;
+import one.tranic.t.bungee.command.warp.BungeeWrap;
 import one.tranic.t.utils.Platform;
 import one.tranic.t.velocity.command.source.VelocitySource;
 import one.tranic.t.velocity.command.warp.VelocityWrap;
@@ -100,7 +101,7 @@ public abstract class Command<C extends CommandSource<?, ?>> extends SimpleComma
      * for Bukkit-based platforms, or null if the platform is not compatible.
      */
     public @Nullable org.bukkit.command.Command unwrapBukkit() {
-        if (Platform.isBukkit()) return new one.tranic.t.bukkit.command.warp.BukkitWrap((Command<BukkitSource>) this);
+        if (Platform.isBukkit()) return new BukkitWrap((Command<BukkitSource>) this);
         return null;
     }
 

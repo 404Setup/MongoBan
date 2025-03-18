@@ -3,9 +3,9 @@ package one.tranic.mongoban.bungee;
 import net.md_5.bungee.api.plugin.Plugin;
 import one.tranic.mongoban.api.MongoDataAPI;
 import one.tranic.mongoban.api.message.Message;
-import one.tranic.mongoban.api.command.source.BungeeSource;
 import one.tranic.mongoban.common.commands.*;
 import one.tranic.mongoban.common.config.NewConfig;
+import one.tranic.t.bungee.command.source.BungeeSource;
 
 @Deprecated
 public class MongoBan extends Plugin {

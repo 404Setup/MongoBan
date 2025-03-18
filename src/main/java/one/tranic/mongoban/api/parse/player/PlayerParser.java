@@ -1,7 +1,6 @@
 package one.tranic.mongoban.api.parse.player;
 
 import one.tranic.t.utils.Collections;
-import one.tranic.t.utils.Platform;
 import org.jetbrains.annotations.Range;
 
 import java.util.List;
@@ -23,14 +22,8 @@ public class PlayerParser {
      */
     public static List<String> parse() {
         List<String> matchingPlayers = Collections.newArrayList();
-        if (Platform.isBukkit()) for (org.bukkit.entity.Player player : org.bukkit.Bukkit.getOnlinePlayers())
-            matchingPlayers.add(player.getName());
-        else if (Platform.get() == Platform.Velocity)
-            for (com.velocitypowered.api.proxy.Player player : one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers())
-                matchingPlayers.add(player.getUsername());
-        else
-            for (net.md_5.bungee.api.connection.ProxiedPlayer player : net.md_5.bungee.api.ProxyServer.getInstance().getPlayers())
-                matchingPlayers.add(player.getName());
+        for (one.tranic.t.base.player.Player<?> player : one.tranic.t.base.player.Players.getOnlinePlayers())
+            matchingPlayers.add(player.getUsername());
         return Collections.newUnmodifiableList(matchingPlayers);
     }
 
@@ -53,27 +46,11 @@ public class PlayerParser {
         if (max < 1) throw new IllegalArgumentException("Parameter max must be greater than or equal to 1");
 
         List<String> matchingPlayers = Collections.newArrayList();
-        if (Platform.isBukkit()) {
-            int count = 0;
-            for (org.bukkit.entity.Player player : org.bukkit.Bukkit.getOnlinePlayers()) {
-                if (count >= max) break;
-                matchingPlayers.add(player.getName());
-                count++;
-            }
-        } else if (Platform.get() == Platform.Velocity) {
-            int count = 0;
-            for (com.velocitypowered.api.proxy.Player player : one.tranic.mongoban.velocity.MongoBan.getProxy().getAllPlayers()) {
-                if (count >= max) break;
-                matchingPlayers.add(player.getUsername());
-                count++;
-            }
-        } else {
-            int count = 0;
-            for (net.md_5.bungee.api.connection.ProxiedPlayer player : net.md_5.bungee.api.ProxyServer.getInstance().getPlayers()) {
-                if (count >= max) break;
-                matchingPlayers.add(player.getName());
-                count++;
-            }
+        int count = 0;
+        for (one.tranic.t.base.player.Player<?> player : one.tranic.t.base.player.Players.getOnlinePlayers()) {
+            if (count >= max) break;
+            matchingPlayers.add(player.getUsername());
+            count++;
         }
         return Collections.newUnmodifiableList(matchingPlayers);
     }
